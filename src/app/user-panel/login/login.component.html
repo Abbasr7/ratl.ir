@@ -1,0 +1,19 @@
+<!-- component -->
+<div class="h-screen w md:flex">
+    <div
+        class="relative overflow-hidden md:flex w-1/2 bg-gradient-to-tr from-blue-800 to-purple-700 i justify-around items-center hidden">
+        <div>
+            <h1 class="text-white font-bold text-4xl yekan mb-2">{{title? title : 'ورود به سایت'}}</h1>
+            <p class="text-white mt-1">{{title?'برای راه اندازی اولیه ساین ابتدا باید بعنوان مدیر اصلی سایت ثبت نام
+                کنید.':'برای استفاده از امکانات سایت ابتدا باید وارد حساب کاربری خود کنید.'}}</p>
+            <button type="submit" class="block w-28 bg-white text-indigo-800 mt-4 py-2 rounded-2xl font-bold mb-2">بیشتر...</button>
+        </div>
+        <div class=" md:absolute -bottom-32 -left-40 w-52 h-52 lg:w-72 lg:h-72 border-4 rounded-full border-opacity-30 border-t-8"></div>
+        <div class=" md:absolute -bottom-40 -left-20 w-52 h-52 lg:w-72 lg:h-72 border-4 rounded-full border-opacity-30 border-t-8"></div>
+        <div class=" md:absolute -top-40 -right-0 w-52 h-52 lg:w-72 lg:h-72 border-4 rounded-full border-opacity-30 border-t-8"></div>
+        <div class=" md:absolute -top-20 -right-20 w-52 h-52 lg:w-72 lg:h-72 border-4 rounded-full border-opacity-30 border-t-8"></div>
+    </div>
+    <div class="flex md:w-1/2 justify-center py-10 items-center bg-white">
+        <app-login-form></app-login-form>
+    </div>
+</div>

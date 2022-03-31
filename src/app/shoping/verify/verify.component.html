@@ -1,0 +1,39 @@
+<div class="bg-white w-3/4 mx-auto shadow-md mt-10 p-4 flex flex-col justify-center items-center"
+    *ngIf="status == 'true'">
+    <div class="svg-container">
+        <svg class="ft-green-tick" xmlns="http://www.w3.org/2000/svg" height="100" width="100" viewBox="0 0 48 48"
+            aria-hidden="true">
+            <circle class="circle" fill="#5bb543" cx="24" cy="24" r="22" />
+            <path class="tick" fill="none" stroke="#FFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"
+                stroke-miterlimit="10" d="M14 27l5.917 4.917L34 17" />
+        </svg>
+    </div>
+    <div class="mt-2 space-y-3">
+        <h1 class="font-medium text-xl mx-auto w-fit text-green-800 yekan"> پرداخت با موفقیت انجام شد.</h1>
+        <h2> شماره تراکنش: {{ transaction_id }}</h2>
+        <h2> شماره پیگیری: {{ pay_id }}</h2>
+        <p>اشتراک شما با موفقید فعال شد. و از هم اکنون میتوانید از تمای امکانات سایت بهره مند شوید.</p>
+
+    </div>
+</div>
+<div class="bg-white w-3/4 mx-auto shadow-md mt-10 p-4 flex flex-col justify-center items-center"
+    *ngIf="status == 'false'">
+    <div class="svg-container">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" viewBox="0 0 48 48" aria-hidden="true">
+            <circle class="anim" cx="24" cy="24" r="22" fill="none"/>
+            <path class="tick" h="12" stroke="#fff" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"
+                stroke-miterlimit="10" d="M 15 15.384 L 32 32.384 M 32 15.384 L 15 32.384"/>
+        </svg>
+    </div>
+    <div class="mt-2 space-y-3">
+        <h1 class="font-medium text-xl mx-auto w-fit text-red-700 yekan mb-10"> پرداخت ناموفق بود!</h1>
+        <h2> مشکلی در پرداخت بوجود آمد:<b class="text-red-700"> {{msg}}</b> </h2>
+        <p>درصورتی که مبلغی از حساب شما کسر شده است تا ۴۸ ساعت آینده به حسابتان عودت داده میشود.</p>
+        <button [routerLink]="['/']" class="btn-primary flex items-center">
+            <svg class="rotate-180 fill-current ml-2 text-white w-4" viewBox="0 0 448 512">
+                <path
+                d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
+            </svg>
+            بازگشت به خانه</button>
+    </div>
+</div>
