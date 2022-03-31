@@ -53,35 +53,33 @@ export class UserService {
     }
     let today = new Date().getTime();
     let plans: activePlans[] = []
-    activePlans.forEach((x: any) => {
 
+    activePlans.forEach((x: any) => {
       let planLifeTime = x.planid.time.month * 30 * 24 * 3600 * 1000 + x.planid.time.day * 24 * 3600 * 1000
       let pricedAt = Date.parse(x.createdAt)
       let currentDay = today - pricedAt
-      let xx = {
-        id: x.planid._id,
-        planLifeTime: planLifeTime,
-        percentOfUse: Percentage(planLifeTime, currentDay),
-        used: Math.round(currentDay / 24 / 3600 / 1000), // The amount of plan used
-        remaining: Math.round((planLifeTime - currentDay)) //The remaining amount of the plan
+
+      if (planLifeTime - currentDay > 0) {
+        let xx = {
+          pay_id: x._id,
+          planid: x.planid._id,
+          planLifeTime: planLifeTime,
+          percentOfUse: Percentage(planLifeTime, currentDay),
+          used: Math.round(currentDay / 24 / 3600 / 1000), // The amount of plan used
+          remaining: Math.round((planLifeTime - currentDay)) //The remaining amount of the plan
+        }
+  
+        plans.push(xx)
+      } else {
+        // برای غیرفعال کردن پلن منقضی شده
+        lastValueFrom(this.http.put(this.Url+"/pay/dpay",{id:x._id})).then();
       }
 
-      plans.push(xx)
     });
 
     return plans
   }
 
-  hasActivePlan() {
-    let activePlan:any = []
-    let plans = this.getPlansBalance()
-    plans.forEach((plan: any) => {
-      if (plan.remaining > 0) {
-        activePlan.push(plan)
-      }
-    })
-    return activePlan
-  }
 
   editUser(data: IUser, pic: File) {
     let formData = new FormData();

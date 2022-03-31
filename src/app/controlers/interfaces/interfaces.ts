@@ -31,6 +31,7 @@ export interface Iplans{
 }
 
 export interface Ipayments{
+    _id:string,
     userid:String,
     planid:String|Iplans,
     pay_id:String,
@@ -48,7 +49,8 @@ export class IUserInfo{
     user:IUser
 }
 export interface activePlans {
-    id: string|null,
+    pay_id: string,
+    planid: string|null,
     planLifeTime:number,
     percentOfUse: number,
     used: number,

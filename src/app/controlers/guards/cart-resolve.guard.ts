@@ -27,8 +27,8 @@ export class CartResolveGuard implements CanActivate {
     return true
   }
   isPriced(id:string){
-    let activePlans =  this.userService.hasActivePlan()
-    let priced = activePlans.filter((plan:activePlans) => plan.id == id && plan.remaining>0)
+    let activePlans =  this.userService.getPlansBalance()
+    let priced = activePlans.filter((plan:activePlans) => plan.planid == id && plan.remaining>0)
     return priced
   }
 

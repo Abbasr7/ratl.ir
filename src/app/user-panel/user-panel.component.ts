@@ -22,7 +22,6 @@ export class UserPanelComponent implements OnInit,DoCheck {
   ngOnInit() {
     this.userInfo = this.userService.userInfo.value
     this.planBalance = this.userService.getPlansBalance()
-    console.log(this.userService.hasActivePlan().length?true:false);
   }
   ngDoCheck(){
     // برای مشاهده تغییرات اعمال شده
