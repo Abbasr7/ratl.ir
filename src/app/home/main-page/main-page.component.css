@@ -1,0 +1,25 @@
+.bg-secondary {
+    --tw-bg-opacity: 1;
+    background-color: rgb(19 194 150 / var(--tw-bg-opacity));
+}
+.bg-primary{
+    --tw-bg-opacity: 1;
+    background-color: rgb(48 86 211 / var(--tw-bg-opacity));
+}
+.leading-relaxed{
+line-height: 1.625;
+}
+.text-body-color{
+    --tw-text-opacity: 1;
+    color: rgb(99 115 129 / var(--tw-text-opacity));
+}
+.shadow-pricing {
+    --tw-shadow: 0px 39px 23px -27px rgba(0, 0, 0, 0.04);
+    --tw-shadow-colored: 0px 39px 23px -27px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    /* @apply shadow-2xl */
+}
+.hover\:bg-dark:hover{
+    --tw-bg-opacity: 1;
+    background-color: rgb(9 14 52 / var(--tw-bg-opacity));
+  }
