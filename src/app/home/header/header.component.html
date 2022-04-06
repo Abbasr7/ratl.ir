@@ -1,96 +1,126 @@
-<!-- Header -->
-<header class="p-4 dark:bg-coolGray-800 dark:text-coolGray-100 bg-white shadow-md">
-    <div class="container flex justify-between items-center h-16 mx-auto">
-        <a rel="noopener noreferrer" href="#" aria-label="Back to homepage" class="flex items-center p-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 32 32"
-                class="w-8 h-8 dark:text-violet-400">
-                <path
-                    d="M27.912 7.289l-10.324-5.961c-0.455-0.268-1.002-0.425-1.588-0.425s-1.133 0.158-1.604 0.433l0.015-0.008-10.324 5.961c-0.955 0.561-1.586 1.582-1.588 2.75v11.922c0.002 1.168 0.635 2.189 1.574 2.742l0.016 0.008 10.322 5.961c0.455 0.267 1.004 0.425 1.59 0.425 0.584 0 1.131-0.158 1.602-0.433l-0.014 0.008 10.322-5.961c0.955-0.561 1.586-1.582 1.588-2.75v-11.922c-0.002-1.168-0.633-2.189-1.573-2.742zM27.383 21.961c0 0.389-0.211 0.73-0.526 0.914l-0.004 0.002-10.324 5.961c-0.152 0.088-0.334 0.142-0.53 0.142s-0.377-0.053-0.535-0.145l0.005 0.002-10.324-5.961c-0.319-0.186-0.529-0.527-0.529-0.916v-11.922c0-0.389 0.211-0.73 0.526-0.914l0.004-0.002 10.324-5.961c0.152-0.090 0.334-0.143 0.53-0.143s0.377 0.053 0.535 0.144l-0.006-0.002 10.324 5.961c0.319 0.185 0.529 0.527 0.529 0.916z">
-                </path>
-                <path
-                    d="M22.094 19.451h-0.758c-0.188 0-0.363 0.049-0.515 0.135l0.006-0.004-4.574 2.512-5.282-3.049v-6.082l5.282-3.051 4.576 2.504c0.146 0.082 0.323 0.131 0.508 0.131h0.758c0.293 0 0.529-0.239 0.529-0.531v-0.716c0-0.2-0.11-0.373-0.271-0.463l-0.004-0.002-5.078-2.777c-0.293-0.164-0.645-0.26-1.015-0.26-0.39 0-0.756 0.106-1.070 0.289l0.010-0.006-5.281 3.049c-0.636 0.375-1.056 1.055-1.059 1.834v6.082c0 0.779 0.422 1.461 1.049 1.828l0.009 0.006 5.281 3.049c0.305 0.178 0.67 0.284 1.061 0.284 0.373 0 0.723-0.098 1.027-0.265l-0.012 0.006 5.080-2.787c0.166-0.091 0.276-0.265 0.276-0.465v-0.716c0-0.293-0.238-0.529-0.529-0.529z">
-                </path>
-            </svg>
-        </a>
-        <ul class="items-stretch hidden space-x-3 lg:flex">
-            <li class="flex">
-                <a rel="noopener noreferrer" href="#"
-                    class="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent dark:text-violet-400 dark:border-violet-400">Link</a>
-            </li>
-            <li class="flex">
-                <a rel="noopener noreferrer" href="#"
-                    class="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent">Link</a>
-            </li>
-            <li class="flex">
-                <a rel="noopener noreferrer" href="#"
-                    class="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent">Link</a>
-            </li>
-            <li class="flex">
-                <a rel="noopener noreferrer" href="#"
-                    class="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent">Link</a>
-            </li>
-        </ul>
-        <!-- user data -->
-        <div class="flex items-center">
-            <div class="flex gap-3 ml-4 cursor-pointer" [routerLink]="['/cart']">
-                <span class="bg-stone-200 px-2 rounded-full">{{cartCount}}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-            </div>
-            <div *ngIf="loggedIn" class="relative text-sm flex px-2" x-data="{userdata:false}">
-                <button x-on:click="userdata = !userdata" id="userButton" class="flex items-center focus:outline-none mr-3">
-                    <svg class="pl-2 h-2" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 129"
-                        xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 129 129">
-                        <g>
-                            <path
-                                d="m121.3,34.6c-1.6-1.6-4.2-1.6-5.8,0l-51,51.1-51.1-51.1c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l53.9,53.9c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l53.9-53.9c1.7-1.6 1.7-4.2 0.1-5.8z" />
-                        </g>
-                    </svg>
-                    <span class="hidden md:inline-block">سلام عزیز </span>
-                    <img class="w-8 h-8 rounded-full mr-4" src="/assets/img/profile-pic.png" alt="Avatar of User">
-                </button>
-                <div id="userMenu" x-on:click.away="userdata = !userdata" x-show="userdata == true"
-                    class="bg-white rounded shadow-md absolute mt-12 top-1 right-0 min-w-full overflow-auto z-30">
-                    <ul class="list-reset">
-                        <li>
-                            <a [routerLink]="['/panel']" class="px-4 py-2 block text-gray-900 hover:bg-gray-400 no-underline ">
-                                پنل کاربری
-                            </a>
-                        </li>
-                        <li><a [routerLink]="['/panel/profile']" class="px-4 py-2 block text-gray-900 hover:bg-gray-400 no-underline ">ویرایش
-                                پروفایل</a></li>
-                        <li><a href="#" class="px-4 py-2 block text-gray-900 hover:bg-gray-400 no-underline ">اعلان
-                                ها</a></li>
-                        <li>
-                            <hr class="border-t mx-2 border-gray-200">
-                        </li>
-                        <li><a (click)="logOut()"
-                                class="px-4 py-2 block text-red-500 font-medium hover:bg-gray-400 no-underline hover:no-underline">
-                                خروج
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div *ngIf="!loggedIn">
-                <div class="flex-shrink-0 h-full gap-2  text-blue-700 hidden lg:flex justify-center items-center">
-                    <button class=" px-4 py-2 rounded bg-white shadow-slate-400 shadow-sm" [routerLink]="['/login']"
-                        routerLinkActive="router-link-active">ورود</button>
-                    <button [routerLink]="['/register']" routerLinkActive="active"
-                        class=" px-4 py-2 bg-white rounded shadow-slate-400 shadow-sm dark:bg-violet-400 dark:text-coolGray-900">
-                        ثبت نام
-                    </button>
-                </div>
-                <button class="p-4 lg:hidden">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        class="w-6 h-6 dark:text-coolGray-100">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
-                        </path>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
 
-</header>
+<!-- ====== Navbar Section Start -->
+<div class="max-w-screen-2xl mx-auto ud-header bg-transparent absolute top-0 z-40 w-full flex items-center justify-center">
+
+        <div class="flex items-center justify-between relative w-full">
+            <div class="pr-16 lg:px-3 w-60 max-w-full"> 
+                <a href="index.html" class="navbar-logo w-full block py-5">
+                <img src="assets/img/qk.svg" alt="logo" class="w-full header-logo" />
+                </a>
+            </div>
+            <div class="flex px-4 justify-between items-center w-full">
+                
+                <div>
+                    <button id="navbarToggler"
+                        class=" block absolute right-4 top-1/2 -translate-y-1/2 lg:hidden focus:ring-2 ring-primary px-3 py-[6px] rounded-lg ">
+                        <span class="relative w-[30px] h-[2px] my-[6px] block bg-white"></span> <span
+                            class="relative w-[30px] h-[2px] my-[6px] block bg-white"></span> <span
+                            class="relative w-[30px] h-[2px] my-[6px] block bg-white"></span>
+                    </button>
+                    <nav id="navbarCollapse"
+                        class=" absolute py-5 lg:py-0 lg:px-4 xl:px-6 bg-white lg:bg-transparent shadow-lg rounded-lg max-w-[250px] w-full lg:max-w-full lg:w-full right-4 top-full hidden lg:block lg:static lg:shadow-none ">
+                        <ul class="blcok lg:flex">
+                            <li class="relative group"> <a href="#home"
+                                    class=" ud-menu-scroll text-base text-dark lg:text-white lg:group-hover:opacity-70 lg:group-hover:text-white group-hover:text-primary py-2 lg:py-6 lg:inline-flex lg:px-0 flex mx-8 lg:mr-0 ">
+                                    Home </a> </li>
+                            <li class="relative group"> <a href="#about"
+                                    class=" ud-menu-scroll text-base text-dark lg:text-white lg:group-hover:opacity-70 lg:group-hover:text-white group-hover:text-primary py-2 lg:py-6 lg:inline-flex lg:px-0 flex mx-8 lg:mr-0 lg:ml-7 xl:ml-12 ">
+                                    About </a> </li>
+                            <li class="relative group"> <a href="#pricing"
+                                    class=" ud-menu-scroll text-base text-dark lg:text-white lg:group-hover:opacity-70 lg:group-hover:text-white group-hover:text-primary py-2 lg:py-6 lg:inline-flex lg:px-0 flex mx-8 lg:mr-0 lg:ml-7 xl:ml-12 ">
+                                    Pricing </a> </li>
+                            <li class="relative group"> <a href="#team"
+                                    class=" ud-menu-scroll text-base text-dark lg:text-white lg:group-hover:opacity-70 lg:group-hover:text-white group-hover:text-primary py-2 lg:py-6 lg:inline-flex lg:px-0 flex mx-8 lg:mr-0 lg:ml-7 xl:ml-12 ">
+                                    Team </a> </li>
+                            <li class="relative group"> <a href="#contact"
+                                    class=" ud-menu-scroll text-base text-dark lg:text-white lg:group-hover:opacity-70 lg:group-hover:text-white group-hover:text-primary py-2 lg:py-6 lg:inline-flex lg:px-0 flex mx-8 lg:mr-0 lg:ml-7 xl:ml-12 ">
+                                    Contact </a> </li>
+                            <li class="relative group submenu-item"> <a href="javascript:void(0)"
+                                    class=" text-base text-dark lg:text-white lg:group-hover:opacity-70 lg:group-hover:text-white group-hover:text-primary py-2 lg:py-6 lg:inline-flex lg:pl-0 lg:pr-4 flex mx-8 lg:mr-0 lg:ml-8 xl:ml-12 relative after:absolute after:w-2 after:h-2 after:border-b-2 after:border-r-2 after:border-current after:rotate-45 lg:after:right-0 after:left-1 after:top-1/2 after:-translate-y-1/2 after:mt-[-2px] ">
+                                    Pages </a>
+                                <div
+                                    class=" submenu hidden relative lg:absolute w-[250px] top-full lg:top-[110%] left-0 rounded-sm lg:shadow-lg p-4 lg:block lg:opacity-0 lg:invisible group-hover:opacity-100 lg:group-hover:visible lg:group-hover:top-full bg-white transition-[top] duration-300 ">
+                                    <a href="about.html"
+                                        class=" block text-sm text-body-color rounded hover:text-primary py-[10px] px-4 ">
+                                        About Page </a> <a href="pricing.html"
+                                        class=" block text-sm text-body-color rounded hover:text-primary py-[10px] px-4 ">
+                                        Pricing Page </a> <a href="contact.html"
+                                        class=" block text-sm text-body-color rounded hover:text-primary py-[10px] px-4 ">
+                                        Contact Page </a> <a href="blog-grids.html"
+                                        class=" block text-sm text-body-color rounded hover:text-primary py-[10px] px-4 ">
+                                        Blog Grid Page </a> <a href="blog-details.html"
+                                        class=" block text-sm text-body-color rounded hover:text-primary py-[10px] px-4 ">
+                                        Blog Details Page </a> <a href="signup.html"
+                                        class=" block text-sm text-body-color rounded hover:text-primary py-[10px] px-4 ">
+                                        Sign Up Page </a> <a href="signin.html"
+                                        class=" block text-sm text-body-color rounded hover:text-primary py-[10px] px-4 ">
+                                        Sign In Page </a> <a href="404.html"
+                                        class=" block text-sm text-body-color rounded hover:text-primary py-[10px] px-4 ">
+                                        404 Page </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                
+                <div class="sm:flex justify-end hidden ">
+                    <div *ngIf="!loggedIn">
+                        <a [routerLink]="['/login']"
+                            class=" text-base font-medium text-white hover:opacity-70 py-3 px-7 loginBtn "> Sign In </a>
+                        <a [routerLink]="['/register']"
+                            class=" text-base font-medium text-white bg-white bg-opacity-20 rounded-lg py-3 px-6 hover:bg-opacity-100 hover:text-dark signUpBtn duration-300 ease-in-out ">
+                            Sign Up </a>
+                    </div>
+                    <div *ngIf="loggedIn" class="relative text-sm flex px-2 ml-2" x-data="{userdata:false}">
+                        <button x-on:click="userdata = !userdata" id="userButton"
+                            class="flex items-center focus:outline-none mr-3">
+                            <svg class="pl-2 h-2" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 129"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 129 129">
+                                <g>
+                                    <path
+                                        d="m121.3,34.6c-1.6-1.6-4.2-1.6-5.8,0l-51,51.1-51.1-51.1c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l53.9,53.9c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l53.9-53.9c1.7-1.6 1.7-4.2 0.1-5.8z" />
+                                </g>
+                            </svg>
+                            <span class="hi-user hidden text-white md:inline-block">سلام عزیز </span>
+                            <img class="w-8 h-8 rounded-full mr-4" src="/assets/img/profile-pic.png" alt="Avatar of User">
+                        </button>
+                        <div id="userMenu" x-on:click.away="userdata = !userdata" x-show="userdata == true"
+                            class="bg-white rounded shadow-md absolute mt-12 top-1 right-0 min-w-full overflow-auto z-30">
+                            <ul class="list-reset">
+                                <li>
+                                    <a [routerLink]="['/panel']"
+                                        class="px-4 py-2 block text-gray-900 hover:bg-gray-400 no-underline ">
+                                        پنل کاربری
+                                    </a>
+                                </li>
+                                <li><a [routerLink]="['/panel/profile']"
+                                        class="px-4 py-2 block text-gray-900 hover:bg-gray-400 no-underline ">ویرایش
+                                        پروفایل</a></li>
+                                <li><a href="#" class="px-4 py-2 block text-gray-900 hover:bg-gray-400 no-underline ">اعلان
+                                        ها</a></li>
+                                <li>
+                                    <hr class="border-t mx-2 border-gray-200">
+                                </li>
+                                <li><a (click)="logOut()"
+                                        class="px-4 py-2 cursor-pointer block text-red-500 font-medium hover:bg-gray-400 no-underline hover:no-underline">
+                                        خروج
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="nav-cart flex items-center gap-3 ml-4 cursor-pointer text-white" [routerLink]="['/cart']">
+                        <span class="px-2 rounded-full">{{cartCount}}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+</div>
+    <!-- ====== Navbar Section End -->

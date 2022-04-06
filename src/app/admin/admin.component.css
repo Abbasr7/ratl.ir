@@ -1,0 +1,5 @@
+.bg-svg{
+    background: url("/assets/img/bg-admin.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+}

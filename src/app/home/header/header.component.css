@@ -1,1 +1,37 @@
-
+.sticky {
+    position: fixed;
+    z-index: 9999;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    --tw-bg-opacity: 0.8;
+    transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    box-shadow: inset 0 -1px 0 0 rgb(0 0 0 / 10%);
+}
+.sticky #navbarCollapse li a {
+    --tw-text-opacity: 1;
+    color: rgb(9 14 52 / var(--tw-text-opacity));
+}
+.sticky .loginBtn {
+    --tw-text-opacity: 1;
+    color: rgb(9 14 52 / var(--tw-text-opacity));
+}
+.sticky .signUpBtn {
+    --tw-bg-opacity: 1;
+    background-color: rgb(48 86 211 / var(--tw-bg-opacity));
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.sticky .hi-user {
+    @apply text-gray-800
+}
+.sticky .nav-cart {
+    @apply text-gray-800
+}
+.sticky #navbarToggler span{
+    @apply bg-gray-800
+}

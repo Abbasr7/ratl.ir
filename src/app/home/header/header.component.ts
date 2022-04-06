@@ -28,7 +28,9 @@ export class HeaderComponent implements OnInit,DoCheck {
   }
 
   logOut(){
-    this.loggedIn = false
+    if (!this.authService.isTokenValid()) {
+      this.loggedIn = false
+    }
     this.authService.logOut()
   }
 

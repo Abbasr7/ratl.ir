@@ -43,7 +43,10 @@ body {
     @apply ml-1 -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700
 }
 .btn-primary{
-    @apply mt-2 text-white bg-blue-700 rounded-full px-8 py-2 transition-all duration-300 hover:bg-blue-500 disabled:bg-gray-400 disabled:px-5
+    @apply mt-2 text-white bg-gradient-to-r from-sky-500 to-indigo-500 rounded-full px-8 py-2 transition-all duration-300 hover:bg-blue-500 disabled:bg-gray-400 disabled:px-5
+}
+.btn{
+    @apply mt-2 text-white rounded-full px-8 py-2 transition-all duration-300 hover:bg-blue-500 disabled:bg-gray-400 disabled:px-5
 }
 .bg-warning{
     @apply bg-amber-500

@@ -1,14 +1,119 @@
 document.addEventListener('alpine:init', () => {
-    Alpine.data('test', () => ({
-        open: false,
-        toggle() {
-            this.open = !this.open
-        }
+    Alpine.data('xtestdata', () => ({
+        // getThemeFromLocalStorage() {
+        //     // if user already changed the theme, use it
+        //     if (window.localStorage.getItem('dark')) {
+        //         return JSON.parse(window.localStorage.getItem('dark'))
+        //     }
+
+        //     // else return their preferences
+        //     return (
+        //         !!window.matchMedia &&
+        //         window.matchMedia('(prefers-color-scheme: dark)').matches
+        //     )
+        // },
+
+        // setThemeToLocalStorage(value) {
+        //     window.localStorage.setItem('dark', value)
+        // },
+
+        dark: false,
+        toggleTheme() {
+            this.dark = !this.dark
+            // this.setThemeToLocalStorage(this.dark)
+        },
+        isSideMenuOpen: false,
+        toggleSideMenu() {
+            this.isSideMenuOpen = !this.isSideMenuOpen
+        },
+        closeSideMenu() {
+            this.isSideMenuOpen = false
+        },
+        isNotificationsMenuOpen: false,
+        toggleNotificationsMenu() {
+            this.isNotificationsMenuOpen = !this.isNotificationsMenuOpen
+        },
+        closeNotificationsMenu() {
+            this.isNotificationsMenuOpen = false
+        },
+        isProfileMenuOpen: false,
+        toggleProfileMenu() {
+            this.isProfileMenuOpen = !this.isProfileMenuOpen
+        },
+        closeProfileMenu() {
+            this.isProfileMenuOpen = false
+        },
+        isPagesMenuOpen: false,
+        togglePagesMenu() {
+            this.isPagesMenuOpen = !this.isPagesMenuOpen
+        },
+        // Modal
+        isModalOpen: false,
+        trapCleanup: null,
+        openModal() {
+            this.isModalOpen = true
+            this.trapCleanup = focusTrap(document.querySelector('#modal'))
+        },
+        closeModal() {
+            this.isModalOpen = false
+            this.trapCleanup()
+        },
+
+        // init() {
+        //     this.data()
+        // }
     }))
 })
 
 
 $(function () {
+    window.onscroll = function () {
+        const ud_header = document.querySelector(".ud-header");
+        const sticky = ud_header.offsetTop;
+        const logo = document.querySelector(".header-logo");
+
+        if (window.pageYOffset > sticky) {
+            ud_header.classList.add("sticky");
+        } else {
+            ud_header.classList.remove("sticky");
+        }
+    }
+
+    // ===== responsive navbar
+    let navbarToggler = document.querySelector("#navbarToggler");
+    const navbarCollapse = document.querySelector("#navbarCollapse");
+
+    if (navbarToggler) {
+        navbarToggler.addEventListener("click", () => {
+            navbarToggler.classList.toggle("navbarTogglerActive");
+            navbarCollapse.classList.toggle("hidden");
+        });
+    }
+
+    //===== close navbar-collapse when a  clicked
+    document
+        .querySelectorAll("#navbarCollapse ul li:not(.submenu-item) a")
+        .forEach((e) =>
+            e.addEventListener("click", () => {
+                navbarToggler.classList.remove("navbarTogglerActive");
+                navbarCollapse.classList.add("hidden");
+            })
+        );
+
+    // ===== Sub-menu
+    const submenuItems = document.querySelectorAll(".submenu-item");
+    submenuItems.forEach((el) => {
+        el.querySelector("a").addEventListener("click", () => {
+            el.querySelector(".submenu").classList.toggle("hidden");
+        });
+    });
+    //  // === logo change
+    //  if (ud_header.classList.contains("sticky")) {
+    //     logo.src = "assets/images/logo/logo.svg";
+    //   } else {
+    //     logo.src = "assets/images/logo/logo-white.svg";
+    //   }
+
     // ===== wow js
     new WOW().init();
 

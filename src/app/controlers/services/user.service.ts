@@ -65,8 +65,8 @@ export class UserService {
           planid: x.planid._id,
           planLifeTime: planLifeTime,
           percentOfUse: Percentage(planLifeTime, currentDay),
-          used: Math.round(currentDay / 24 / 3600 / 1000), // The amount of plan used
-          remaining: Math.round((planLifeTime - currentDay)) //The remaining amount of the plan
+          used: Math.round(currentDay / 24 / 3600 / 1000), // The amount of plan used DAY
+          remaining: Math.round((planLifeTime - currentDay)/ 24 / 3600 / 1000) //The remaining DAY amount of the plan
         }
   
         plans.push(xx)

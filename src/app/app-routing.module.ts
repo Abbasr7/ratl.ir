@@ -2,12 +2,15 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './admin/admin.component';
 import { NewPlanComponent } from './admin/new-plan/new-plan.component';
+import { SettingComponent } from './admin/setting/setting.component';
+import { UsersComponent } from './admin/users/users.component';
 import { AuthGuard } from './controlers/guards/auth.guard';
 import { CartResolveGuard } from './controlers/guards/cart-resolve.guard';
 import { InitAppGuard } from './controlers/guards/init-app.guard';
 import { LoginGuard } from './controlers/guards/login.guard';
 import { HomeComponent } from './home/home.component';
 import { MainPageComponent } from './home/main-page/main-page.component';
+import { NotFoundComponent } from './home/not-found/not-found.component';
 import { CartComponent } from './shoping/cart/cart.component';
 import { VerifyComponent } from './shoping/verify/verify.component';
 import { LoginComponent } from './user-panel/login/login.component';
@@ -23,7 +26,8 @@ const routes: Routes = [
     {path:'pay/verify/',component:VerifyComponent}
   ]},
   {path:'admin', component:AdminComponent,children:[
-    {path:'newplan', component:NewPlanComponent}
+    {path:'newplan', component:NewPlanComponent},
+    {path:'users', component:UsersComponent}
   ]},
   {path:'panel', component:UserPanelComponent,canActivate:[AuthGuard],children:[
     {path:'profile',component:ProfileComponent},
@@ -32,6 +36,9 @@ const routes: Routes = [
   {path:'register', component:RegisterComponent,canActivate:[LoginGuard]},
   {path:'init/register', component:RegisterComponent,canActivate:[InitAppGuard]},
   {path:'login', component:LoginComponent,canActivate:[LoginGuard]},
+  {path:'test', component:SettingComponent},
+  {path:'not-found',component:NotFoundComponent},
+  {path:'**', redirectTo:'not-found'}
 ];
 
 @NgModule({

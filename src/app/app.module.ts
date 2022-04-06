@@ -24,6 +24,11 @@ import { LoginFormComponent } from './user-panel/login/login-form/login-form.com
 import { RegisterFormComponent } from './user-panel/register/register-form/register-form.component';
 import { VerifyComponent } from './shoping/verify/verify.component';
 import { FooterComponent } from './home/footer/footer.component';
+import { HeroComponent } from './home/hero/hero.component';
+import { SettingComponent } from './admin/setting/setting.component';
+import { UsersComponent } from './admin/users/users.component';
+import { ModalDirective } from './controlers/directives/modal.directive';
+import { NotFoundComponent } from './home/not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +49,12 @@ import { FooterComponent } from './home/footer/footer.component';
     LoginFormComponent,
     RegisterFormComponent,
     VerifyComponent,
-    FooterComponent
+    FooterComponent,
+    HeroComponent,
+    SettingComponent,
+    UsersComponent,
+    ModalDirective,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,

@@ -19,9 +19,7 @@ export class AuthGuard implements CanActivate{
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      // if (route.url[0].path == 'login' || route.url[0].path == 'register') {
-      //   return this.isLoggedIn(route)
-      // }
+
       return this.isAuthenticated(route)
   }
 
@@ -36,16 +34,6 @@ export class AuthGuard implements CanActivate{
       return this.router.createUrlTree(['/login']) 
     }
 
-    return true
-  }
-
-
-  async isLoggedIn(route:ActivatedRouteSnapshot){
-    let Authenticate = await this.authService.isLoggedIn()
-
-    if (Authenticate[0]) {  
-      return this.router.createUrlTree(['/']) 
-    }
     return true
   }
 

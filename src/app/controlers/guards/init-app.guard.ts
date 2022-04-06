@@ -34,7 +34,7 @@ export class InitAppGuard implements CanActivate {
   }
 
   private async isAdminExist() {
-    let res = await lastValueFrom(this.http.get(this.Url + '/checkforinit'))
+    let res = await lastValueFrom(this.http.get(this.Url + '/user/init/check'))
     return res
   }
 }

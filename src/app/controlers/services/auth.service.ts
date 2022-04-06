@@ -34,9 +34,23 @@ export class AuthService {
   }
 
   async logOut() {
-    this.http.post(`${this.Url}/user/logout`, '')
-    this.loggedIn = false
-    localStorage.removeItem('auth-token');
+    lastValueFrom(this.http.post(`${this.Url}/user/logouts`, '')).then(res =>{
+      this.loggedIn = false
+      localStorage.removeItem('auth-token');
+    }).catch(err => {
+      console.log(err);
+      this.msg.sendMessage('مشکلی در خروج از حساب کاربری رخ داد','warning')
+    })
+  }
+
+  setToken(token:string){
+    return localStorage.setItem('auth-token',token)
+  }
+  getToken() {
+    return <string>localStorage.getItem('auth-token')
+  }
+  decodeUserInfoToken(){
+    return this.jwtHelper.decodeToken(this.getToken())
   }
 
   isTokenValid(){
@@ -76,15 +90,6 @@ export class AuthService {
     }
   }
 
-  setToken(token:string){
-    return localStorage.setItem('auth-token',token)
-  }
-  getToken() {
-    return <string>localStorage.getItem('auth-token')
-  }
-  decodeUserInfoToken(){
-    return this.jwtHelper.decodeToken(this.getToken())
-  }
   private async checkForLogin(){
     let login = false
     let res = await lastValueFrom(this.http.get(this.Url+`/user/authenticate?token=${this.getToken()}`)).then((val:any) => {
