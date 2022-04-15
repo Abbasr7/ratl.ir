@@ -20,7 +20,9 @@ export class CartResolveGuard implements CanActivate {
     
     let id = <string>route.paramMap.get('id')
     let data:activePlans[] = this.isPriced(id)
-    if (data.length>0) {
+    console.log(data,data.length);
+    
+    if (data.length > 0) {
       this.msg.sendMessage('شما قبلا این پلن را خریداری کرده اید و هنوز منقضی نشده اشت.','warning')
       return this.router.createUrlTree(['/'])
     }
@@ -29,7 +31,9 @@ export class CartResolveGuard implements CanActivate {
   isPriced(id:string){
     let activePlans =  this.userService.getPlansBalance()
     let priced = activePlans.filter((plan:activePlans) => plan.planid == id && plan.remaining>0)
+
     return priced
+
   }
 
 }

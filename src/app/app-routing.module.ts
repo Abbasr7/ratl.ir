@@ -2,8 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './admin/admin.component';
 import { NewPlanComponent } from './admin/new-plan/new-plan.component';
+import { RolesComponent } from './admin/roles/roles.component';
 import { SettingComponent } from './admin/setting/setting.component';
 import { UsersComponent } from './admin/users/users.component';
+import { AdminGuard } from './controlers/guards/admin.guard';
 import { AuthGuard } from './controlers/guards/auth.guard';
 import { CartResolveGuard } from './controlers/guards/cart-resolve.guard';
 import { InitAppGuard } from './controlers/guards/init-app.guard';
@@ -27,8 +29,10 @@ const routes: Routes = [
   ]},
   {path:'admin', component:AdminComponent,children:[
     {path:'newplan', component:NewPlanComponent},
-    {path:'users', component:UsersComponent}
-  ]},
+    {path:'users', component:UsersComponent},
+    {path:'user/:id', component:ProfileComponent,data:{admin:true}},
+    {path:'roles', component:RolesComponent}
+  ],canActivate:[AdminGuard]},
   {path:'panel', component:UserPanelComponent,canActivate:[AuthGuard],children:[
     {path:'profile',component:ProfileComponent},
     {path:'newunit',component:NewUnitComponent}

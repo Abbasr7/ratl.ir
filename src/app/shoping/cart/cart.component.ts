@@ -35,13 +35,7 @@ export class CartComponent implements OnInit,OnDestroy {
   submitted:boolean = false
 
   async ngOnInit() {
-    let data:any = this.route.snapshot.data
-    console.log(data.test);
-    
-    if (!data.test) {
-      this.msg.sendMessage('شما قبلا این پلن را خریداری کرده اید و هنوز منقضی نشده اشت.','warning')
-      this.router.navigate(['/'])
-    }
+
     this.loggedin = await this.auth.isLoggedIn()
     this.items = this.cart.getItems()
     

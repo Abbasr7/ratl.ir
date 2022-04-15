@@ -1,120 +1,172 @@
 <!-- component -->
-<div x-data="{modal:false,msg:''}">
-<div class="w-full lg:w-5/6">
-    <div class="bg-white shadow-md rounded my-6">
-        <table class="min-w-max w-full table-auto">
-            <thead>
-                <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                    <th class="py-3 px-6 text-left">Project</th>
-                    <th class="py-3 px-6 text-left">Client</th>
-                    <th class="py-3 px-6 text-center">Users</th>
-                    <th class="py-3 px-6 text-center">Status</th>
-                    <th class="py-3 px-6 text-center">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="text-gray-600 text-sm font-light">
-                <tr class="border-b border-gray-200 hover:bg-gray-100" *ngFor="let user of usersList | async">
-                    <td class="py-3 px-6 text-left whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="ml-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24"
-                                    viewBox="0 0 48 48" style=" fill:#000000;">
-                                    <path fill="#80deea"
-                                        d="M24,34C11.1,34,1,29.6,1,24c0-5.6,10.1-10,23-10c12.9,0,23,4.4,23,10C47,29.6,36.9,34,24,34z M24,16	c-12.6,0-21,4.1-21,8c0,3.9,8.4,8,21,8s21-4.1,21-8C45,20.1,36.6,16,24,16z">
-                                    </path>
-                                    <path fill="#80deea"
-                                        d="M15.1,44.6c-1,0-1.8-0.2-2.6-0.7C7.6,41.1,8.9,30.2,15.3,19l0,0c3-5.2,6.7-9.6,10.3-12.4c3.9-3,7.4-3.9,9.8-2.5	c2.5,1.4,3.4,4.9,2.8,9.8c-0.6,4.6-2.6,10-5.6,15.2c-3,5.2-6.7,9.6-10.3,12.4C19.7,43.5,17.2,44.6,15.1,44.6z M32.9,5.4	c-1.6,0-3.7,0.9-6,2.7c-3.4,2.7-6.9,6.9-9.8,11.9l0,0c-6.3,10.9-6.9,20.3-3.6,22.2c1.7,1,4.5,0.1,7.6-2.3c3.4-2.7,6.9-6.9,9.8-11.9	c2.9-5,4.8-10.1,5.4-14.4c0.5-4-0.1-6.8-1.8-7.8C34,5.6,33.5,5.4,32.9,5.4z">
-                                    </path>
-                                    <path fill="#80deea"
-                                        d="M33,44.6c-5,0-12.2-6.1-17.6-15.6C8.9,17.8,7.6,6.9,12.5,4.1l0,0C17.4,1.3,26.2,7.8,32.7,19	c3,5.2,5,10.6,5.6,15.2c0.7,4.9-0.3,8.3-2.8,9.8C34.7,44.4,33.9,44.6,33,44.6z M13.5,5.8c-3.3,1.9-2.7,11.3,3.6,22.2	c6.3,10.9,14.1,16.1,17.4,14.2c1.7-1,2.3-3.8,1.8-7.8c-0.6-4.3-2.5-9.4-5.4-14.4C24.6,9.1,16.8,3.9,13.5,5.8L13.5,5.8z">
-                                    </path>
-                                    <circle cx="24" cy="24" r="4" fill="#80deea"></circle>
-                                </svg>
+<div id="users-table" x-data="{modal:false}">
+    <div class="w-full lg:w-5/6 bg-white shadow-md rounded py-4">
+        <div class="flex items-center gap-3 divide-x-reverse divide-x-2 mx-5">
+            <div class="relative text-gray-600">
+                <input class="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+                    type="search" name="search" [(ngModel)]="fullName" (ngModelChange)="search()" placeholder="جستوجوی نام">
+                <button type="submit" class="absolute right-0 top-0 mt-3 mr-4">
+                    <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
+                        viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 56.966 56.966;" xml:space="preserve"
+                        width="512px" height="512px">
+                        <path
+                            d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="relative flex items-center px-3">
+                <span class="ml-2">تعداد در هر صفحه:</span>
+                <svg class="w-2 h-2 absolute top-0 left-2 m-4 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 412 232"><path d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z" fill="#648299" fill-rule="nonzero"/></svg>
+                <select [(ngModel)]="prePage"
+                class="border border-gray-300 rounded-full text-gray-600 h-10 pr-5 pl-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
+                  <option [value]="5">5</option>
+                  <option [value]="10">10</option>
+                  <option [value]="15">15</option>
+                  <option [value]="25">25</option>
+                  <option [value]="50">50</option>
+                  <option [value]="100">100</option>
+                </select>
+            </div>
+        </div>
+        <div class="my-6">
+            <table class="min-w-max w-full table-auto">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left cursor-pointer" (click)="sort('fullname')">نام و نام خانوادگی</th>
+                        <th class="py-3 px-6 text-left cursor-pointer" (click)="sort('username')">نام کاربری</th>
+                        <th class="py-3 px-6 text-center cursor-pointer" (click)="sort('email')">ایمیل</th>
+                        <th class="py-3 px-6 text-center" (click)="sort('peyments.active')">وضعیت</th>
+                        <th class="py-3 px-6 text-center">تنظیمات</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm font-light">
+                    <tr class="border-b border-gray-200 hover:bg-gray-100" *ngFor="let user of usersList| orderBy: keyToSort: reverse
+                    | paginate : {
+                    id: 'paginate',
+                    itemsPerPage: prePage,
+                    currentPage: page,
+                    totalItems: totalRecords
+                  };">
+                        <td class="py-3 px-6 text-left whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="ml-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24"
+                                        viewBox="0 0 48 48" style=" fill:#000000;">
+                                        <path fill="#80deea"
+                                            d="M24,34C11.1,34,1,29.6,1,24c0-5.6,10.1-10,23-10c12.9,0,23,4.4,23,10C47,29.6,36.9,34,24,34z M24,16	c-12.6,0-21,4.1-21,8c0,3.9,8.4,8,21,8s21-4.1,21-8C45,20.1,36.6,16,24,16z">
+                                        </path>
+                                        <path fill="#80deea"
+                                            d="M15.1,44.6c-1,0-1.8-0.2-2.6-0.7C7.6,41.1,8.9,30.2,15.3,19l0,0c3-5.2,6.7-9.6,10.3-12.4c3.9-3,7.4-3.9,9.8-2.5	c2.5,1.4,3.4,4.9,2.8,9.8c-0.6,4.6-2.6,10-5.6,15.2c-3,5.2-6.7,9.6-10.3,12.4C19.7,43.5,17.2,44.6,15.1,44.6z M32.9,5.4	c-1.6,0-3.7,0.9-6,2.7c-3.4,2.7-6.9,6.9-9.8,11.9l0,0c-6.3,10.9-6.9,20.3-3.6,22.2c1.7,1,4.5,0.1,7.6-2.3c3.4-2.7,6.9-6.9,9.8-11.9	c2.9-5,4.8-10.1,5.4-14.4c0.5-4-0.1-6.8-1.8-7.8C34,5.6,33.5,5.4,32.9,5.4z">
+                                        </path>
+                                        <path fill="#80deea"
+                                            d="M33,44.6c-5,0-12.2-6.1-17.6-15.6C8.9,17.8,7.6,6.9,12.5,4.1l0,0C17.4,1.3,26.2,7.8,32.7,19	c3,5.2,5,10.6,5.6,15.2c0.7,4.9-0.3,8.3-2.8,9.8C34.7,44.4,33.9,44.6,33,44.6z M13.5,5.8c-3.3,1.9-2.7,11.3,3.6,22.2	c6.3,10.9,14.1,16.1,17.4,14.2c1.7-1,2.3-3.8,1.8-7.8c-0.6-4.3-2.5-9.4-5.4-14.4C24.6,9.1,16.8,3.9,13.5,5.8L13.5,5.8z">
+                                        </path>
+                                        <circle cx="24" cy="24" r="4" fill="#80deea"></circle>
+                                    </svg>
+                                </div>
+                                <span class="font-medium">{{user.fullname}}</span>
                             </div>
-                            <span class="font-medium">{{user.fullname}}</span>
-                        </div>
-                    </td>
-                    <td class="py-3 px-6 text-left">
-                        <div class="flex items-center">
-                            <div class="ml-2">
-                                <img class="w-6 h-6 rounded-full" src="https://randomuser.me/api/portraits/men/1.jpg" />
+                        </td>
+                        <td class="py-3 px-6 text-left">
+                            <!-- <div class="flex items-center"> -->
+                            <a [routerLink]="['/admin/user/'+user._id]" class="flex items-center">
+                                <div class="ml-2">
+                                    <img class="w-6 h-6 rounded-full" [src]="user.imgurl?apiUrl+user.imgurl:avatar"
+                                        crossorigin />
+                                </div>
+                                <span>{{user.username}}</span>
+                            </a>
+                            <!-- </div> -->
+                        </td>
+                        <td class="py-3 px-6 text-center">
+                            <div class="flex items-center justify-center">
+                                {{user.email}}
                             </div>
-                            <span>{{user.username}}</span>
-                        </div>
-                    </td>
-                    <td class="py-3 px-6 text-center">
-                        <div class="flex items-center justify-center">
-                            <img class="w-6 h-6 rounded-full border-gray-200 border transform hover:scale-125"
-                                src="https://randomuser.me/api/portraits/men/1.jpg" />
-                            <img class="w-6 h-6 rounded-full border-gray-200 border -m-1 transform hover:scale-125"
-                                src="https://randomuser.me/api/portraits/women/2.jpg" />
-                            <img class="w-6 h-6 rounded-full border-gray-200 border -m-1 transform hover:scale-125"
-                                src="https://randomuser.me/api/portraits/men/3.jpg" />
-                        </div>
-                    </td>
-                    <td class="py-3 px-6 text-center">
-                        <span class="bg-purple-200 text-purple-600 py-1 px-3 rounded-full text-xs">Active</span>
-                    </td>
-                    <td class="py-3 px-6 text-center">
-                        <div class="flex item-center justify-center">
-                            <div class="w-4 ml-2 transform hover:text-purple-500 hover:scale-125 cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
+                        </td>
+                        <td class="py-3 px-6 text-center">
+                            <span class="bg-purple-200 text-purple-600 py-1 px-3 rounded-full text-xs">Active</span>
+                        </td>
+                        <td class="py-3 px-6 text-center">
+                            <div class="flex item-center justify-center">
+                                <div class="w-4 ml-2 transform hover:text-purple-500 hover:scale-125 cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </div>
+                                <div [routerLink]="['/admin/user/'+user._id]"
+                                    class="w-4 ml-2 transform hover:text-purple-500 hover:scale-125 cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                </div>
+                                <div class="w-4 ml-2 transform hover:text-purple-500 hover:scale-125 cursor-pointer"
+                                    x-on:click="modal = !modal" (click)="user_id.value = user._id">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </div>
                             </div>
-                            <div class="w-4 ml-2 transform hover:text-purple-500 hover:scale-125 cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                </svg>
-                            </div>
-                            <div class="w-4 ml-2 transform hover:text-purple-500 hover:scale-125 cursor-pointer" x-on:click="modal = true" (click)="user_id.value = user._id">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-<!-- Modal toggle -->
+        <div class="flex justify-center items-center">
+            <pagination-controls id="paginate" [directionLinks]="true" (pageChange)="page = $event" [autoHide]="true"
+                [responsive]="true" previousLabel="Previous" nextLabel="Next" screenReaderPaginationLabel="Pagination"
+                screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page"></pagination-controls>
+        </div>
+    </div>
+
+    <!-- Modal toggle -->
 
     <!-- Delete Product Modal -->
-    <div x-on:keydown.escape="modal = false" x-show="modal" x-transition.duration.500ms id="popup-modal" tabindex="-1" class="bg-gray-500 bg-opacity-40 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 md:inset-0 h-modal md:h-full">
-        <div x-on:click.away="modal = false" x-show="modal"   x-transition:enter="transition transform duration-300"
-        x-transition:enter-start="scale-0"
-        x-transition:enter-end="scale-100"
-        x-transition:leave="transition transform duration-300"
-        x-transition:leave-start="scale-100"
-        x-transition:leave-end="scale-0" class="relative p-4 w-full max-w-md h-full md:h-auto mx-auto">
+    <div x-on:keydown.escape="modal = false" x-show="modal" x-transition.duration.500ms id="popup-modal" tabindex="-1"
+        class="bg-gray-500 bg-opacity-40 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 md:inset-0 h-modal md:h-full">
+        <div x-on:click.away="modal = false" x-show="modal" x-transition:enter="transition transform duration-300"
+            x-transition:enter-start="scale-0" x-transition:enter-end="scale-100"
+            x-transition:leave="transition transform duration-300" x-transition:leave-start="scale-100"
+            x-transition:leave-end="scale-0" class="relative p-4 w-full max-w-md h-full md:h-auto mx-auto">
             <!-- Modal content -->
             <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                 <!-- Modal header -->
                 <div class="flex justify-end p-2">
-                    <button x-on:click="modal = false" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-toggle="popup-modal">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
+                    <button x-on:click="modal = false" type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
                     </button>
                 </div>
                 <!-- Modal body -->
                 <div class="p-6 pt-0 text-center space-x-2">
-                    <svg class="mx-auto mb-4 w-14 h-14 text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">آیا برای حذف این کاربر مطمئن هستید؟</h3>
+                    <svg class="mx-auto mb-4 w-14 h-14 text-gray-400 dark:text-gray-200" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">آیا برای حذف این کاربر مطمئن
+                        هستید؟</h3>
                     <input #user_id type="text" hidden>
-                    <button (click)="removeUser(user_id)" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+                    <button (click)="removeUser(user_id)" id="modal_ok_btn" type="button"
+                        class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
                         آره حذفش کن
                     </button>
-                    <button x-on:click="modal = false" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">نه دستم خورد</button>
+                    <button x-on:click="modal = false" type="button"
+                        class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">نه
+                        دستم خورد</button>
                 </div>
             </div>
         </div>

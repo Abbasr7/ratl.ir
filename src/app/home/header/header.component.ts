@@ -27,11 +27,11 @@ export class HeaderComponent implements OnInit,DoCheck {
     this.cartCount = this.cart.getItems().length
   }
 
-  logOut(){
+  async logOut(){
+    await this.authService.logOut()
     if (!this.authService.isTokenValid()) {
       this.loggedIn = false
     }
-    this.authService.logOut()
   }
 
 }

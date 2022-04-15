@@ -69,13 +69,15 @@ document.addEventListener('alpine:init', () => {
 $(function () {
     window.onscroll = function () {
         const ud_header = document.querySelector(".ud-header");
-        const sticky = ud_header.offsetTop;
-        const logo = document.querySelector(".header-logo");
-
-        if (window.pageYOffset > sticky) {
-            ud_header.classList.add("sticky");
-        } else {
-            ud_header.classList.remove("sticky");
+        if (ud_header) { //to work at home page just
+            const sticky = ud_header.offsetTop;
+            const logo = document.querySelector(".header-logo");
+    
+            if (window.pageYOffset > sticky) {
+                ud_header.classList.add("sticky");
+            } else {
+                ud_header.classList.remove("sticky");
+            }
         }
     }
 

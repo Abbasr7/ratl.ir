@@ -1,0 +1,157 @@
+<form x-data="{valid: true}" [formGroup]="form" (ngSubmit)="saveNewRole()" class="w-full max-w-lg bg-gray-50 focus-within:bg-white transition-all duration-500 shadow-md p-5 rounded-md">
+    
+    <h1 class="text-xl mb-6 text-gray-800">افزودن نقش کاربری جدید</h1>
+    <div class="flex flex-wrap mb-6 -mx-3">
+        <div class="w-full md:w-1/2 px-3 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+              گروه کاربری(مثلا:نویسنده)
+            </label>
+            <input formControlName="role" x-bind:class="valid? '': 'border-red-500'" class="block w-full bg-white text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="نویسنده">
+            <p *ngIf="submited && this.f['role'].errors" class="text-red-500 mt-3 text-xs italic">Please fill out this field.</p>
+        </div>
+        <div class="w-full md:w-1/2 px-3">
+            <div class="relative">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">
+                دسترسی ها
+                </label>
+                <button class="absolute top-9 left-1 text-gray-800 " (click)="add(access,$event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 stroke-gray-500 hover:stroke-gray-700" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                </button>
+                <input #access formControlName="access" (keydown.enter)="add(access,$event)"
+                class="block w-full bg-white text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                id="accessInput" list="accessList"
+                type="text" placeholder="eg: users">
+                <datalist id="accessList">
+                    <option *ngFor="let access of accessList " [value]="access">{{access}}</option>
+                </datalist>
+            </div>
+            <p *ngIf="submited && this.f['access'].errors" class="text-red-500 mt-3 text-xs italic">Please fill out this field.</p>
+            <div *ngIf="accessVal.length" class="w-full max-w-screen-xl mx-auto">
+                <div class="flex flex-1 justify-center max-w-md mt-4">
+                    <div class="bg-white border-t-2 border-cyan-400 w-full shadow-md rounded-lg text-sm p-2 gap-2">
+                        <div *ngFor="let val of accessVal;let i = index" [ngClass]="[exists==val?'bg-green-100 transition-all':'']" class="flex justify-start transition-all cursor-pointer text-gray-700 hover:text-blue-400 hover:bg-blue-100 rounded-md px-2 py-2 my-2">
+                            <span class="bg-green-400 h-2 w-2 m-2 rounded-full"></span>
+                            <div class="flex-grow font-medium px-2">{{ val }}</div>
+                            <i (click)="remove(i)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-wrap justify-end my-2">
+        <button type="submit" [ngStyle]="{'padding':loading?'6px':''}" class="p-2 bg-blue-500 w-32 hover:bg-blue-400 text-white rounded-lg shadow-sm font-medium">
+        <span *ngIf="!loading">Save</span> 
+        <svg *ngIf="loading" role="status" class="inline w-7 h-7 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+          <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+        </svg> 
+      </button>
+    </div>
+</form>
+
+<!-- Data Table -->
+<div class="flex flex-col mt-10" *ngIf="roles.length">
+    <div class="overflow-x-auto w-fit shadow-md sm:rounded-lg">
+        <div class="inline-block gap-y-14 bg-white align-middle">
+            <h1 class="p-3">لیست نقشهای کاربری</h1>
+            <div class="overflow-hidden ">
+                <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-700">
+                    <thead class="bg-gray-100 dark:bg-gray-700">
+                        <tr>
+                            <th scope="col" class="py-3 px-3 text-xs lg:text-base font-bold tracking-wider text-right text-gray-700 dark:text-gray-400">
+                                عنوان کاربری
+                            </th>
+                            <th scope="col" class="py-3 text-md font-bold tracking-wider text-center text-gray-700 dark:text-gray-400">
+                                دسترسی ها
+                            </th>
+                            <th scope="col" class="p-4 text-md font-bold tracking-wider text-right text-gray-700">
+                                <span class="">اعمال</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700" *ngFor="let role of roles">
+                            <td class="py-4 pr-2 pl-4 lg:pl-20 text-xs lg:text-base w-fit flex">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="#555" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                <span *ngIf="editMode != role.nameid">{{role.title}}</span>
+                                <input *ngIf="editMode == role.nameid" [value]="role.title" type="text" [id]="role.nameid" class="p-2 border-2 border-blue-400 rounded-md">
+                            </td>
+                            <td class="pl-14 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">
+                                <span *ngIf="editMode != role.nameid">
+                                    <span *ngFor="let access of role.access"
+                                    class="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">
+                                    {{access}}
+                                    </span>
+                                </span>
+                                <div class="flex" *ngIf="editMode == role.nameid && (role.nameid != admin.nameid || role.nameid != 'client')">
+                                    <div class="flex ml-2" *ngFor="let item of accessList">
+                                        <label [for]="item" class="font-medium text-gray-900 dark:text-gray-300">{{item}}</label>
+                                        <input [id]="item" type="checkbox" [ngModel]="role.access.includes(item)"
+                                        [value]="item" (change)="changeCheckbox($event,role.nameid)"
+                                        class="w-4 h-4 bg-gray-50 rounded border border-gray-300 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6 flex-col items-center justify-center text-sm font-medium text-right whitespace-nowrap">
+                                <a *ngIf="editMode != role.nameid && role.nameid != admin.nameid && role.nameid != 'client'" (click)="edit(role.nameid,'edit')" class="text-blue-600 cursor-pointer dark:text-blue-500 hover:underline">Edit</a>
+                                <div *ngIf="editMode == role.nameid" class="flex gap-2">
+                                    <button (click)="saveEdit(role.nameid)" class="bg-green-500 p-2 rounded-md  shadow-md text-white">save</button>
+                                    <button (click)="edit(role.nameid,'delete')" class="bg-red-400 p-2 rounded-md shadow-md text-white">Delete</button>
+                                    <button (click)="edit(role.nameid,'cls')" class="bg-gray-400 p-2 rounded-md shadow-md text-white">cancell</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- animate Loading Table -->
+<div class="animate-pulse flex flex-col mt-10" *ngIf="!roles.length">
+    <div class="overflow-x-auto w-auto shadow-md sm:rounded-lg inline-block gap-y-14 bg-white align-middle">
+        <h1 class="p-3 h-3 w-5/12 m-3 bg-slate-400"></h1>
+        <div class="overflow-hidden ">
+            <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-700">
+                <thead class="bg-gray-100 dark:bg-gray-700">
+                    <tr>
+                        <th scope="col" class="py-3 px-6 w-fit text-xs font-medium tracking-widerf text-right text-gray-700 uppercase dark:text-gray-400">
+                            <div class="bg-slate-300 m-3 h-4 w-6/12"></div>
+                        </th>
+                        <th scope="col" class="py-3 text-xs font-medium tracking-wider text-right text-gray-700 uppercase dark:text-gray-400">
+                            <div class="bg-slate-300 m-3 h-4 w-8/12"></div>
+                        </th>
+                        <th scope="col" class="py-4">
+                            <div class="bg-slate-300 m-3 h-4 w-6/12"></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                    <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <td class="td-css w-fit">
+                            <div class="bg-slate-400 m-3 h-4 w-6/12"></div>
+                        </td>
+                        <td class="py-4 w-auto text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">
+                            <div class="bg-slate-400 m-3 h-4 w-8/12"></div>
+                        </td>
+                        <td class="py-4 w-auto flex-col items-center justify-center text-sm font-medium text-right whitespace-nowrap">
+                            <div class="bg-slate-400 m-3 h-4 w-6/12"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

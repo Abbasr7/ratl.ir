@@ -1,5 +1,7 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable, Renderer2, RendererFactory2 } from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import * as $ from 'jquery';
 
 @Injectable({
     providedIn: 'root'
@@ -7,6 +9,19 @@ import { Inject, Injectable, Renderer2, RendererFactory2 } from "@angular/core";
 export class customValidate {
 
     phonePattern: string = '09(0[1-2]|1[0-9]|3[0-9]|2[0-1])-?[0-9]{3}-?[0-9]{4}';
+
+    checkMatchingPasswords(passwordKey: string, passwordConfirmationKey: string) {
+        return (group: FormGroup) => {
+            let passwordInput = group.controls[passwordKey],
+                passwordConfirmationInput = group.controls[passwordConfirmationKey];
+            if (passwordInput.value !== passwordConfirmationInput.value) {
+                return passwordConfirmationInput.setErrors({ notEquivalent: true })
+            }
+            else {
+                return passwordConfirmationInput.setErrors(null);
+            }
+        }
+    }
 
     isEmail(email: string) {
         return String(email)
@@ -19,12 +34,12 @@ export class customValidate {
     isValidMessages(getFormControls: any) {
         let msg: any = {}
         for (const x in getFormControls) {
-            msg[x] = this.validationMsg(getFormControls[x].errors)
+            msg[x] = this.setValidationMsg(getFormControls[x].errors)
         }
         return msg
     }
 
-    validationMsg(error: any) {
+    private setValidationMsg(error: any) {
         let msg = []
         if (error != null) {
             if (Object.prototype.hasOwnProperty.call(error, 'required')) {
@@ -43,11 +58,16 @@ export class customValidate {
                     msg.push('فرمت وارد شده صحیح نیست.')
                 }
             }
+            if (error.notEquivalent) {
+                msg.push('رمز وارد شده و تکرار آن با هم مطابقت ندارد.')
+            }
         }
 
         return msg
     }
 }
+
+
 @Injectable({
     providedIn: 'root'
 })
@@ -64,21 +84,50 @@ export class Spinner {
     private spinDiv: Node
 
     addSpinner(target: string) {
-        this.spinDiv = this.renderer.createElement('div')
-        this.renderer.addClass(this.spinDiv, 'spinner-qk')
-        this.renderer.setProperty(this.spinDiv, 'innerHTML', this.spinner)
-        let tar = this.renderer.selectRootElement(target, true)
-
+        if (this.isAdded()) {
+            this.removeSpinner(target)
+        }
         if (!this.isAdded()) {
-            this.renderer.appendChild(tar, this.spinDiv)
+            this.addElementTo(target, this.spinner)
         }
     }
 
-    removeSpinner(target: string) {
-        let tar = this.renderer.selectRootElement(target, true)
-        this.renderer.removeChild(tar, this.spinDiv)
+    addSuccessIcon(target: string) {
+        let icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-green-600" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>`
+        let added = false
+
+        if (this.isAdded()) {
+            this.removeSpinner(target)
+        }
+        if (!this.isAdded()) {
+            this.addElementTo(target, icon)
+            added = true
+        }
+        if (added) {
+            setTimeout(() => {
+                this.removeSpinner(target)
+            }, 4000)
+        }
+
     }
 
+    removeSpinner(target: string, callback: any = () => { }) {
+        $('.spinner-qk').remove()
+        callback()
+    }
+
+    private addElementTo(target: string, element: string) {
+        this.spinDiv = this.document.createElement('div')//this.renderer.createElement('div')
+        this.renderer.addClass(this.spinDiv, 'spinner-qk')
+        this.renderer.setProperty(this.spinDiv, 'innerHTML', element)
+        let tar = this.renderer.selectRootElement(target, true)
+        this.renderer.appendChild(tar, this.spinDiv)
+
+        $(target).fadeIn(500);
+
+    }
     private isAdded() {
         let tar = this.document.getElementsByClassName('spinner-qk')
         if (!tar.length) {

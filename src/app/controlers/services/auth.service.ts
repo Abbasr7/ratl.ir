@@ -34,7 +34,7 @@ export class AuthService {
   }
 
   async logOut() {
-    lastValueFrom(this.http.post(`${this.Url}/user/logouts`, '')).then(res =>{
+    await lastValueFrom(this.http.post(`${this.Url}/user/logout`, '')).then(res =>{
       this.loggedIn = false
       localStorage.removeItem('auth-token');
     }).catch(err => {
@@ -60,7 +60,7 @@ export class AuthService {
       if (!this.jwtHelper.isTokenExpired(token)) {
         return true
       } else {
-        this.logOut()
+        // this.logOut()
         return false
       }
     } else {

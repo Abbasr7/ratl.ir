@@ -29,6 +29,9 @@ import { SettingComponent } from './admin/setting/setting.component';
 import { UsersComponent } from './admin/users/users.component';
 import { ModalDirective } from './controlers/directives/modal.directive';
 import { NotFoundComponent } from './home/not-found/not-found.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { OrderModule } from 'ngx-order-pipe';
+import { RolesComponent } from './admin/roles/roles.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +57,8 @@ import { NotFoundComponent } from './home/not-found/not-found.component';
     SettingComponent,
     UsersComponent,
     ModalDirective,
-    NotFoundComponent
+    NotFoundComponent,
+    RolesComponent
   ],
   imports: [
     BrowserModule,
@@ -62,6 +66,8 @@ import { NotFoundComponent } from './home/not-found/not-found.component';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxPaginationModule,
+    OrderModule
   ],
   providers: [
     {provide:HTTP_INTERCEPTORS, useClass:HttpInterceptorInterceptor, multi:true},

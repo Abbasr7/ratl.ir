@@ -1,11 +1,13 @@
-export interface SuccessHandle {
-    message: string,
+export class SuccessHandle {
+    message: string;
     data: any
 }
 
 export interface IRole {
-    role: string,
-    access: string
+    _id: string,
+    nameid: string,
+    title: string,
+    access: string[]
 }
 
 export interface IUser {
@@ -14,7 +16,7 @@ export interface IUser {
     email: string,
     fullname:string,
     address: string,
-    role: string,
+    role: IRole,
     phone:string,
     imgurl: String  
 }
