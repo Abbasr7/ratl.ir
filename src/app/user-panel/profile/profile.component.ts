@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DoCheck, Input, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChange, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, lastValueFrom, map, of, Subscription, throwError } from 'rxjs';
+import { catchError, map, of, Subscription, throwError } from 'rxjs';
 import { IRole, IUser, SuccessHandle } from 'src/app/controlers/interfaces/interfaces';
 import { MessagesService } from 'src/app/controlers/services/messages.service';
 import { ServerService } from 'src/app/controlers/services/server.service';
@@ -26,8 +26,8 @@ export class ProfileComponent implements OnInit, OnDestroy, DoCheck {
 
   apiUrl: string = Globals.apiUrl;
   subscribe: Subscription;
-  subscribe2: Subscription;
   editSubscribe: Subscription;
+
   loading: boolean = false;
   userId: string = this.router.url == '/panel/profile'?this.userService.decodeToken().id: this.route.snapshot.params['id'];
   user: IUser;
@@ -61,11 +61,6 @@ export class ProfileComponent implements OnInit, OnDestroy, DoCheck {
       this.assignData(res.data.user);
     })
 
-    this.subscribe2 = this.server.get('/admin/getdata?type=role').pipe(
-      map(i => i as SuccessHandle)
-    ).subscribe(res =>{
-      this.roles = res.data
-    })
   }
 
   ngDoCheck() {
@@ -165,16 +160,6 @@ export class ProfileComponent implements OnInit, OnDestroy, DoCheck {
     })
   }
 
-  changeRole($event:Event){
-    this.spinner.addSpinner('#success-icon')
-    let selectedItem = (<HTMLInputElement>$event.target).value
-    this.user.role._id = selectedItem
-
-    let save = lastValueFrom(this.server.update('/user/changerole',this.user)).then(res => {
-      this.spinner.removeSpinner('#success-icon')
-      this.spinner.addSuccessIcon('#success-icon')
-    })
-  }
   changePasswordErrorMessages:any
   changePassword(){
     this.changePasswordErrorMessages = this.customValidator.isValidMessages(this.f2)

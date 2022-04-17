@@ -90,23 +90,9 @@
         </div>
 
         <!-- Manage Role -->
-        {{userId + '>>>>>>>>>'+ user._id}}
-        <div *ngIf="isAdmin"
-        class="flex items-center justify-between border rounded-full overflow-hidden m-4">
-          <div class="flex items-center">
-            <div class="py-3 my-auto px-5 bg-blue-500 text-white text-sm font-semibold ml-3">گروه کاربری</div>
-
-            <label class="flex radio p-2 cursor-pointer" *ngFor="let role of roles">
-              <input [value]="role._id" [checked]="role.nameid == user.role.nameid" (change)="changeRole($event)"
-              class="my-auto transform scale-125" type="radio" name="role" />
-              <div class="px-2">{{role.title}}</div>
-            </label>
-          </div>
-        
-          <div id="success-icon" class="ml-2"></div>
-        </div>
+        <app-assign-roles *ngIf="isAdmin" [user]="user"></app-assign-roles>
         <div class="w-full flex justify-end">
-          <button [disabled]="!profileForm.dirty" type="submit" [ngClass]="loading?'px-2':'px-8'" class="btn-primary">
+          <button [disabled]="!profileForm.dirty" type="submit" [ngClass]="loading?'px-2':'px-8'" class="btn btn-primary">
             <span *ngIf="!loading">ذخیره</span>
             <svg *ngIf="loading" role="status"
               class="inline w-7 h-7 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600" viewBox="0 0 100 101"
@@ -151,7 +137,7 @@
     </div>
 
     <div class="w-full flex justify-end">
-      <button type="submit" class="btn-primary">
+      <button type="submit" class="btn btn-primary">
         <span>ذخیره</span>
       </button>
     </div>

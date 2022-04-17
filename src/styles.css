@@ -7,20 +7,27 @@
     font-family: 'iransans';
     src: url(./assets/fonts/IRANSansWeb.ttf);
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 body{
-    font-family: iransans
+    font-family: iransans;
+    @apply bg-gray-50
 }
 .yekan{
     font-family: 'yekan'
 }
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-
-body {
-    @apply bg-gray-50
+h1 {
+    @apply text-2xl;
 }
+h2 {
+@apply text-xl;
+}
+h3 {
+@apply text-lg;
+}
+
 .text-input {
     @apply border-2 border-gray-200 w-full text-gray-900 rounded py-3 px-4 focus:outline-blue-400
 }
@@ -43,10 +50,13 @@ body {
     @apply ml-1 -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700
 }
 .btn-primary{
-    @apply mt-2 text-white bg-gradient-to-r from-cyan-500 to-blue-500 shadow shadow-blue-500/50 disabled:shadow-none hover:bg-gradient-to-bl rounded-full px-8 py-2 transition-all duration-300 hover:bg-blue-500 disabled:from-gray-300 disabled:to-gray-200 disabled:text-black disabled:cursor-not-allowed disabled:px-5
+    @apply bg-gradient-to-r from-cyan-500 to-blue-500
+}
+.btn-purple{
+    @apply bg-gradient-to-r from-purple-500 to-pink-500
 }
 .btn{
-    @apply mt-2 text-white rounded-full px-8 py-2 transition-all duration-300 hover:bg-blue-500 disabled:bg-gray-400 disabled:px-5
+    @apply cursor-pointer mt-2 text-white shadow shadow-blue-500/50 disabled:shadow-none hover:bg-gradient-to-bl rounded-full px-8 py-2 transition-all duration-300 active:bg-gradient-to-tl active:from-sky-600 active:ring-2 active:ring-blue-300 disabled:from-gray-300 disabled:to-gray-200 disabled:text-black disabled:cursor-not-allowed disabled:px-5
 }
 .bg-warning{
     @apply bg-amber-500
@@ -74,4 +84,94 @@ body {
 }
 .progressdiv {
     @apply w-full bg-gray-200 h-1
+}
+
+
+
+/**
+* Nestable Draggable Handles
+*/
+.dd3-content {
+    display: block;
+    height: 45px;
+    padding: 5px 10px 5px 54px;
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 32px;
+    border-top:3px solid rgb(221 53 115);
+    background: #fbfbfb;
+    -webkit-border-radius: 3px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.dd3-content:hover {
+    color: #09a32f;
+    background: #fafafa;
+}
+
+.dd-dragel > .dd3-item > .dd3-content {
+    margin: 0;
+}
+
+    
+.dd3-item {
+    margin: 10px 0 !important;
+}
+.dd3-item > button {
+    margin-left: 30px;
+}
+
+.dd3-handle {
+    position: absolute;
+    margin: 0 !important;
+    left: 0;
+    top: 2px;
+    cursor: move;
+    width: 45px;
+    height: 43px !important;
+    text-indent: 70px;
+    white-space: nowrap;
+    overflow: hidden;
+    border: 1px solid #aaa;
+    border-top: none;
+    background: #fff;
+    border-radius: 0;
+}
+
+.dd3-handle:hover {
+    background: #ddd;
+}
+
+.item-edit {
+    font-size: 13px;
+    cursor: pointer;
+    color: blue;
+}
+.item-edit:hover {
+    text-decoration: underline;
+}
+
+.item-settings.d-none {
+    display: none!important;
+}
+.item-settings {
+    display: block;
+    padding: 10px;
+    position: relative;
+    z-index: 10;
+    background: #fff;
+    border-top: none;
+
+}
+.item-settings p {
+    margin-top: 0;
+}
+
+.item-settingsss p label {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
 }

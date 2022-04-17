@@ -1,3 +1,5 @@
+
+// for sidebar test
 document.addEventListener('alpine:init', () => {
     Alpine.data('xtestdata', () => ({
         // getThemeFromLocalStorage() {
@@ -65,8 +67,9 @@ document.addEventListener('alpine:init', () => {
     }))
 })
 
-
 $(function () {
+
+    
     window.onscroll = function () {
         const ud_header = document.querySelector(".ud-header");
         if (ud_header) { //to work at home page just
@@ -230,4 +233,5 @@ $(function () {
         },
         "retina_detect": !0
     });
+
 })

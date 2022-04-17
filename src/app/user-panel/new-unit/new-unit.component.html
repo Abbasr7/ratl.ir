@@ -120,14 +120,14 @@
         </div>
     </div>
     <div class="w-full flex-0 flex justify-end">
-        <a x-show="step > 1" x-on:click="step--" class="btn-primary cursor-pointer">
+        <a x-show="step > 1" x-on:click="step--" class="btn btn-primary cursor-pointer">
             مرحله قبلی
         </a>
-        <a x-show="step < 3" x-on:click="step++" class="btn-primary cursor-pointer">
+        <a x-show="step < 3" x-on:click="step++" class="btn btn-primary cursor-pointer">
             مرحله بعدی
         </a>
 
-        <button x-show="step == 3" [disabled]="!form.dirty" type="submit" [ngClass]="loading?'px-2':'px-8'" class="btn-primary">
+        <button x-show="step == 3" [disabled]="!form.dirty" type="submit" [ngClass]="loading?'px-2':'px-8'" class="btn btn-primary">
             <span >ذخیره</span>
             <svg *ngIf="loading" role="status"
                 class="inline w-7 h-7 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"

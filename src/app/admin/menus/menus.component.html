@@ -1,0 +1,115 @@
+<div x-data='{activeTab: 0}'>
+    <ul class="flex justify-start items-center my-4">
+        <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
+            x-bind:class="activeTab===0 ? 'text-green-500 border-green-500' : ''" x-on:click="activeTab = 0"> فهرست ها
+        </li>
+        <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
+            x-bind:class="activeTab===1 ? 'text-green-500 border-green-500' : ''" x-on:click="activeTab = 1">افزودن
+            فهرست جدید</li>
+    </ul>
+
+    <div class="w-full">
+        <div x-show="activeTab===0">
+            <textarea id="getListIds" cols="30" rows="10" hidden>
+                {{getListIds()}}
+            </textarea>
+            <div class="flex gap-3">
+                <div class="lg:w-1/2">
+                    <form id="add-item" class="flex flex-col w-full bg-white shadow-md p-5">
+                        <div class="flex gap-3">
+                            <input class="text-input" #title type="text" name="name" placeholder="عنوان">
+                            <input class="text-input" #url type="text" name="url" placeholder="آدرس">
+                        </div>
+                        <div class="flex justify-between items-center mt-5">
+                            <div class="relative flex items-center">
+                                <span class="ml-2">افزودن به فهرست:</span>
+                                <svg class="w-2 h-2 absolute top-0 left-2 m-4 pointer-events-none"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 412 232">
+                                    <path
+                                        d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
+                                        fill="#648299" fill-rule="nonzero" />
+                                </svg>
+                                <select #parentList
+                                    class="border border-gray-300 rounded-full text-gray-600 h-10 pr-5 pl-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
+                                    <option *ngFor="let item of list" [value]="item._id">{{item.title}}</option>
+                                </select>
+                            </div>
+                            <button type="submit" (click)="addItem(title,url,parentList)" class="btn btn-primary">اضافه
+                                کن</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="w-1/2">
+                    
+                    <!-- <div *ngFor="let list of items;let x = index" class="dd" [id]="'nestable-'+list[0].listId">
+                        <div class="flex flex-col justify-between p-5 mb-4 bg-white shadow-md">
+                            <h2 class="text-gray-500 text-lg mb-3">{{getCurrentListTitle(list[0].listId)}}</h2>
+                            <ol class="dd-list">
+                                <li *ngFor="let item of list;let y = index" class="dd-item dd3-item" [attr.data-id]="item.dataId"
+                                    [attr.data-content]="item.title" [attr.data-url]="item.url">
+                                    <div class="dd-handle dd3-handle">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mt-1" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M4 6h16M4 12h16M4 18h16" />
+                                        </svg>
+                                    </div>
+                                    <div class="dd3-content shadow-md">
+                                        <span class="float-left">{{item.title}}</span>
+                                        <div class="item-edit" #toEdit (click)="openEditSection(toEdit)">ویرایش</div>
+                                    </div>
+                                    <div class="item-settings shadow-md flex flex-col gap-3 d-none">
+                                        <label class="" for="">نام منو
+                                            <input class="text-input" type="text" name="navigation_label"
+                                                [value]="item.title">
+                                        </label><br><br>
+                                        <label for="">آدرس مربوط
+                                            <input class="text-input" type="text" name="navigation_url"
+                                                [value]="item.url">
+                                        </label><br><br>
+
+                                        <p class="mb-4">
+                                            <a #delete (click)="deleteItem(delete,'item',x,y)" class="cursor-pointer text-red-500 text-sm">حذف</a> |
+                                            <a class="item-close btn btn-purple p-2">بستن</a>
+                                        </p>
+                                    </div>
+                                </li>
+                            </ol>
+                            <div class="flex justify-end mt-8">
+                                <textarea #order class="text-input" [id]="'nestable-output-'+list[0].listId"
+                                    hidden></textarea>
+                                <button class="saveOrder btn btn-primary" (click)="saveMenuOrder(list[0].listId,order)" [disabled]="!list.length">ذخیره</button>
+                            </div>
+                        </div>
+                         Sava button
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <div x-show="activeTab===1">
+            <div class="flex gap-3">
+                <div class="lg:w-1/2">
+                    <form id="add-item" class="flex flex-col w-full bg-white shadow-md p-5">
+                        <div class="flex gap-3">
+                            <input class="text-input" #listName type="text" name="name" placeholder="عنوان فهرست">
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" (click)="addList(listName)" class="btn btn-primary">اضافه کن</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="lg:w-1/2 min-h-[50%]">
+                    <div id="Lists" class="p-5 bg-white shadow-md" *ngIf="list.length">
+                        <div *ngFor="let item of list" class="shadow p-3 mt-3 w-full flex justify-between items-center">
+                            <div>{{item.title}}</div>
+                            <div class="flex gap-2">
+                                <span class="text-blue-600">ویرایش</span>
+                                <span class="text-red-600">حذف</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

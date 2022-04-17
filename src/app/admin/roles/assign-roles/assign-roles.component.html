@@ -1,0 +1,14 @@
+<div *ngIf="hasAccess()"
+class="flex items-center justify-between border rounded-full overflow-hidden m-4">
+    <div class="flex items-center">
+        <div class="py-3 my-auto px-5 bg-blue-500 text-white text-sm font-semibold ml-3">گروه کاربری</div>
+
+        <label class="flex radio p-2 cursor-pointer" *ngFor="let role of roles">
+            <input [value]="role._id" [checked]="role.nameid == user.role.nameid" (change)="changeRole($event)"
+                class="my-auto transform scale-125" type="radio" name="role" />
+            <div class="px-2">{{role.title}}</div>
+        </label>
+    </div>
+
+    <div id="success-icon" class="ml-2"></div>
+</div>

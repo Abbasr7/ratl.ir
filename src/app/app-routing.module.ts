@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './admin/admin.component';
+import { MenusComponent } from './admin/menus/menus.component';
 import { NewPlanComponent } from './admin/new-plan/new-plan.component';
 import { RolesComponent } from './admin/roles/roles.component';
 import { SettingComponent } from './admin/setting/setting.component';
@@ -31,7 +32,8 @@ const routes: Routes = [
     {path:'newplan', component:NewPlanComponent},
     {path:'users', component:UsersComponent},
     {path:'user/:id', component:ProfileComponent,data:{admin:true}},
-    {path:'roles', component:RolesComponent}
+    {path:'roles', component:RolesComponent},
+    {path:'menus',component:MenusComponent}
   ],canActivate:[AdminGuard]},
   {path:'panel', component:UserPanelComponent,canActivate:[AuthGuard],children:[
     {path:'profile',component:ProfileComponent},

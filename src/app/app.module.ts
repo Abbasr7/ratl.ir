@@ -32,6 +32,8 @@ import { NotFoundComponent } from './home/not-found/not-found.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { OrderModule } from 'ngx-order-pipe';
 import { RolesComponent } from './admin/roles/roles.component';
+import { AssignRolesComponent } from './admin/roles/assign-roles/assign-roles.component';
+import { MenusComponent } from './admin/menus/menus.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +60,9 @@ import { RolesComponent } from './admin/roles/roles.component';
     UsersComponent,
     ModalDirective,
     NotFoundComponent,
-    RolesComponent
+    RolesComponent,
+    AssignRolesComponent,
+    MenusComponent
   ],
   imports: [
     BrowserModule,

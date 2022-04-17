@@ -28,13 +28,15 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/assets/animate.css"
+              "src/assets/animate.css",
+              "node_modules/nestable2/jquery.nestable.css"
             ],
             "scripts": [
               "src/assets/js/wow.min.js",
               "src/assets/js/particles.min.js",
               "node_modules/alpinejs/dist/cdn.js",
               "node_modules/jquery/dist/jquery.js",
+              "node_modules/nestable2/jquery.nestable.js",
               "src/assets/js/script.js"
             ]
           },

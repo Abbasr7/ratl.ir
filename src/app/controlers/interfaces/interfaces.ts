@@ -71,3 +71,17 @@ export class Product {
     detail: string;
     count:number
 }
+
+export interface IAccessControlLevel{
+    id:string,
+    access:string
+}
+
+// menus
+export interface IMenuItems{
+    _id:string,
+    listId:string,
+    dataId:string,
+    title:string,
+    url:string
+}
