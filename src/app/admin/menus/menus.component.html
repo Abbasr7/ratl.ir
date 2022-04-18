@@ -40,52 +40,71 @@
                     </form>
                 </div>
                 <div class="w-1/2">
-                    
-                    <!-- <div *ngFor="let list of items;let x = index" class="dd" [id]="'nestable-'+list[0].listId">
-                        <div class="flex flex-col justify-between p-5 mb-4 bg-white shadow-md">
-                            <h2 class="text-gray-500 text-lg mb-3">{{getCurrentListTitle(list[0].listId)}}</h2>
-                            <ol class="dd-list">
-                                <li *ngFor="let item of list;let y = index" class="dd-item dd3-item" [attr.data-id]="item.dataId"
-                                    [attr.data-content]="item.title" [attr.data-url]="item.url">
-                                    <div class="dd-handle dd3-handle">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mt-1" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M4 6h16M4 12h16M4 18h16" />
-                                        </svg>
-                                    </div>
-                                    <div class="dd3-content shadow-md">
-                                        <span class="float-left">{{item.title}}</span>
-                                        <div class="item-edit" #toEdit (click)="openEditSection(toEdit)">ویرایش</div>
-                                    </div>
-                                    <div class="item-settings shadow-md flex flex-col gap-3 d-none">
-                                        <label class="" for="">نام منو
-                                            <input class="text-input" type="text" name="navigation_label"
-                                                [value]="item.title">
-                                        </label><br><br>
-                                        <label for="">آدرس مربوط
-                                            <input class="text-input" type="text" name="navigation_url"
-                                                [value]="item.url">
-                                        </label><br><br>
+                    <div *ngFor="let l of list;let x = index" class="dd" [id]="'nestable-'+l._id">
+                        <ng-container *ngIf="l.order">
+                            <div class="flex flex-col justify-between p-5 mb-4 bg-white shadow-md">
+                                <h2 class="text-gray-500 text-lg mb-3">{{l.title}}</h2>
+                                <ol class="dd-list">
+                                    <ng-template #menuItemTemplate let-items>
+                                        <li *ngFor="let item of items;let y = index" class="dd-item dd3-item"
+                                            [attr.data-id]="item.id" [attr.data-content]="item.content"
+                                            [attr.data-url]="item.url">
+                                            <div class="dd-handle dd3-handle">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mt-1" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M4 6h16M4 12h16M4 18h16" />
+                                                </svg>
+                                            </div>
+                                            <div class="dd3-content shadow-md">
+                                                <span class="float-left">{{item.content}}</span>
+                                                <div class="item-edit" #toEdit (click)="openEditSection(toEdit)">ویرایش
+                                                </div>
+                                            </div>
+                                            <div class="item-settings shadow-md flex flex-col gap-3 d-none">
+                                                <label class="" for="">نام منو
+                                                    <input class="text-input" #menuTitle
+                                                        (change)="changemMenuItem(menuTitle,'title')"
+                                                        [(ngModel)]="item.content" type="text" name="navigation_label"
+                                                        [value]="item.content">
+                                                </label><br><br>
+                                                <label for="">آدرس مربوط
+                                                    <input class="text-input" #menuUrl
+                                                        (change)="changemMenuItem(menuUrl,'url')" [(ngModel)]="item.url"
+                                                        type="text" name="navigation_url" [value]="item.url">
+                                                </label><br><br>
 
-                                        <p class="mb-4">
-                                            <a #delete (click)="deleteItem(delete,'item',x,y)" class="cursor-pointer text-red-500 text-sm">حذف</a> |
-                                            <a class="item-close btn btn-purple p-2">بستن</a>
-                                        </p>
-                                    </div>
-                                </li>
-                            </ol>
-                            <div class="flex justify-end mt-8">
-                                <textarea #order class="text-input" [id]="'nestable-output-'+list[0].listId"
-                                    hidden></textarea>
-                                <button class="saveOrder btn btn-primary" (click)="saveMenuOrder(list[0].listId,order)" [disabled]="!list.length">ذخیره</button>
+                                                <p class="mb-4">
+                                                    <a #delete (click)="deleteItem(delete,'item')"
+                                                        class="btn btn-pink p-0">حذف</a>
+                                                </p>
+                                            </div>
+                                            <ng-container *ngIf="item.children">
+                                                <ol class="dd-list">
+                                                    <ng-container
+                                                        *ngTemplateOutlet="menuItemTemplate; context: { $implicit: item.children }">
+                                                    </ng-container>
+                                                </ol>
+                                            </ng-container>
+                                        </li>
+                                    </ng-template>
+                                    <ng-container *ngTemplateOutlet="menuItemTemplate; context: { $implicit: l.order}">
+                                    </ng-container>
+                                </ol>
+                                <div class="flex justify-end mt-8">
+                                    <textarea #order class="text-input"
+                                        [id]="'nestable-output-'+l._id" hidden>{{ arrayToString(l.order) }}</textarea>
+                                    <button class="saveOrder btn btn-primary" (click)="saveMenuOrder(l._id,order)"
+                                        [disabled]="!list.length">ذخیره</button>
+                                </div>
                             </div>
-                        </div>
-                         Sava button
-                    </div> -->
+                        </ng-container>
+                    </div>
+
                 </div>
             </div>
         </div>
+        <!-- ساختن فهرست جدید -->
         <div x-show="activeTab===1">
             <div class="flex gap-3">
                 <div class="lg:w-1/2">
@@ -98,13 +117,12 @@
                         </div>
                     </form>
                 </div>
-                <div class="lg:w-1/2 min-h-[50%]">
-                    <div id="Lists" class="p-5 bg-white shadow-md" *ngIf="list.length">
-                        <div *ngFor="let item of list" class="shadow p-3 mt-3 w-full flex justify-between items-center">
+                <div class="lg:w-1/2">
+                    <div id="Lists" class="p-5 py-10 bg-white border border-dashed" *ngIf="list.length">
+                        <div *ngFor="let item of list;let i=index" id="listItem" class="shadow-md p-3 mb-5 w-full flex justify-between items-center">
                             <div>{{item.title}}</div>
                             <div class="flex gap-2">
-                                <span class="text-blue-600">ویرایش</span>
-                                <span class="text-red-600">حذف</span>
+                                <button class="text-red-600 cursor-pointer disabled:text-gray-400" #del (click)="deleteItem(del,'list',item._id,i)" [disabled]="loading">حذف</button>
                             </div>
                         </div>
                     </div>
@@ -113,3 +131,6 @@
         </div>
     </div>
 </div>
+<ng-container *ngIf="loading">
+    <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+</ng-container>

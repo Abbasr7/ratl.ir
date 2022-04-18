@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ServerService } from 'src/app/controlers/services/server.service';
 import * as $ from 'jquery'
 import { lastValueFrom } from 'rxjs';
@@ -20,7 +20,7 @@ export class MenusComponent implements OnInit {
     private spinner: Spinner) { }
 
   list: any[] = []
-  items: any[] = []
+  loading = false
 
   ngOnInit(): void {
     this.getListsAndItems()
@@ -30,21 +30,29 @@ export class MenusComponent implements OnInit {
   getListsAndItems() {
     this.server.get('/admin/menus').pipe(
       map(i => i as SuccessHandle),
-      ).subscribe(res => {
-      res.data.lists.map((x:any) => x.order?x.order = JSON.parse(x.order):'')
+    ).subscribe(res => {
+      res.data.lists.map((x: any) => x.order ? x.order = JSON.parse(x.order) : '')
       this.list = res.data.lists
-      this.items = res.data.items
-
-      console.log(res,this.list);
     })
   }
 
   toNestable() {
     // برای کارکردن اسکریپت nestable
-    var nestable = document.createElement("script");
-    nestable.setAttribute("id", "myScript");
-    nestable.setAttribute("src", "assets/js/nestable.js");
-    document.body.appendChild(nestable);
+    let dd_empty = document.querySelector('.dd-empty');
+    let nestable = document.createElement("script");
+    let exist = document.querySelector('#myScript')
+    if (exist != null) {
+      document.body.removeChild(exist)
+      nestable.setAttribute("id", "myScript");
+      nestable.setAttribute("src", "assets/js/nestable.js");
+      document.body.appendChild(nestable);
+    } else {
+      nestable.setAttribute("id", "myScript");
+      nestable.setAttribute("src", "assets/js/nestable.js");
+      document.body.appendChild(nestable);
+    }
+    dd_empty? document.body.removeChild(dd_empty):''
+
   }
 
   getCurrentListTitle(id: string) {
@@ -77,7 +85,7 @@ export class MenusComponent implements OnInit {
     })
   }
 
-  async addItem(title: HTMLInputElement, url: HTMLInputElement, parentList: HTMLSelectElement) {
+  async addItem(title: HTMLInputElement, url: HTMLInputElement, parentListId: HTMLSelectElement) {
     // Form validate
     if (!title.value || !url.value) {
       $(title).addClass('ring-2 ring-red-500');
@@ -87,29 +95,22 @@ export class MenusComponent implements OnInit {
       this.msg.sendMessage('ابتدا باید یک فهرست ایجاد کنید.', 'warning')
       return
     }
-
     let dataId = Date.now()
     let data = {
-      type: 'item',
-      listId: parentList.value,
-      dataId: dataId,
-      title: title.value,
+      // type: 'item',
+      // listId: parentList.value,
+      id: dataId,
+      content: title.value,
       url: url.value
     }
+    let selectedList = this.list.find(l => l._id == parentListId.value)
 
-    let saved: any = await lastValueFrom(this.server.create('/admin/menus', data))
-
-    let index = this.items.findIndex((i: any) => i[0].listId == parentList.value)
-    if (!this.items.length || index == -1) {
-      this.items.push([saved.data])
-    } else {
-      this.items[index].push(saved.data)
-    }
+    selectedList.order?selectedList.order.push(data) : selectedList.order = [data]
+    $('#nestable-output-'+parentListId.value).val(JSON.stringify(selectedList.order))
 
     title.value = ''
     url.value = ''
 
-    document.dispatchEvent(event)
   }
 
   openEditSection(item: HTMLElement) {
@@ -122,13 +123,22 @@ export class MenusComponent implements OnInit {
     }
   }
 
-  deleteItem(elm: HTMLElement, type: string, x: number, y: number) {
-    let dataId = $(elm).closest(".dd-item").data('id')
-
-    lastValueFrom(this.server.delete('/admin/menus?type=' + type + '&id=' + dataId)).then(() => {
-      $(elm).closest(".dd-item").remove();
+  deleteItem(elm: HTMLElement,type:string,id:string = '',index:number = 0) {
+    this.loading = true
+    if (type=='item') {
+      $(elm).closest(".dd-item").first().remove();
       document.dispatchEvent(event)
-    })
+    } else {
+      console.log(id);
+      
+      lastValueFrom(this.server.delete('/admin/menus?id='+id)).then((res:any) => {
+        if (res.data == 1) {
+          this.loading = false
+          this.list.splice(index,1);
+          $(elm).closest("#listItem").first().remove();
+        }
+      })
+    }
   }
 
   saveMenuOrder(listId: string, order: HTMLTextAreaElement) {
@@ -138,16 +148,24 @@ export class MenusComponent implements OnInit {
       listId: listId,
       order: order.value
     }
-    console.log(order.value);
 
     lastValueFrom(this.server.create('/admin/menus', data)).then((res: any) => {
       this.spinner.removeSpinner('.saveOrder')
-      console.log(res);
-
+      this.msg.sendMessage('با موفقیت ذخیره شد', 'success')
     })
 
   }
 
+  changemMenuItem(input: HTMLInputElement, type: string) {
+    if (type == 'title') {
+      $(input).closest(".dd-item").data("content", input.value);
+      $(input).closest(".dd-item").find(".dd3-content span").first().text(input.value);
+    } else {
+      $(input).closest(".dd-item").first().data("url", input.value);
+    }
+    document.dispatchEvent(event)
+
+  }
   getListIds() {
     let ids: any = [];
     this.list.forEach(i => {
@@ -156,4 +174,7 @@ export class MenusComponent implements OnInit {
     return ids
   }
 
+  arrayToString(obj: any) {
+    return JSON.stringify(obj)
+  }
 }

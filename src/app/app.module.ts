@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -34,6 +35,8 @@ import { OrderModule } from 'ngx-order-pipe';
 import { RolesComponent } from './admin/roles/roles.component';
 import { AssignRolesComponent } from './admin/roles/assign-roles/assign-roles.component';
 import { MenusComponent } from './admin/menus/menus.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ShowMenusComponent } from './home/show-menus/show-menus.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +65,8 @@ import { MenusComponent } from './admin/menus/menus.component';
     NotFoundComponent,
     RolesComponent,
     AssignRolesComponent,
-    MenusComponent
+    MenusComponent,
+    ShowMenusComponent
   ],
   imports: [
     BrowserModule,
@@ -71,7 +75,9 @@ import { MenusComponent } from './admin/menus/menus.component';
     FormsModule,
     ReactiveFormsModule,
     NgxPaginationModule,
-    OrderModule
+    OrderModule,
+    BrowserAnimationsModule,
+    MatProgressBarModule
   ],
   providers: [
     {provide:HTTP_INTERCEPTORS, useClass:HttpInterceptorInterceptor, multi:true},

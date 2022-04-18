@@ -50,13 +50,16 @@ h3 {
     @apply ml-1 -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700
 }
 .btn-primary{
-    @apply bg-gradient-to-r from-cyan-500 to-blue-500
+    @apply bg-gradient-to-r from-cyan-500 to-blue-500 active:from-sky-600
 }
 .btn-purple{
-    @apply bg-gradient-to-r from-purple-500 to-pink-500
+    @apply bg-gradient-to-r from-purple-500 to-pink-500 active:from-sky-600
+}
+.btn-pink{
+    @apply bg-gradient-to-br from-pink-500 to-orange-400 active:from-pink-700
 }
 .btn{
-    @apply cursor-pointer mt-2 text-white shadow shadow-blue-500/50 disabled:shadow-none hover:bg-gradient-to-bl rounded-full px-8 py-2 transition-all duration-300 active:bg-gradient-to-tl active:from-sky-600 active:ring-2 active:ring-blue-300 disabled:from-gray-300 disabled:to-gray-200 disabled:text-black disabled:cursor-not-allowed disabled:px-5
+    @apply cursor-pointer mt-2 text-white shadow shadow-blue-500/50 disabled:shadow-none hover:bg-gradient-to-bl rounded-full px-8 py-2 transition-all duration-300 active:bg-gradient-to-tl active:ring-2 active:ring-blue-300 disabled:from-gray-300 disabled:to-gray-200 disabled:text-black disabled:cursor-not-allowed disabled:px-5
 }
 .bg-warning{
     @apply bg-amber-500
@@ -84,6 +87,10 @@ h3 {
 }
 .progressdiv {
     @apply w-full bg-gray-200 h-1
+}
+.mat-progress-bar{
+    position: fixed !important;
+    @apply top-0 right-0
 }
 
 
@@ -175,3 +182,6 @@ h3 {
     color: #666;
     line-height: 1.5;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
