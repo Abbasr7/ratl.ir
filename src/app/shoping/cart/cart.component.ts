@@ -1,7 +1,7 @@
-import { Component, OnInit,OnDestroy } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, Subscription } from 'rxjs';
-import { activePlans, Product, SuccessHandle } from 'src/app/controlers/interfaces/interfaces';
+import { map, Subscription, take } from 'rxjs';
+import { Iplans, SuccessHandle } from 'src/app/controlers/interfaces/interfaces';
 import { AuthService } from 'src/app/controlers/services/auth.service';
 import { CartService } from 'src/app/controlers/services/cart.service';
 import { MessagesService } from 'src/app/controlers/services/messages.service';
@@ -14,7 +14,7 @@ import { Spinner } from 'src/app/controlers/utils';
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css']
 })
-export class CartComponent implements OnInit,OnDestroy {
+export class CartComponent implements OnInit {
 
   constructor(
     private auth:AuthService,
@@ -26,13 +26,12 @@ export class CartComponent implements OnInit,OnDestroy {
     private spinner:Spinner,
     private router:Router) { }
 
-  subscribtion:Subscription
-  subscribtion2:Subscription
-  loggedin:any;
-  data:Product = new Product
+  loggedin:any[] = [];
+  data:Iplans = new Iplans;
   items:any;
   planId:string|null;
   submitted:boolean = false
+  modal:TemplateRef<any>;
 
   async ngOnInit() {
 
@@ -41,8 +40,9 @@ export class CartComponent implements OnInit,OnDestroy {
     
     this.planId = this.route.snapshot.paramMap.get('id')
 
-    this.subscribtion = this.server.get('/plan/plandetails?id='+this.planId).pipe(
-      map(i => i as SuccessHandle)
+    this.server.get('/plan/details/'+this.planId).pipe(
+      map(i => i as SuccessHandle),
+      take(1)
     ).subscribe(res => {
       this.data = res.data
     })
@@ -50,26 +50,22 @@ export class CartComponent implements OnInit,OnDestroy {
   }
 
   toPrice(){
-    this.spinner.addSpinner('#btn1')
+    this.spinner.addSpinner('#price')
     this.submitted = true
     if (!this.loggedin[0]) {
       this.msg.sendMessage(this.loggedin[2],'warning')
-      this.spinner.removeSpinner('#btn1')
+      this.spinner.removeSpinner('#price')
       return
     }
 
-    this.subscribtion2 = this.cart.checkOut(this.planId as string,this.auth.decodeUserInfoToken()).pipe(
-      map(i => i as SuccessHandle)
+    this.cart.checkOut(this.planId as string,this.auth.decodeUserInfoToken()).pipe(
+      map(i => i as SuccessHandle),
+      take(1)
     ).subscribe(res => {
       console.log(res);
-      this.spinner.removeSpinner('#btn1')
+      this.spinner.removeSpinner('#price')
       window.location.href = res.data
     })
-  }
-
-  ngOnDestroy(){
-    this.subscribtion.unsubscribe()
-    this.subscribtion2.unsubscribe()
   }
 
 }

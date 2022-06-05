@@ -9,14 +9,8 @@ import { AuthService } from '../controlers/services/auth.service';
 export class HomeComponent implements OnInit {
 
   constructor(private auth:AuthService) { }
-
-  token:string
   
   ngOnInit(): void {
-  }
-
-  genToken(){
-    let test:any = this.auth.isLoggedIn()
   }
 
 }

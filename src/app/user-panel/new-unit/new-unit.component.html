@@ -1,148 +1,901 @@
-<form x-data="{step : 1}" [formGroup]="form" enctype="multipart/form-data" (ngSubmit)="estimate()" class="md:">
-    <div class="w-full flex md:py-4 md:pr-2 md:-pl-1 lg:p-4">
-        <div x-show="step == 1" x-transition.duration.750ms class="w-full rounded shadow p-6 bg-white transition-all duration-700">
-            <h1 class="text-7xl uppercase"> step 1</h1>
-            <div class="lg:flex gap-4">
-                <div class="pb-6 w-full lg:w-1/2">
-                    <label for="name" class="font-semibold text-gray-700 block pb-1">نام کاربری</label>
-                    <div class="flex">
-                        <input required id="username"
-                            class="border-2 border-gray-200 focus:outline-blue-400 rounded-r px-4 py-3 w-full"
-                            type="text" />
+<section x-data="{modal:false}" class="bg-white pt-3">
+    <!-- stepper: -->
+    <mat-horizontal-stepper linear labelPosition="bottom" optional #stepper>
+        <!-- 1 -->
+        <mat-step [stepControl]="investForm">
+            <ng-template matStepLabel>
+                <p>سرمايه گذاري ثابت و استهلاک آن</p>
+            </ng-template>
+            <div class="w-full">
+                <form [formGroup]="investForm" class="grid grid-cols-1 lg:grid-cols-12 gap-4 text-sm">
+                    <!-- row 1 -->
+                    <div class="col-span-1 lg:col-span-12 flex gap-2 justify-between items-center">
+                        <div class="w-full lg:w-1/3">
+                            <label class="text-gray-700 required">نام مجموعه</label>
+                            <input formControlName="title" type="text" class="text-input" placeholder="مثال: قیدارکالا"
+                                required>
+                        </div>
                     </div>
-                </div>
-                <div class="pb-4 w-full lg:w-1/2">
-                    <label for="about" class="font-semibold text-gray-700 block pb-1">ایمیل</label>
-                    <input required id="email"
-                        class="border-2 border-gray-200 rounded-r px-4 py-3 w-full focus:outline-blue-400"
-                        type="email" />
-                </div>
-            </div>
-            <div class="md:block lg:flex gap-4">
-                <div class="pb-4 w-full lg:w-1/2">
-                    <label for="about" class="font-semibold text-gray-700 block pb-1">نام و نام خانوادگی</label>
-                    <input class="text-input" type="text" placeholder="Full name">
-                </div>
-                <div class="pb-4 w-full lg:w-1/2">
-                    <label for="about" class="font-semibold text-gray-700 block pb-1">شماره موبایل</label>
-                    <input [ngClass]="{'invalid-input ': f['phone'].errors}"
-                        class="text-input"
-                        type="text" placeholder="09121234567">
-                    <p class="text-red-500" *ngIf="f['phone'].errors"> فرمت شماره موبایل صحیح نیست</p>
-                </div>
-            </div>
-            <div class="pb-4 w-full">
-                <label for="about" class="font-semibold text-gray-700 block pb-1">آدرس</label>
-                <input
-                    class="text-input"
-                    type="text" placeholder="قیدار میدار امام حسین جنب پیشخوان خدمات دولتی">
-            </div>
-        </div>
-        <div x-show="step == 2" x-transition.duration.750ms class="w-full rounded shadow p-6 bg-white transition-all duration-700">
-            <h1 class="text-7xl uppercase"> step 2</h1>
-            <div class="lg:flex gap-4">
-                <div class="pb-6 w-full lg:w-1/2">
-                    <label for="name" class="font-semibold text-gray-700 block pb-1">نام کاربری</label>
-                    <div class="flex">
-                        <input required id="username"
-                            class="border-2 border-gray-200 focus:outline-blue-400 rounded-r px-4 py-3 w-full"
-                            type="text" />
+                    <!-- row 2 -->
+                    <div formGroupName="ground" class="col-span-1 lg:col-span-12 my-2">
+                        <div class="w-full lg:w-1/2 grid grid-cols-12 gap-2">
+                            <div class="col-span-4">
+                                <br>
+                                <h2 class="text-base my-2 required" matTooltip="ارزش زمین">
+                                    مشخصات زمین
+                                </h2>
+                            </div>
+                            <div class="col-span-3">
+                                <label class="text-gray-700 text-xs">مقدار(مترمربع)</label>
+                                <input formControlName="count" [matTooltip]="langTip" type="number" class="text-input"
+                                    placeholder="0">
+                            </div>
+                            <div class="col-span-4">
+                                <label class="text-gray-700 ml-1">هزینه واحد</label>
+                                <input formControlName="cost" [appNumWithComma]="investForm.value['ground']['cost']"
+                                    [matTooltip]="langTip" type="text" class="text-input" placeholder="0">
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="pb-4 w-full lg:w-1/2">
-                    <label for="about" class="font-semibold text-gray-700 block pb-1">ایمیل</label>
-                    <input required id="email"
-                        class="border-2 border-gray-200 rounded-r px-4 py-3 w-full focus:outline-blue-400"
-                        type="email" />
-                </div>
-            </div>
-            <div class="md:block lg:flex gap-4">
-                <div class="pb-4 w-full lg:w-1/2">
-                    <label for="about" class="font-semibold text-gray-700 block pb-1">نام و نام خانوادگی</label>
-                    <input
-                        class="text-input"
-                        type="text" placeholder="Full name">
-                </div>
-                <div class="pb-4 w-full lg:w-1/2">
-                    <label for="about" class="font-semibold text-gray-700 block pb-1">شماره موبایل</label>
-                    <input [ngClass]="{'invalid-input ': f['phone'].errors}"
-                        class="text-input"
-                        type="text" placeholder="09121234567">
-                    <p class="text-red-500" *ngIf="f['phone'].errors"> فرمت شماره موبایل صحیح نیست</p>
-                </div>
-            </div>
-            <div class="pb-4 w-full">
-                <label for="about" class="font-semibold text-gray-700 block pb-1">آدرس</label>
-                <input
-                    class="text-input"
-                    type="text" placeholder="قیدار میدار امام حسین جنب پیشخوان خدمات دولتی">
-            </div>
-        </div>
-        <div x-show="step == 3" x-transition.duration.750ms class="w-full flex-grow flex-shrink rounded shadow p-6 bg-white transition-all duration-700">
-            <h1 class="text-7xl uppercase"> step 3</h1>
-            <div class="lg:flex gap-4">
-                <div class="pb-6 w-full lg:w-1/2">
-                    <label for="name" class="font-semibold text-gray-700 block pb-1">نام کاربری</label>
-                    <div class="flex">
-                        <input required id="username"
-                            class="border-2 border-gray-200 focus:outline-blue-400 rounded-r px-4 py-3 w-full"
-                            type="text" />
+                    <!-- row 3 -->
+                    <div class="col-span-1 lg:col-span-6 mb-3">
+                        <h2 class="text-base my-2 required">هزینه های محوطه سازی</h2>
+                        <form class="w-full grid grid-cols-12">
+                            <div class="col-span-6">
+                                <label class="text-gray-700">عنوان</label>
+                                <input #title2 name="title" type="text" class="text-input"
+                                    placeholder="مثال:خیابان کشی،فضاي سبز">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 text-xs">مقدار(مترمربع)</label>
+                                <input #count2 name="count" appNumWithComma [matTooltip]="langTip" type="text"
+                                    class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-3">
+                                <label class="text-gray-700 ml-1">هزینه واحد</label>
+                                <input #cost2 name="cost" appNumWithComma [matTooltip]="langTip" type="text"
+                                    class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-1 flex items-end ">
+                                <button (click)="addItem(investForm,'landscaping',title2,count2,cost2)"
+                                    class="btn-primary text-sm p-2.5 rounded-md shadow-md text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                        <span class="text-red-500 text-xs" *ngIf="f1['landscaping'].errors && submitted">
+                            حداقل یک مورد را اضافه نمایید
+                        </span>
+                        <ng-container *ngTemplateOutlet="table; context: {$implicit : investForm.value.landscaping}">
+                        </ng-container>
                     </div>
-                </div>
-                <div class="pb-4 w-full lg:w-1/2">
-                    <label for="about" class="font-semibold text-gray-700 block pb-1">ایمیل</label>
-                    <input required id="email"
-                        class="border-2 border-gray-200 rounded-r px-4 py-3 w-full focus:outline-blue-400"
-                        type="email" />
-                </div>
-            </div>
-            <div class="md:block lg:flex gap-4">
-                <div class="pb-4 w-full lg:w-1/2">
-                    <label for="about" class="font-semibold text-gray-700 block pb-1">نام و نام خانوادگی</label>
-                    <input
-                        class="text-input"
-                        type="text" placeholder="Full name">
-                </div>
-                <div class="pb-4 w-full lg:w-1/2">
-                    <label for="about" class="font-semibold text-gray-700 block pb-1">شماره موبایل</label>
-                    <input [ngClass]="{'invalid-input ': f['phone'].errors}"
-                        class="text-input"
-                        type="text" placeholder="09121234567">
-                    <p class="text-red-500" *ngIf="f['phone'].errors"> فرمت شماره موبایل صحیح نیست</p>
-                </div>
-            </div>
-            <div class="pb-4 w-full">
-                <label for="about" class="font-semibold text-gray-700 block pb-1">آدرس</label>
-                <input
-                    class="text-input"
-                    type="text" placeholder="قیدار میدار امام حسین جنب پیشخوان خدمات دولتی">
-            </div>
-        </div>
-    </div>
-    <div class="w-full flex-0 flex justify-end">
-        <a x-show="step > 1" x-on:click="step--" class="btn btn-primary cursor-pointer">
-            مرحله قبلی
-        </a>
-        <a x-show="step < 3" x-on:click="step++" class="btn btn-primary cursor-pointer">
-            مرحله بعدی
-        </a>
+                    <div class="col-span-1 lg:col-span-6 mb-3">
+                        <h2 class="text-base my-2 required" matTooltip="هزینه های مربوط به زمین مانند: سالن توليد و انبار (پارتیشن و طبقه‌سازی)٬ ساختمان اداري٬
+                        اجاره‌ی ساختمان٬
+                        ودیعه اجاره و...
+                        ">ساختمان تولیدی و اداری</h2>
+                        <form class="w-full grid grid-cols-12">
+                            <div class="col-span-6">
+                                <label class="text-gray-700">عنوان</label>
+                                <input #title1 name="title" type="text" class="text-input" matTooltip="سالن توليد و انبار (پارتیشن و طبقه‌سازی)
+                               ، ساختمان اداري
+                               ، ودیعه اجاره
+                                " placeholder="مثال:ودیعه اجاره٬اجاره ساختمان و ...">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 text-xs">مقدار(مترمربع)</label>
+                                <input #count1 name="count" appNumWithComma [matTooltip]="langTip" type="text"
+                                    class="text-input" placeholder="0">
+                            </div>
+                            <div class="col-span-3">
+                                <label class="text-gray-700 ml-1">هزینه واحد</label>
+                                <input #cost1 name="cost" appNumWithComma [matTooltip]="langTip" type="text"
+                                    class="text-input" placeholder="0">
+                            </div>
+                            <div class="col-span-1 flex items-end ">
+                                <button (click)="addItem(investForm,'building',title1,count1,cost1)"
+                                    class="btn-primary text-sm p-2.5 rounded-md shadow-md text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                        <span class="text-red-500 text-xs" *ngIf="f1['building'].errors && submitted">
+                            حداقل یک مورد را اضافه نمایید
+                        </span>
+                        <ng-container *ngTemplateOutlet="table; context: {$implicit : investForm.value.building}">
+                        </ng-container>
+                    </div>
+                    <!-- row ۴ -->
+                    <div class="col-span-1 lg:col-span-6 mb-3">
+                        <h2 class="text-base my-2 required">
+                            ماشين آلات و تجهيزات و وسایل آزمایشگاهی
+                        </h2>
+                        <form class="w-full grid grid-cols-12">
+                            <div class="col-span-6">
+                                <label class="text-gray-700">شرح تجهیزات</label>
+                                <input #title3 name="title" type="text" class="text-input" placeholder="شرح تجهیزات">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 text-xs">تعداد</label>
+                                <input #count3 name="count" appNumWithComma [matTooltip]="langTip" type="text"
+                                    class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-3">
+                                <label class="text-gray-700 ml-1">هزینه هرواحد</label>
+                                <input #cost3 name="cost" appNumWithComma [matTooltip]="langTip" type="text"
+                                    class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-1 flex items-end ">
+                                <button (click)="addItem(investForm,'equipment',title3,count3,cost3)"
+                                    class="btn-primary text-sm p-2.5 rounded-md shadow-md text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                        <span class="text-red-500 text-xs" *ngIf="f1['equipment'].errors && submitted">
+                            حداقل یک مورد را اضافه نمایید
+                        </span>
+                        <ng-container *ngTemplateOutlet="table; context: {$implicit : investForm.value.equipment}">
+                        </ng-container>
+                    </div>
+                    <div class="col-span-1 lg:col-span-6 mb-3">
+                        <h2 class="text-base my-2 required">
+                            وسایل نقلیه
+                        </h2>
+                        <form class="w-full grid grid-cols-12">
+                            <div class="col-span-6">
+                                <label class="text-gray-700">نام وسیله</label>
+                                <input #title4 name="title" type="text" class="text-input"
+                                    placeholder="مانند: نوار نقاله٬لیفتراک٬گاری و...">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 text-xs">تعداد</label>
+                                <input #count4 name="count" appNumWithComma [matTooltip]="langTip" type="text"
+                                    class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-3">
+                                <label class="text-gray-700 ml-1">هزینه هرواحد</label>
+                                <input #cost4 name="cost" appNumWithComma [matTooltip]="langTip" type="text"
+                                    class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-1 flex items-end ">
+                                <button (click)="addItem(investForm,'vehicles',title4,count4,cost4)"
+                                    class="btn-primary text-sm p-2.5 rounded-md shadow-md text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                        <span class="text-red-500 text-xs" *ngIf="f1['vehicles'].errors && submitted">
+                            حداقل یک مورد را اضافه نمایید
+                        </span>
+                        <ng-container *ngTemplateOutlet="table; context: {$implicit : investForm.value.vehicles}">
+                        </ng-container>
+                    </div>
+                    <!-- row ۵ -->
+                    <div class="col-span-1 lg:col-span-6 mb-3">
+                        <h2 class="text-base my-2 required">اثاثيه و ملزومات اداري</h2>
+                        <form class="w-full grid grid-cols-12">
+                            <div class="col-span-6">
+                                <label class="text-gray-700">عنوان</label>
+                                <input #title5 name="title" type="text" class="text-input"
+                                    placeholder="مانند:میز٬صندلی٬قفسه٬چابگر٬کاغذ٬کامپیوتر...">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 text-xs">تعداد</label>
+                                <input #count5 name="count" appNumWithComma [matTooltip]="langTip" type="text"
+                                    class="text-input" placeholder="۱">
+                            </div>
+                            <div class="col-span-3">
+                                <label class="text-gray-700 ml-1">هزینه هرواحد</label>
+                                <input #cost5 name="cost" appNumWithComma [matTooltip]="langTip" type="text"
+                                    class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-1 flex items-end ">
+                                <button (click)="addItem(investForm,'officeEquipment',title5,count5,cost5)"
+                                    class="btn-primary text-sm p-2.5 rounded-md shadow-md text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </button>
+                            </div>
 
-        <button x-show="step == 3" [disabled]="!form.dirty" type="submit" [ngClass]="loading?'px-2':'px-8'" class="btn btn-primary">
-            <span >ذخیره</span>
-            <svg *ngIf="loading" role="status"
-                class="inline w-7 h-7 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"
-                viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                    fill="currentColor" />
-                <path
-                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                    fill="currentFill" />
-            </svg>
-        </button>
+                            <ng-container
+                                *ngTemplateOutlet="table; context: {$implicit : investForm.value.officeEquipment}">
+                            </ng-container>
+                        </form>
+                        <span class="text-red-500 text-xs" *ngIf="f1['officeEquipment'].errors && submitted">
+                            حداقل یک مورد را اضافه نمایید
+                        </span>
+                    </div>
+                    <!-- row 6 -->
+                    <div formGroupName="preOperation"
+                        class="col-span-1 lg:col-span-12 grid grid-cols-2 border border-dashed p-2 gap-2">
+                        <h2 class="col-span-2 text-base my-2 required">هزينه هاي قبل از بهره برداري
+                        </h2>
+                        <div class="col-span-2 lg:col-span-1">
+                            <div class="w-full grid grid-cols-12 items-center mt-3">
+                                <div class="col-span-8">
+                                    <br>
+                                    <label class="text-gray-700">فاز تحقیق و توسعه
+                                    </label>
+                                </div>
+                                <div class="col-span-4">
+                                    <label class="text-gray-700 ml-1">هزینه</label>
+                                    <input formControlName="research" name="cost"
+                                        [appNumWithComma]="investForm.value['preOperation']['research']"
+                                        [matTooltip]="langTip" type="text" class="text-input" placeholder="0">
+                                </div>
+                            </div>
+                            <div class="w-full grid grid-cols-12 items-center mt-3">
+                                <div class="col-span-8">
+                                    <br>
+                                    <label class="text-gray-700">
+                                        هزينه هاي حق ثبت ها
+                                    </label>
+                                </div>
+                                <div class="col-span-4">
+                                    <label class="text-gray-700 ml-1">هزینه </label>
+                                    <input formControlName="otherCosts1" name="cost"
+                                        [appNumWithComma]="investForm.value['preOperation']['otherCosts1']"
+                                        [matTooltip]="langTip" type="text" class="text-input" placeholder="0">
+                                </div>
+                            </div>
+                            <div class="w-full grid grid-cols-12 items-center mt-3">
+                                <div class="col-span-8">
+                                    <br>
+                                    <label class="text-gray-700"> قراردادهاي بانکي
+                                    </label>
+                                </div>
+                                <div class="col-span-4">
+                                    <label class="text-gray-700 ml-1">هزینه</label>
+                                    <input formControlName="otherCosts2" name="cost"
+                                        [appNumWithComma]="investForm.value['preOperation']['otherCosts2']"
+                                        [matTooltip]="langTip" type="text" class="text-input" placeholder="0">
+                                </div>
+                            </div>
+                            <div class="w-full grid grid-cols-12 items-center mt-3">
+                                <div class="col-span-8">
+                                    <label class="text-gray-500" matTooltip="(2 % حقوق و دستمزد ساليانه)">هزينه آموزش
+                                        پرسنل(خودکار محاسبه میشود)
+                                    </label>
+                                </div>
+                                <div class="col-span-4">
+                                    <input [value]="investForm.value.preOperation.staffTraining" name="cost"
+                                        [appNumWithComma]="investForm.value['preOperation']['staffTraining']"
+                                        type="text" class="text-input" placeholder="هزینه" [disabled]="true">
+                                </div>
+                            </div>
+                            <div class="w-full grid grid-cols-12 items-center mt-3">
+                                <div class="col-span-8">
+                                    <label class="text-gray-500"
+                                        matTooltip="(15 روز هزينه هاي آب و برق، سوخت و مواد اوليه)">
+                                        هزينه راه اندازي توليد آزمايشي(خودکار محاسبه میشود)
+                                    </label>
+                                </div>
+                                <div class="col-span-4">
+                                    <input [value]="investForm.value.preOperation.tolidAzmayeshi" name="cost"
+                                        type="text" class="text-input" placeholder="هزینه" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-2 lg:col-span-1">
+                            <div class="w-full grid grid-cols-12 items-center mt-3">
+                                <div class="col-span-8">
+                                    <br>
+                                    <label class="text-gray-700">تهيه طرح
+                                    </label>
+                                </div>
+                                <div class="col-span-4">
+                                    <label class="text-gray-700 ml-1">هزینه</label>
+                                    <input formControlName="otherCosts3" name="cost"
+                                        [appNumWithComma]="investForm.value['preOperation']['otherCosts3']"
+                                        [matTooltip]="langTip" type="text" class="text-input" placeholder="0">
+                                </div>
+                            </div>
+                            <div class="w-full grid grid-cols-12 items-center mt-3">
+                                <div class="col-span-8">
+                                    <br>
+                                    <label class="text-gray-700">مشاوره
+                                    </label>
+                                </div>
+                                <div class="col-span-4">
+                                    <label class="text-gray-700 ml-1">هزینه</label>
+                                    <input formControlName="otherCosts4" name="cost"
+                                        [appNumWithComma]="investForm.value['preOperation']['otherCosts4']"
+                                        [matTooltip]="langTip" type="text" class="text-input" placeholder="0">
+                                </div>
+                            </div>
+                            <div class="w-full grid grid-cols-12 items-center mt-3">
+                                <div class="col-span-8">
+                                    <br>
+                                    <label class="text-gray-700"> اخذ مجوز
+                                    </label>
+                                </div>
+                                <div class="col-span-4">
+                                    <label class="text-gray-700 ml-1">هزینه</label>
+                                    <input formControlName="otherCosts5" name="cost"
+                                        [appNumWithComma]="investForm.value['preOperation']['otherCosts5']"
+                                        [matTooltip]="langTip" type="text" class="text-input" placeholder="0">
+                                </div>
+                            </div>
+                            <div class="w-full grid grid-cols-12 items-center mt-3">
+                                <div class="col-span-8">
+                                    <label class="text-gray-500"
+                                        matTooltip="۱۰٪ سرمايه مورد نياز جهت راه اندازي شامل كليه موارد فوق الذكر                            ">
+                                        هزينه هاي پیشبینی نشده(خودکار محاسبه میشود)
+                                    </label>
+                                </div>
+                                <div class="col-span-4">
+                                    <input [value]="investForm.value.pishbiniNashode" name="cost" appNumWithComma
+                                        type="text" class="text-input" placeholder="هزینه" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- submit & Next -->
+                    <div class="col-span-1 lg:col-span-12 mt-10 p-2 flex justify-end">
+                        <button class="bg-gray-200 px-6 py-2 mt-2 mx-3 rounded-full text-gray-800"
+                            (click)="resetAllForms()">پاکسازی فرم</button>
+
+                        <button (click)="formSubmit(investForm,'investForm')" type="submit"
+                            class="btn btn-purple flex gap-2" matStepperNext>
+                            <span>مرحله بعدی</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </mat-step>
+        <!-- 2 -->
+        <mat-step [stepControl]="salaryForm">
+            <ng-template matStepLabel>
+                <p>حقوق و دستمزد کارکنان</p>
+            </ng-template>
+            <div class="w-full">
+                <form [formGroup]="salaryForm" (ngSubmit)="formSubmit(salaryForm,'salaryForm')"
+                    class="grid grid-cols-1 lg:grid-cols-12 gap-4 text-sm">
+                    <!-- row1 عناوین شغلی-->
+                    <div class="col-span-1 lg:col-span-6">
+                        <h2 class="col-span-7 text-base my-2 required">ایجاد عناوین شغلی</h2>
+                        <form class="w-full grid grid-cols-12">
+                            <div class="col-span-10">
+                                <label class="text-gray-700">عنوان شغلی</label>
+                                <input #jobTitle name="title" type="text" class="text-input"
+                                    placeholder="مانند:کارگر ٬منشی ٬مدیر مونتاژ ٬مهندس مکانیک و...">
+                            </div>
+                            <div class="col-span-1 flex items-end ">
+                                <button (click)="addItem(salaryForm,'jobTitles',jobTitle)"
+                                    class="btn-primary text-sm p-2.5 rounded-md shadow-md text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                        <span class="text-red-500 text-xs" *ngIf="f2['jobTitles'].errors && submitted">
+                            حداقل یک مورد را اضافه نمایید
+                        </span>
+                        <div class="mt-1 mb-3 col-span-12">
+                            <ng-container *ngTemplateOutlet="table; context: {$implicit : salaryForm.value.jobTitles}">
+                            </ng-container>
+                        </div>
+                    </div>
+                    <!-- رده‌های شغلی -->
+                    <div class="col-span-1 lg:col-span-6 transition-all duration-700"
+                        [ngClass]="{'blur-sm': !salaryForm.value.jobTitles.length || salaryForm.value.jobTitles[0].title == ''}">
+                        <div class="absolute top-0 right-0 w-full h-full"
+                            *ngIf="!salaryForm.value.jobTitles.length || salaryForm.value.jobTitles[0].title == ''">
+                        </div>
+                        <h2 class="col-span-7 text-base my-2 required">ایجاد رده‌های شغلی</h2>
+                        <form class="w-full grid grid-cols-12">
+                            <div class="col-span-10">
+                                <label class="text-gray-700">عنوان سطح شغلی</label>
+                                <input #jobLevel name="title" type="text" class="text-input"
+                                    placeholder="مانند:ماهر ،نیمه ماهر ،کارآموز ،ارشد و...">
+                            </div>
+                            <div class="col-span-1 flex items-end ">
+                                <button (click)="addItem(salaryForm,'jobLevels',jobLevel)"
+                                    class="btn-primary text-sm p-2.5 rounded-md shadow-md text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                        <span class="text-red-500 text-xs" *ngIf="f2['jobLevels'].errors && submitted">
+                            حداقل یک مورد را اضافه نمایید
+                        </span>
+                        <div class="mt-1 mb-3 col-span-12">
+                            <ng-container *ngTemplateOutlet="table; context: {$implicit : salaryForm.value.jobLevels}">
+                            </ng-container>
+                        </div>
+                    </div>
+                    <hr class="col-span-full bg-gray-400">
+                    <!-- Row 2 -->
+                    <div lang='en' class="col-span-1 lg:col-span-12 transition-all duration-700"
+                        [ngClass]="{'blur-sm': !salaryForm.value.jobTitles.length || !salaryForm.value.jobLevels.length || salaryForm.value.jobLevels[0].title == ''}">
+                        <div class="absolute top-0 right-0 w-full h-full"
+                            *ngIf="!salaryForm.value.jobTitles.length || !salaryForm.value.jobLevels.length || salaryForm.value.jobLevels[0].title == ''">
+                        </div>
+                        <h2 class="text-base my-2 required">تعریف کارکنان</h2>
+                        <form class="grid grid-cols-12 gap-2">
+                            <div class="col-span-4">
+                                <label class="text-gray-700">عنوان شغلی</label>
+                                <select id="default" #jtitle name="title" class="select-input">
+                                    <option selected>...</option>
+                                    <option *ngFor="let item of salaryForm.value.jobTitles" [value]="item.title">
+                                        {{item.title}}</option>
+                                </select>
+                            </div>
+                            <div class="col-span-3">
+                                <label class="text-gray-700">رده شغلی</label>
+                                <select id="default" #jlevel name="level" class="select-input">
+                                    <option selected>...</option>
+                                    <option *ngFor="let item of salaryForm.value.jobLevels" [value]="item.title">
+                                        {{item.title}}</option>
+                                </select>
+                            </div>
+                            <div class="col-span-1">
+                                <label class="text-gray-700 text-xs">تعداد</label>
+                                <input #count6 name="count" appNumWithComma type="text" class="text-input"
+                                    placeholder="" [matTooltip]="langTip">
+                            </div>
+                            <div class="col-span-3">
+                                <label class="text-gray-700 ml-1">حقوق ماهیانه</label>
+                                <input #salary name="cost" appNumWithComma type="text" class="text-input" placeholder=""
+                                    [matTooltip]="langTip">
+                            </div>
+                            <div class="col-span-1 flex items-center">
+                                <button (click)="addItem(salaryForm,'employees',jtitle,jlevel,count6,salary)"
+                                    class="btn-primary text-sm p-2.5 rounded-md shadow-md text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="mt-1 mb-3 col-span-12">
+                                <ng-container
+                                    *ngTemplateOutlet="table; context: {$implicit : salaryForm.value.employees, header:['عنوان شغلی','رده شغلی','تعداد','حقوق ماهیانه']}">
+                                </ng-container>
+                            </div>
+                        </form>
+                        <span class="text-red-500 text-xs" *ngIf="f2['employees'].errors && submitted">
+                            حداقل یک مورد را اضافه نمایید
+                        </span>
+                    </div>
+                    <!-- next & prev -->
+                    <div class="col-span-1 lg:col-span-12 mt-10 p-2 flex justify-end gap-2">
+                        <!-- prev -->
+                        <button class="btn flex gap-2" style="box-shadow: none !important;" matStepperPrevious>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                            <span class="text-gray-800">مرحله قبلی</span>
+                        </button>
+                        <!-- next -->
+                        <button class="btn btn-purple flex gap-2" matStepperNext>
+                            <span>ثبت و مرحله بعدی</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </mat-step>
+        <!-- 3 -->
+        <mat-step [stepControl]="fundAndExpensesForm">
+            <ng-template matStepLabel>
+                <p>سرمایه درگردش و هزینه‌های جاری</p>
+            </ng-template>
+            <div class="w-full">
+                <form [formGroup]="fundAndExpensesForm"
+                    (ngSubmit)="formSubmit(fundAndExpensesForm,'fundAndExpensesForm')"
+                    class="grid grid-cols-1 lg:grid-cols-12 gap-4 text-sm mt-5">
+
+                    <!-- row 1 -->
+                    <div class="col-span-1 lg:col-span-6">
+                        <div class="col-span-1">
+                            <label class="text-gray-700 required">ظرفيت واقعي سالانه تولید</label>
+                            <input formControlName="zarfiyateSalane" type="number" class="text-input" placeholder="500"
+                                required>
+                        </div>
+                    </div>
+                    <div class="col-span-1 lg:col-span-6">
+                        <div class="col-span-1">
+                            <label class="text-gray-700 required">تعیین بازه زمانی سرمايه درگردش(براساس ماه)</label>
+                            <input formControlName="time" type="number" class="text-input" placeholder="12 ماهه"
+                                matTooltip="براساس ماه" required>
+                        </div>
+                    </div>
+                    <!-- row 2 -->
+                    <div class="col-span-1 lg:col-span-12 grid grid-cols-4 gap-2">
+                        <div class="col-span-3 lg:col-span-1 items-center mt-3">
+                            <div class="col-span-12">
+                                <label class="text-gray-700 ml-1">تن‌خواه </label>
+                                <input formControlName="tankhah" name="tankhah" appNumWithComma
+                                    matTooltip="(يک دوره توليدي  هزينه حقوق و آب و برق و تلفن و سوخت و... )" type="text"
+                                    class="text-input" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="col-span-3 lg:col-span-1 items-center mt-3">
+                            <div class="col-span-12">
+                                <label class="text-gray-700 ml-1">موجودی کالا</label>
+                                <input formControlName="mojodiKala" name="mojodikala" appNumWithComma
+                                    [matTooltip]="langTip" type="text" class="text-input" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="col-span-3 lg:col-span-1 items-center mt-3">
+                            <div class="col-span-12">
+                                <label class="text-gray-700 ml-1">مطالبات</label>
+                                <input formControlName="motalebat" name="motalebat" appNumWithComma
+                                    [matTooltip]="langTip" type="text" class="text-input" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="col-span-3 lg:col-span-1 items-center mt-3">
+                            <div class="col-span-12">
+                                <label class="text-gray-700 ml-1">قالب مصرفی</label>
+                                <input formControlName="ghalebMasrafi" name="ghalebmasrafi" appNumWithComma
+                                    [matTooltip]="langTip" type="text" class="text-input" placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- row 3 مواد اوليه مورد نياز -->
+                    <div class="col-span-1 lg:col-span-12">
+                        <h2 class="text-base my-2 required">مواد اوليه مورد نياز</h2>
+                        <form class="grid grid-cols-12 gap-2">
+                            <div class="col-span-7 md:col-span-4">
+                                <label class="text-gray-700">شرح</label>
+                                <input #mtitle name="title" type="text" class="text-input" placeholder="نام ماده اولیه">
+                            </div>
+                            <div class="col-span-5 md:col-span-2">
+                                <label class="text-gray-700">واحد</label>
+                                <input #unit name="scale" type="text" class="text-input" list="scales"
+                                    placeholder="مانند:کیلوگرم">
+                            </div>
+                            <div class="col-span-3 md:col-span-1">
+                                <label class="text-gray-700 text-xs">مقدار</label>
+                                <input #mcount name="count" type="number" class="text-input" placeholder=""
+                                    [matTooltip]="langTip">
+                            </div>
+                            <div class="col-span-3 md:col-span-1 overflow-hidden">
+                                <label class="text-gray-700 ml-1 flex whitespace-nowrap">ضریب (درصد)</label>
+                                <input #zarib name="percent" type="number" class="text-input" placeholder="%"
+                                    [matTooltip]="langTip">
+                            </div>
+                            <div class="col-span-5 md:col-span-3">
+                                <label class="text-gray-700 ml-1">قیمت واحد</label>
+                                <input #mcost name="cost" appNumWithComma type="text" class="text-input" placeholder="0"
+                                    [matTooltip]="langTip">
+                            </div>
+                            <div class="col-span-1 flex items-end">
+                                <button
+                                    (click)="addItem(fundAndExpensesForm,'mavadAvalie',mtitle,unit,mcount,zarib,mcost)"
+                                    class="btn-primary text-sm p-2.5 rounded-md shadow-md text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                        <span class="text-red-500 text-xs" *ngIf="f3['mavadAvalie'].errors && submitted">
+                            حداقل یک مورد را اضافه نمایید
+                        </span>
+                        <div class="mt-1 mb-3 col-span-12">
+                            <ng-container
+                                *ngTemplateOutlet="table; context: {$implicit : fundAndExpensesForm.value.mavadAvalie, header:['شرح','واحد','ضریب (درصد)','مقدار','قیمت واحد']}">
+                            </ng-container>
+                        </div>
+                    </div>
+                    <hr class="col-span-full bg-gray-400">
+                    <!-- row 3 -->
+                    <div class="col-span-1 lg:col-span-8 border border-dashed p-2" formGroupName="hazineJari">
+                        <h2 class="text-base my-2 required">هزینه‌های جاری
+                        </h2>
+                        <div class="w-full grid grid-cols-12 gap-2 items-center mt-3" formGroupName="water">
+                            <div class="col-span-4">
+                                <br>
+                                <label class="text-gray-700">مصرف آب (سالانه)
+                                </label>
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 ml-1">مقدار</label>
+                                <input formControlName="count" name="count" [matTooltip]="langTip" type="number"
+                                    class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-4">
+                                <label class="text-gray-700 ml-1">قیمت واحد</label>
+                                <input formControlName="cost" name="cost" appNumWithComma [matTooltip]="langTip"
+                                    type="text" class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 ml-1">افزایش سالانه(درصد)</label>
+                                <input formControlName="percent" name="percent" [matTooltip]="langTip" type="number"
+                                    class="text-input" placeholder="">
+                            </div>
+                        </div>
+                        <div class="w-full grid grid-cols-12 gap-2 items-center mt-3" formGroupName="gasWarmSeasons">
+                            <div class="col-span-4">
+                                <br>
+                                <label class="text-gray-700">مصرف گاز (فصول گرم-سالانه)
+                                </label>
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 ml-1">مقدار</label>
+                                <input formControlName="count" name="count" [matTooltip]="langTip" type="number"
+                                    class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-4">
+                                <label class="text-gray-700 ml-1">قیمت واحد</label>
+                                <input formControlName="cost" name="cost" appNumWithComma [matTooltip]="langTip"
+                                    type="text" class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 ml-1">افزایش سالانه(درصد)</label>
+                                <input formControlName="percent" name="percent" [matTooltip]="langTip" type="number"
+                                    class="text-input" placeholder="">
+                            </div>
+                        </div>
+                        <div class="w-full grid grid-cols-12 gap-2 items-center mt-3" formGroupName="gasColdSeasons">
+                            <div class="col-span-4">
+                                <br>
+                                <label class="text-gray-700">مصرف گاز (فصول سرد-سالانه)
+                                </label>
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 ml-1">مقدار</label>
+                                <input formControlName="count" name="count" [matTooltip]="langTip" type="number"
+                                    class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-4">
+                                <label class="text-gray-700 ml-1">قیمت واحد</label>
+                                <input formControlName="cost" name="cost" appNumWithComma [matTooltip]="langTip"
+                                    type="text" class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 ml-1">افزایش سالانه(درصد)</label>
+                                <input formControlName="percent" name="percent" [matTooltip]="langTip" type="number"
+                                    class="text-input" placeholder="">
+                            </div>
+                        </div>
+                        <div class="w-full grid grid-cols-12 gap-2 items-center mt-3" formGroupName="electricity">
+                            <div class="col-span-4">
+                                <br>
+                                <label class="text-gray-700">مصرف برق (سالانه)
+                                </label>
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 ml-1">مقدار</label>
+                                <input formControlName="count" name="count" [matTooltip]="langTip" type="number"
+                                    class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-4">
+                                <label class="text-gray-700 ml-1">قیمت واحد</label>
+                                <input formControlName="cost" name="cost" appNumWithComma [matTooltip]="langTip"
+                                    type="text" class="text-input" placeholder="">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 ml-1">افزایش سالانه(درصد)</label>
+                                <input formControlName="percent" name="percent" [matTooltip]="langTip" type="number"
+                                    class="text-input" placeholder="">
+                            </div>
+                        </div>
+                        <div class="w-full grid grid-cols-12 gap-2 items-center mt-3" formGroupName="phoneAndInternet">
+                            <div class="col-span-4">
+                                <br>
+                                <label class="text-gray-700">مصرف تلفن و اینترنت (سالانه)
+                                </label>
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 ml-1">مقدار</label>
+                                <input formControlName="count" name="count" [matTooltip]="langTip" type="number"
+                                    class="text-input" placeholder="1">
+                            </div>
+                            <div class="col-span-4">
+                                <label class="text-gray-700 ml-1">قیمت واحد</label>
+                                <input formControlName="cost" name="cost" appNumWithComma [matTooltip]="langTip"
+                                    type="text" class="text-input" placeholder="500">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 ml-1">افزایش سالانه(درصد)</label>
+                                <input formControlName="percent" name="percent" [matTooltip]="langTip" type="number"
+                                    class="text-input" placeholder="%">
+                            </div>
+                        </div>
+                        <div class="w-full grid grid-cols-12 items-center mt-3">
+                            <div class="col-span-10">
+                                <br>
+                                <label class="text-gray-700">حقوق و دستمزد
+                                </label>
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-gray-700 ml-1">افزایش سالانه(درصد)</label>
+                                <input formControlName="salaryPercent" name="percent" [matTooltip]="langTip"
+                                    type="number" class="text-input" placeholder="%">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- next & prev -->
+                    <div class="mt-10 col-span-1 lg:col-span-12 p-2 flex justify-end gap-2">
+                        <!-- prev -->
+                        <button class="btn flex gap-2" style="box-shadow: none !important;" matStepperPrevious>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                            <span class="text-gray-800">مرحله قبلی</span>
+                        </button>
+                        <!-- next -->
+                        <!-- if user Has Not Active Plan -->
+                        <button x-on:click="modal = !modal" *ngIf="!userHasActivePlan()"
+                            class="btn btn-success flex gap-2" (click)="modal = plans" matStepperNext>
+                            <span>پایان</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </button>
+                        <!-- if user Has Active Plan -->
+                        <button *ngIf="userHasActivePlan()" class="btn btn-success flex gap-2"
+                            (click)="saveAndEstimate()" matStepperNext>
+                            <span>پایان</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </button>
+
+                        <app-modal [modalContent]="modal"></app-modal>
+
+                    </div>
+                </form>
+            </div>
+        </mat-step>
+        <!-- 4 -->
+        <mat-step>
+            <ng-template matStepLabel>
+                <p>براورد هزینه ها</p>
+            </ng-template>
+            <div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-4">
+                <div class="mt-1 mb-3 col-span-6">
+                    <span>جدول استهلاك ماشین آلات تجهيزات </span>
+                    <ng-container
+                        *ngTemplateOutlet="estehlak; context:{$implicit: investForm.value.equipment, type: 'equipment'}">
+                    </ng-container>
+                </div>
+            </div>
+        </mat-step>
+
+    </mat-horizontal-stepper>
+
+
+    <!-- table -->
+    <ng-template #table let-list let-header="header">
+        <div class="mt-1 mb-3 col-span-12" *ngIf="list.length">
+            <table class="w-full table-auto">
+                <thead *ngIf="header">
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-right cursor-pointer" *ngFor="let item of header">{{item}}</th>
+                        <th class="py-3 px-6 text-center cursor-pointer">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-700 text-sm font-light">
+                    <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]"
+                        *ngFor="let item of list; let indx = index">
+                        <td class="py-3 px-6 font-normal" *ngFor="let i of item | keyvalue : orderbyValueAsc">
+                            <span>{{i.value}}</span>
+                        </td>
+                        <td class="py-3 px-6 text-center">
+                            <div class="flex item-center justify-center">
+                                <div class="w-4 ml-2 transform hover:text-purple-500 hover:scale-125 cursor-pointer"
+                                    (click)="removeItem(indx,list)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ng-template>
+</section>
+<datalist id="scales">
+    <option *ngFor="let item of fundAndExpensesForm.value.mavadAvalie" [value]="item.scale">
+</datalist>
+
+<!-- estehlak -->
+<ng-template #estehlak let-list let-type="type">
+    <div class="text-gray-700 mb-3 text-sm flex items-center gap-2">
+        <span class="flex items-center gap-2">
+            <span>نرخ(درصد)</span>
+            <input class="text-input" type="number" (change)="rateChanged($event,type)" [value]="rateValue(type)">
+        </span>
+        <div class="relative flex items-center px-3">
+            <span class="ml-2">- سال:</span>
+            <select [(ngModel)]="year"
+                class="border border-gray-300 rounded-full text-gray-600 h-10 px-4 bg-white hover:border-gray-400 focus:outline-none">
+                <option [value]="1">اول</option>
+                <option [value]="2">دوم</option>
+                <option [value]="3">سوم</option>
+                <option [value]="4">چهارم</option>
+                <option [value]="5">پنجم</option>
+                <option [value]="6">ششم</option>
+                <option [value]="7">هفتم</option>
+                <option [value]="8">هشتم</option>
+                <option [value]="9">نهم</option>
+                <option [value]="10">دهم</option>
+            </select>
+        </div>
     </div>
-</form>
-<!-- ۲ -->
-<!-- component -->
-<!-- This is an example component -->
-<!--  -->
+    <table class="w-full table-auto">
+        <thead>
+            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                <th class="py-3 px-6 text-right cursor-pointer">شرح</th>
+                <th class="py-3 px-6 text-right cursor-pointer">استهلاک</th>
+                <th class="py-3 px-6 text-right cursor-pointer">ارزش دفتری</th>
+            </tr>
+        </thead>
+        <tbody class="text-gray-700 text-sm font-light">
+            <tr *ngFor="let item of list" class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                <td class="py-3 px-6 font-normal">
+                    <span>{{ item.title }}</span>
+                </td>
+                <td class="py-3 px-6 font-normal">
+                    <input type="text" #testt hidden [value]="estehlakHarSal(type,item,year).estehlak">
+                    <span>{{ estehlakHarSal(type,item,year).estehlak |numWithComma }}</span>
+                </td>
+                <td class="py-3 px-6 font-normal">
+                    <span>{{ estehlakHarSal(type,item,year).arzeshDaftari |numWithComma }}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</ng-template>
+
+<ng-template #plans>
+    <h2>برای ادامه باید دارای عضویت ویژه باشید.</h2>
+    <div class="my-5">
+        <p class="text-gray-700 text-right">با عضویت ویژه در سایت از تمامی امکانات سایت بهره‌مند خواهید شد. <br>
+            برای عضویت ویژه ابتدا باید یکی از اشتراک های موجود سایت را تهیه نمایید.</p>
+        <p class="text-gray-700 text-right"> نکته: عضویت ویژه بلافاصله پس از پرداخت فعال خواهد شد.</p>
+    </div>
+    <div class="flex mt-10 justify-center items-center">
+        <button class="btn btn-pink">انصراف</button>
+        <button class="btn btn-success">خریرد اشتراک ویژه</button>
+    </div>
+</ng-template>

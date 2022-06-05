@@ -1,4 +1,35 @@
+.arrow-top{
+  @apply border-2 border-blue-400 bg-blue-400 h-full w-0 absolute;
+  transform: rotate(12deg);
+  border-radius: 100%;
+  margin: 0 auto;
+  top: 9px;
+}
+.arrow-bottom{
+  @apply border-2 border-blue-400 bg-blue-400 h-full w-0 absolute;
+  transform: rotate(-12deg);
+  border-radius: 100%;
+  margin: 0 auto;
+  top: 0 !important;
+}
 
-#summary {
-    background-color: #f6f6f6;
-  }
+@keyframes bounceAlpha {
+  0% {opacity: 1; transform: translateX(0px) scale(1);}
+  25%{opacity: 0; transform:translateX(-30px) scale(0.8);}
+  26%{opacity: 0; transform:translateX(20px) scale(0.8);}
+  55% {opacity: 1; transform: translateX(0px) scale(1);}
+}
+
+.group:hover .group-hover\:bounceAlpha {
+  animation-name: bounceAlpha;
+  animation-duration:1.4s;
+  animation-iteration-count:infinite;
+  animation-timing-function:linear;
+}
+.group:hover .group-hover\:bounceAlpha2 {
+  animation-name: bounceAlpha;
+  animation-duration:1.4s;
+  animation-delay:0.3s;
+  animation-iteration-count:infinite;
+  animation-timing-function:linear;
+}

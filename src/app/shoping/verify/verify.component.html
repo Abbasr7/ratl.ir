@@ -1,39 +1,68 @@
-<div class="bg-white w-3/4 mx-auto shadow-md mt-10 p-4 flex flex-col justify-center items-center"
-    *ngIf="status == 'true'">
-    <div class="svg-container">
-        <svg class="ft-green-tick" xmlns="http://www.w3.org/2000/svg" height="100" width="100" viewBox="0 0 48 48"
-            aria-hidden="true">
-            <circle class="circle" fill="#5bb543" cx="24" cy="24" r="22" />
-            <path class="tick" fill="none" stroke="#FFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"
-                stroke-miterlimit="10" d="M14 27l5.917 4.917L34 17" />
-        </svg>
-    </div>
-    <div class="mt-2 space-y-3">
-        <h1 class="font-medium text-xl mx-auto w-fit text-green-800 yekan"> پرداخت با موفقیت انجام شد.</h1>
-        <h2> شماره تراکنش: {{ transaction_id }}</h2>
-        <h2> شماره پیگیری: {{ pay_id }}</h2>
-        <p>اشتراک شما با موفقید فعال شد. و از هم اکنون میتوانید از تمای امکانات سایت بهره مند شوید.</p>
-
-    </div>
-</div>
-<div class="bg-white w-3/4 mx-auto shadow-md mt-10 p-4 flex flex-col justify-center items-center"
-    *ngIf="status == 'false'">
-    <div class="svg-container">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" viewBox="0 0 48 48" aria-hidden="true">
-            <circle class="anim" cx="24" cy="24" r="22" fill="none"/>
-            <path class="tick" h="12" stroke="#fff" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"
-                stroke-miterlimit="10" d="M 15 15.384 L 32 32.384 M 32 15.384 L 15 32.384"/>
-        </svg>
-    </div>
-    <div class="mt-2 space-y-3">
-        <h1 class="font-medium text-xl mx-auto w-fit text-red-700 yekan mb-10"> پرداخت ناموفق بود!</h1>
-        <h2> مشکلی در پرداخت بوجود آمد:<b class="text-red-700"> {{msg}}</b> </h2>
-        <p>درصورتی که مبلغی از حساب شما کسر شده است تا ۴۸ ساعت آینده به حسابتان عودت داده میشود.</p>
-        <button [routerLink]="['/']" class="btn btn-primary flex items-center">
-            <svg class="rotate-180 fill-current ml-2 text-white w-4" viewBox="0 0 448 512">
-                <path
-                d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
+<div class="w-full h-20 bg-gradient-to-r from-green-400 to-blue-500"></div>
+<div class="p-10">
+    <!-- <div class="w-1/2 "></div> -->
+    <div class="bg-white w-3/4 mx-auto shadow-md mt-10 p-4 flex flex-col justify-center items-center"
+        *ngIf="status == 'true'">
+        <div class="svg-container">
+            <svg class="ft-green-tick" xmlns="http://www.w3.org/2000/svg" height="100" width="100" viewBox="0 0 48 48"
+                aria-hidden="true">
+                <circle class="circle" fill="#5bb543" cx="24" cy="24" r="22" />
+                <path class="tick" fill="none" stroke="#FFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-miterlimit="10" d="M14 27l5.917 4.917L34 17" />
             </svg>
-            بازگشت به خانه</button>
+        </div>
+        <div class="mt-2 space-y-3">
+            <h1 class="font-medium text-xl mx-auto w-fit text-green-800 yekan"> پرداخت با موفقیت انجام شد.</h1>
+            <h2> شماره تراکنش: {{ transaction_id }}</h2>
+            <h2> شماره پیگیری: {{ pay_id }}</h2>
+            <p>اشتراک شما با موفقید فعال شد. و از هم اکنون میتوانید از تمای امکانات سایت بهره مند شوید.</p>
+    
+        </div>
+    </div>
+    <div class="bg-white w-3/4 mx-auto shadow-md mt-10 p-4 flex flex-col justify-center items-center"
+        *ngIf="status == 'false'">
+        <div class="svg-container">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" viewBox="0 0 48 48" aria-hidden="true">
+                <circle class="anim" cx="24" cy="24" r="22" fill="none" />
+                <path class="tick" h="12" stroke="#fff" fill="none" stroke-width="4" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-miterlimit="10" d="M 15 15.384 L 32 32.384 M 32 15.384 L 15 32.384" />
+            </svg>
+        </div>
+        <div class="mt-2 space-y-3">
+            <h1 class="font-medium text-xl mx-auto w-fit text-red-700 yekan mb-10"> پرداخت ناموفق بود!</h1>
+            <h2> مشکلی در پرداخت بوجود آمد:<b class="text-red-700"> {{msg}}</b> </h2>
+            <p>درصورتی که مبلغی از حساب شما کسر شده است تا ۴۸ ساعت آینده به حسابتان عودت داده میشود.</p>
+            <button [routerLink]="['/']" class="btn btn-primary flex items-center">
+                <svg class="rotate-180 fill-current ml-2 text-white w-4" viewBox="0 0 448 512">
+                    <path
+                        d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
+                </svg>
+                بازگشت به خانه</button>
+        </div>
+    </div>
+
+    <div class="container mx-auto mt-10 flex justify-center items-center gap-3">
+        <a [routerLink]="['/']" class="btn btn-primary w-fit flex gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            بازگشت به خانه
+        </a>
+        <a class="btn bg-gradient-to-r from-purple-500 to-pink-500 w-fit flex" [routerLink]="['/panel']">
+            پنل کاربری
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+            </svg>
+        </a>
+        <a class="btn bg-gradient-to-r from-purple-500 to-pink-500 w-fit flex" [routerLink]="['/panel/newunit']">
+            ایجاد پروژه جدید
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+              </svg>
+        </a>
     </div>
 </div>

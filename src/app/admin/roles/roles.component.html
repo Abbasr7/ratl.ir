@@ -73,7 +73,7 @@
                                 دسترسی ها
                             </th>
                             <th scope="col" class="p-4 text-md font-bold tracking-wider text-right text-gray-700">
-                                <span class="">اعمال</span>
+                                <span class="">تنظیمات</span>
                             </th>
                         </tr>
                     </thead>
@@ -88,14 +88,15 @@
                             </td>
                             <td class="pl-14 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">
                                 <span *ngIf="editMode != role.nameid">
-                                    <span *ngFor="let access of role.access"
-                                    class="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">
+                                    <span *ngFor="let access of role.access" [ngClass]="access == 'admin'||access == 'all'?'text-red-800 bg-red-100':'bg-green-100 text-green-800'"
+                                    class="text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">
                                     {{access}}
                                     </span>
                                 </span>
                                 <div class="flex" *ngIf="editMode == role.nameid && (role.nameid != admin.nameid || role.nameid != 'client')">
                                     <div class="flex ml-2" *ngFor="let item of accessList">
-                                        <label [for]="item" class="font-medium text-gray-900 dark:text-gray-300">{{item}}</label>
+                                        <label [for]="item" [ngClass]="item == 'admin'||item == 'all'?'text-red-600':'text-gray-800'"
+                                         class="font-medium dark:text-gray-300">{{item}}</label>
                                         <input [id]="item" type="checkbox" [ngModel]="role.access.includes(item)"
                                         [value]="item" (change)="changeCheckbox($event,role.nameid)"
                                         class="w-4 h-4 bg-gray-50 rounded border border-gray-300 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
@@ -103,11 +104,11 @@
                                 </div>
                             </td>
                             <td class="py-4 px-6 flex-col items-center justify-center text-sm font-medium text-right whitespace-nowrap">
-                                <a *ngIf="editMode != role.nameid && role.nameid != admin.nameid && role.nameid != 'client'" (click)="edit(role.nameid,'edit')" class="text-blue-600 cursor-pointer dark:text-blue-500 hover:underline">Edit</a>
+                                <a *ngIf="editMode != role.nameid && role.nameid != admin.nameid && role.nameid != 'client'" (click)="edit(role.nameid,'edit')" class="text-blue-600 cursor-pointer dark:text-blue-500 hover:underline">ویرایش</a>
                                 <div *ngIf="editMode == role.nameid" class="flex gap-2">
-                                    <button (click)="saveEdit(role.nameid)" class="bg-green-500 p-2 rounded-md  shadow-md text-white">save</button>
-                                    <button (click)="edit(role.nameid,'delete')" class="bg-red-400 p-2 rounded-md shadow-md text-white">Delete</button>
-                                    <button (click)="edit(role.nameid,'cls')" class="bg-gray-400 p-2 rounded-md shadow-md text-white">cancell</button>
+                                    <button (click)="saveEdit(role.nameid)" class="bg-green-500 p-2 rounded-md  shadow-md text-white">ذخیره</button>
+                                    <button (click)="edit(role.nameid,'delete')" class="bg-red-400 p-2 rounded-md shadow-md text-white">حذف</button>
+                                    <button (click)="edit(role.nameid,'cls')" class="bg-gray-400 p-2 rounded-md shadow-md text-white">بیخیال!</button>
                                 </div>
                             </td>
                         </tr>

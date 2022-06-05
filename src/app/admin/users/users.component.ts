@@ -48,7 +48,7 @@ export class UsersComponent implements OnInit,OnDestroy {
   search(){
     if (this.fullName != "") {
       this.usersList = this.usersList.filter(user => {
-        return user.fullname.toLocaleLowerCase().match(this.fullName.toLocaleLowerCase())
+        return user.fullname?.toLocaleLowerCase().match(this.fullName.toLocaleLowerCase())
       })
     } else {
       this.ngOnInit()

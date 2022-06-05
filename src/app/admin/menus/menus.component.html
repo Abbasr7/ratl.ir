@@ -9,12 +9,13 @@
     </ul>
 
     <div class="w-full">
+        <!-- مدیریت آیتم های فهرست -->
         <div x-show="activeTab===0">
             <textarea id="getListIds" cols="30" rows="10" hidden>
                 {{getListIds()}}
             </textarea>
-            <div class="flex gap-3">
-                <div class="lg:w-1/2">
+            <div class="flex flex-wrap lg:flex-nowrap gap-3">
+                <div class="lg:w-1/2 w-full">
                     <form id="add-item" class="flex flex-col w-full bg-white shadow-md p-5">
                         <div class="flex gap-3">
                             <input class="text-input" #title type="text" name="name" placeholder="عنوان">
@@ -22,31 +23,26 @@
                         </div>
                         <div class="flex justify-between items-center mt-5">
                             <div class="relative flex items-center">
-                                <span class="ml-2">افزودن به فهرست:</span>
-                                <svg class="w-2 h-2 absolute top-0 left-2 m-4 pointer-events-none"
-                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 412 232">
-                                    <path
-                                        d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                                        fill="#648299" fill-rule="nonzero" />
-                                </svg>
+                                <span class="ml-2 text-sm">افزودن به فهرست:</span>
                                 <select #parentList
-                                    class="border border-gray-300 rounded-full text-gray-600 h-10 pr-5 pl-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
+                                    class="border flex-shrink w-2/3 text-sm border-gray-300 rounded-full text-gray-600 h-10 pr-3 pl-4 bg-white hover:border-gray-400 focus:outline-none">
                                     <option *ngFor="let item of list" [value]="item._id">{{item.title}}</option>
                                 </select>
                             </div>
-                            <button type="submit" (click)="addItem(title,url,parentList)" class="btn btn-primary">اضافه
+                            <button type="submit" (click)="addItem(title,url,parentList)"
+                                class="btn btn-primary text-xs">اضافه
                                 کن</button>
                         </div>
                     </form>
                 </div>
-                <div class="w-1/2">
+                <div class="lg:w-1/2 w-full">
                     <div *ngFor="let l of list;let x = index" class="dd" [id]="'nestable-'+l._id">
                         <ng-container *ngIf="l.order">
                             <div class="flex flex-col justify-between p-5 mb-4 bg-white shadow-md">
                                 <h2 class="text-gray-500 text-lg mb-3">{{l.title}}</h2>
                                 <ol class="dd-list">
                                     <ng-template #menuItemTemplate let-items>
-                                        <li *ngFor="let item of items;let y = index" class="dd-item dd3-item"
+                                        <li *ngFor="let item of items;let y = index" class="listitem dd-item dd3-item"
                                             [attr.data-id]="item.id" [attr.data-content]="item.content"
                                             [attr.data-url]="item.url">
                                             <div class="dd-handle dd3-handle">
@@ -92,8 +88,8 @@
                                     </ng-container>
                                 </ol>
                                 <div class="flex justify-end mt-8">
-                                    <textarea #order class="text-input"
-                                        [id]="'nestable-output-'+l._id" hidden>{{ arrayToString(l.order) }}</textarea>
+                                    <textarea #order class="text-input" [id]="'nestable-output-'+l._id"
+                                        hidden>{{ arrayToString(l.order) }}</textarea>
                                     <button class="saveOrder btn btn-primary" (click)="saveMenuOrder(l._id,order)"
                                         [disabled]="!list.length">ذخیره</button>
                                 </div>
@@ -106,8 +102,8 @@
         </div>
         <!-- ساختن فهرست جدید -->
         <div x-show="activeTab===1">
-            <div class="flex gap-3">
-                <div class="lg:w-1/2">
+            <div class="grid md:grid-cols-2 grid-cols-1 gap-3">
+                <div class="w-full">
                     <form id="add-item" class="flex flex-col w-full bg-white shadow-md p-5">
                         <div class="flex gap-3">
                             <input class="text-input" #listName type="text" name="name" placeholder="عنوان فهرست">
@@ -117,13 +113,68 @@
                         </div>
                     </form>
                 </div>
-                <div class="lg:w-1/2">
+                <div class="w-full">
                     <div id="Lists" class="p-5 py-10 bg-white border border-dashed" *ngIf="list.length">
-                        <div *ngFor="let item of list;let i=index" id="listItem" class="shadow-md p-3 mb-5 w-full flex justify-between items-center">
-                            <div>{{item.title}}</div>
-                            <div class="flex gap-2">
-                                <button class="text-red-600 cursor-pointer disabled:text-gray-400" #del (click)="deleteItem(del,'list',item._id,i)" [disabled]="loading">حذف</button>
+                        <div *ngFor="let item of list;let i=index" id="listItem"
+                            class="listitem shadow-md p-3 mb-5 w-full flex flex-col">
+                            <div class="flex justify-between items-center">
+                                <div #toEdit (click)="openEditSection(toEdit)"
+                                    class="cursor-pointer hover:text-sky-600 transition-all">
+                                    {{item.title}}
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="text-red-600 cursor-pointer disabled:text-gray-400" #del
+                                        (click)="deleteItem(del,'list',item._id,i)" [disabled]="loading">حذف</button>
+                                </div>
                             </div>
+                            <div class="item-settings text-sm flex flex-col gap-3 d-none">
+                                <label class="text-sm text-gray-600" for="">نام منو
+                                </label><br>
+                                <input class="text-input max-w-xs mb-6 mt-2"
+                                    [(ngModel)]="item.title" type="text"
+                                    [value]="item.title">
+
+                                <p class="mb-4">
+                                    <a #delete class="btn btn-primary p-0" (click)="editList(item._id,item.title)">ذخیره</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <div class="bg-white text-base shadow-md p-5">
+                        <div class="flex justify-between">
+                            <h3>مدیریت جایگاه ها</h3>
+                            <div id="spinner"></div>
+                        </div>
+                        <div class="relative w-fit flex items-center mt-5">
+                            <span class="ml-4 text-sm">سربرگ صفحه خانه:</span>
+                            <svg class="w-2 h-2 absolute top-0 left-2 mt-4 pointer-events-none"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 412 232">
+                                <path
+                                    d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
+                                    fill="#648299" fill-rule="nonzero" />
+                            </svg>
+                            <select #header_section (change)="menuLocation(header_section,'headermenu')"
+                                class="border text-sm border-gray-300 rounded-full text-gray-600 h-10 pr-3 pl-6 bg-white hover:border-gray-400 focus:outline-none appearance-none">
+                                <option value="null"></option>
+                                <option *ngFor="let item of list" [value]="item._id" [selected]="getCurrentListSelected('headermenu',item._id)">{{item.title}}</option>
+                            </select>
+                        </div>
+
+                        <div class="relative w-fit flex items-center mt-5">
+                            <span class="ml-4 text-sm">فوتر:</span>
+                            <svg class="w-2 h-2 absolute top-0 left-2 mt-4 pointer-events-none"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 412 232">
+                                <path
+                                    d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
+                                    fill="#648299" fill-rule="nonzero" />
+                            </svg>
+                            <select #footer_section (change)="menuLocation(footer_section,'footermenu')"
+                                class="border text-sm border-gray-300 rounded-full text-gray-600 h-10 pr-3 pl-6 bg-white hover:border-gray-400 focus:outline-none appearance-none">
+                                <option value=""></option>
+                                <option *ngFor="let item of list" [value]="item._id" [selected]="getCurrentListSelected('footermenu',item._id)">{{item.title}}</option>
+                            </select>
                         </div>
                     </div>
                 </div>

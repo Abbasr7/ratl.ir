@@ -1,0 +1,51 @@
+
+<ng-container *ngIf="loc=='header'">
+    <ng-container *ngTemplateOutlet="headerMenu"></ng-container>
+</ng-container>
+<!-- ** -->
+<ng-container *ngIf="loc=='footer'">
+    <ng-container *ngTemplateOutlet="footerMenu"></ng-container>
+</ng-container>
+
+
+<!-- header menu template -->
+<ng-template #headerMenu>
+    <button id="navbarToggler"
+        class=" block absolute right-4 top-1/2 -translate-y-1/2 lg:hidden focus:ring-2 ring-primary px-3 py-[6px] rounded-lg ">
+        <span class="relative w-[30px] h-[2px] my-[6px] block"></span> <span
+            class="relative w-[30px] h-[2px] my-[6px] block"></span> <span
+            class="relative w-[30px] h-[2px] my-[6px] block"></span>
+    </button>
+    <div id="navbarCollapse" class="hidden">
+        <ul class="blcok menu-1">
+            <ng-template #showMenu let-list>
+                <li class="link" [ngClass]="{'has-child': item.children}" *ngFor="let item of list">
+                    <a [href]="item.url">{{item.content}}</a>
+                    <ng-container *ngIf="item.children">
+                        <div class="submenu-1">
+                            <ng-container *ngTemplateOutlet="showMenu; context: { $implicit: item.children }">
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                </li>
+            </ng-template>
+            <ng-container *ngTemplateOutlet="showMenu; context: { $implicit: headerMenuList.order }"></ng-container>
+        </ul>
+    </div>
+</ng-template>
+<!-- footer menu template -->
+<ng-template #footerMenu>
+    <nav class="flex flex-wrap justify-center items-center -mx-5 -my-2">
+        <a [routerLink]="['/']" class="flex items-center">
+            <img [src]="logo?logo:'/assets/img/qk.svg'" class="ml-3 max-w-[160px]" [alt]="title" crossorigin>
+            <!-- <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">قیدارکالا</span> -->
+        </a>
+        <ng-container *ngIf="footerMenuList">
+            <div class="px-5 py-2" *ngFor="let item of footerMenuList.order">
+                <a [href]="item.url" class="text-base leading-6 text-gray-500 hover:text-gray-900">
+                    {{item.content}}
+                </a>
+            </div>
+        </ng-container>
+    </nav>
+</ng-template>

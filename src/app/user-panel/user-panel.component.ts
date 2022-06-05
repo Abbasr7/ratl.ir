@@ -1,36 +1,62 @@
-import { AfterViewInit, Component, DoCheck, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { lastValueFrom } from 'rxjs';
-import { activePlans, IUserInfo, SuccessHandle } from '../controlers/interfaces/interfaces';
-import { AuthService } from '../controlers/services/auth.service';
-import { ServerService } from '../controlers/services/server.service';
+import { Component, DoCheck, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { filter, map, take } from 'rxjs';
+import { IUserInfo } from '../controlers/interfaces/interfaces';
 import { UserService } from '../controlers/services/user.service';
 import { Globals } from '../globals';
+
 
 @Component({
   selector: 'app-user-panel',
   templateUrl: './user-panel.component.html',
   styleUrls: ['./user-panel.component.css']
 })
-export class UserPanelComponent implements OnInit,DoCheck {
+export class UserPanelComponent implements OnInit, DoCheck {
 
-  constructor(private userService:UserService,private auth:AuthService,private router:Router) { }
-
+  constructor(private userService: UserService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private titleService: Title) { }
+  
+  title:string = this.activatedRoute.snapshot.data['title']
   apiUrl = Globals.apiUrl
-  userInfo:any ;
-  planBalance:activePlans[];
+  url = this.router.url
+  userInfo: IUserInfo = new IUserInfo;
+  
   ngOnInit() {
-    this.userInfo = this.userService.userInfo.value
-    this.planBalance = this.userService.getPlansBalance()
+    this.titleService.setTitle(this.title)
+    this.getUserInfo(),
+    this.setTitle()
   }
-  ngDoCheck(){
+  ngDoCheck() {
     // برای مشاهده تغییرات اعمال شده
-    this.userInfo = this.userService.userInfo.value
+    this.getUserInfo()
   }
 
-  logout(){
-    this.auth.logOut()
-    this.router.navigate(['/'])
+  getUserInfo(){
+    this.userService.userInfo.pipe(
+      take(2)
+    ).subscribe(res => {
+      this.userInfo = res
+    })
+  }
+
+  setTitle() {
+    this.router
+      .events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(() => {
+          const child = this.activatedRoute.firstChild;
+          this.url = this.router.url
+          if (child?.snapshot.data['title']) {            
+            return this.title +'- '+ child?.snapshot.data['title'];
+          }
+          return this.title;
+        })
+      ).subscribe(res => {
+        this.titleService.setTitle(res)
+      });
   }
 
 }

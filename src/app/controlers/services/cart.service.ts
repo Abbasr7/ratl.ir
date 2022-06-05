@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Globals } from 'src/app/globals';
 import { Product } from '../interfaces/interfaces';
 import { ServerService } from './server.service';
 
@@ -18,6 +19,7 @@ export class CartService {
     this.plan = id
     sessionStorage.setItem('cart',this.plan)
   }
+
   addToCartProduct(id:string){
     let exist = 0
     let item:any = {
@@ -46,12 +48,10 @@ export class CartService {
   }
 
   checkOut(planId:string,user:string){
-
     let args = {
       planid:planId,
       user:user,
     }
-    return this.server.create('/pay/checkout',args)
-
+    return this.server.create(Globals.paymentsApi.checkOut,args)
   }
 }

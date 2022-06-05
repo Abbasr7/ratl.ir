@@ -20,8 +20,7 @@ export class CartResolveGuard implements CanActivate {
     
     let id = <string>route.paramMap.get('id')
     let data:activePlans[] = this.isPriced(id)
-    console.log(data,data.length);
-    
+
     if (data.length > 0) {
       this.msg.sendMessage('شما قبلا این پلن را خریداری کرده اید و هنوز منقضی نشده اشت.','warning')
       return this.router.createUrlTree(['/'])

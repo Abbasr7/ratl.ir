@@ -1,87 +1,152 @@
-<div class="container mx-auto pt-24">
-    <div class="md:flex block shadow-lg ">
-        <div class="md:w-3/4 w-full bg-white px-10 py-10">
-            <div class="flex justify-between border-b pb-8">
-                <h1 class="font-semibold text-2xl">Shopping Cart</h1>
-                <h2 class="font-semibold text-2xl">3 Items</h2>
-            </div>
-            <div class="flex mt-10 mb-5">
-                <h3 class="font-semibold text-gray-600 text-xs uppercase w-2/5">Product Details</h3>
-                <h3 class="font-semibold text-gray-600 text-xs uppercase w-1/5 text-center">Quantity</h3>
-                <h3 class="font-semibold text-gray-600 text-xs uppercase w-1/5 text-center">Price</h3>
-                <h3 class="font-semibold text-gray-600 text-xs uppercase w-1/5 text-center">Total</h3>
-            </div>
-            <div class="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5">
-                <div class="flex w-2/5">
-                    <!-- product -->
-                    <div class="w-20">
-                        <img class="h-24" src="/assets/img/profile-pic.png" alt="">
-                    </div>
-                    <div class="flex flex-col justify-between mr-4 flex-grow">
-                        <span class="font-bold text-sm">{{data.title}}</span>
-                        <span class="text-red-500 text-xs">Apple</span>
-                        <a href="#" class="font-semibold hover:text-red-500 text-gray-500 text-xs">Remove</a>
+<div x-data="{ cartOpen: false , isOpen: false,modal:false }" class="bg-white">
+    <div class="w-full h-20 bg-gradient-to-r from-green-400 to-blue-500"></div>
+    <main class="my-8">
+        <div class="container mx-auto px-6">
+            <h3 class="text-gray-700 text-2xl font-medium">سبد خرید</h3>
+            <div class="flex flex-col items-center lg:flex-row mt-8 gap-3">
+
+                <div class="w-full mb-8 lg:mr-4 flex-shrink-0 order-1 lg:w-1/2 lg:mb-0 lg:order-2">
+                    <div class="flex justify-center group items-center lg:justify-start">
+                        
+                        <!-- <div class="border rounded-md max-w-md w-full px-4 py-3"> -->
+                        <ng-container *ngTemplateOutlet="selectedPlan;"></ng-container>
+                        <!-- </div> -->
+                        <div class="w-1/4 hidden md:flex h-48 relative" appScrollTo="payform">
+                            <div class="h-full group-hover:bounceAlpha2">
+                                <div class="flex relative h-1/2 flex-col gap-2">
+                                    <div class="arrow-top right-7"></div>
+                                </div>
+                                <div class="flex relative h-1/2 gap-2">
+                                    <div class="arrow-bottom right-7"></div>
+                                </div>
+                            </div>
+                            <div class="h-full group-hover:bounceAlpha">
+                                <div class="flex relative h-1/2 flex-col gap-2">
+                                    <div class="arrow-top right-10"></div>
+                                </div>
+                                <div class="flex relative h-1/2 gap-2">
+                                    <div class="arrow-bottom right-10"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="flex justify-center w-1/5">
-                    <svg class="fill-current text-gray-600 w-3" viewBox="0 0 448 512">
-                        <path
-                            d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
-                    </svg>
+                <div class="w-full lg:w-1/2 order-2">
+                    <div class="flex items-center">
+                        <button class="flex text-sm text-blue-500 focus:outline-none"><span
+                                class="flex items-center justify-center text-white bg-blue-500 rounded-full h-5 w-5 ml-2">۱</span>
+                            تایید مشخصات</button>
+                        <button class="flex text-sm text-gray-700 mr-8 focus:outline-none"><span
+                                class="flex items-center justify-center border-2 border-blue-500 rounded-full h-5 w-5 ml-2">۲</span>
+                            پرداخت</button>
+                        <button class="flex text-sm text-gray-500 mr-8 focus:outline-none" disabled><span
+                                class="flex items-center justify-center border-2 border-gray-500 rounded-full h-5 w-5 ml-2">۳</span>
+                            فعال شدن اشتراک</button>
+                    </div>
+                    <form class="mt-8 lg:w-3/4" id="payform">
+                        <div>
+                            <h4 class="text-sm text-gray-500 font-medium">مشخصات اشتراک:</h4>
+                            <div class="mt-6">
+                                <div
+                                    class="flex justify-between w-full bg-white rounded-md border-2 border-blue-500 p-4 focus:outline-none">
+                                    <div class="flex flex-col">
+                                        <span class="mr-2 text-gray-700">{{data.title}}</span>
+                                        <span class="mr-2 mt-1 text-sm text-gray-500">فعال برای:{{data.time? (' '+data.time.month +' ماه و '+ data.time.day +' روز'):''}}</span>
+                                    </div>
 
-                    <input class="mx-2 border text-center w-8" type="text" value="1">
+                                    <span class="text-green-600">{{ (data.cost|numWithComma) + ' تومان' }}</span>
+                                </div>
+                                <ng-container *ngIf="!loggedin[0]">
+                                    <h2 class="mt-6 mb-1 text-gray-700 text-lg">برای خرید اشتراک ابتدا باید وارد حساب کاربری
+                                        خود شوید:</h2>
+                                    <div class="flex items-center w-full bg-white rounded-md p-2 focus:outline-none">
+                                        <div class="flex items-center justify-between w-2/3 mx-auto">
+                                            <button class="btn btn-primary text-sm" (click)="modal=login"
+                                                x-on:click="modal = !modal">ورود</button>
+                                            <button class="btn btn-primary text-sm" (click)="modal=register"
+                                                x-on:click="modal = !modal">ثبت نام</button>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
 
-                    <svg class="fill-current text-gray-600 w-3" viewBox="0 0 448 512">
-                        <path
-                            d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
-                    </svg>
+                        <div class="flex items-center justify-between mt-8 relative" [ngClass]="{'blur-sm': !loggedin[0]}">
+                            <div class="absolute top-0 right-0 w-full h-full" *ngIf="!loggedin[0]"></div>
+                            <button [routerLink]="['/']"
+                                class="flex items-center text-gray-700 text-sm font-medium rounded hover:underline focus:outline-none">
+                                <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                                <span class="mx-2">بازگشت</span>
+                            </button>
+                            <button (click)="toPrice()" id="price"
+                                class="flex btn-purple px-3 py-2 items-center bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-gradient-to-bl focus:outline-none focus:bg-blue-500">
+                                <span class="ml-3">پرداخت</span>
+                                <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <span class="text-center w-1/5 font-semibold text-sm">{{data.cost}}</span>
-                <span class="text-center w-1/5 font-semibold text-sm">{{data.cost}}</span>
-            </div>
-
-            <a href="#" class="flex font-semibold text-indigo-600 text-sm mt-10">
-
-                <svg class="rotate-180 fill-current ml-2 text-indigo-600 w-4" viewBox="0 0 448 512">
-                    <path
-                    d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
-                </svg>
-                بازگشت به فروشگاه
-            </a>
-
-            <div class="container sm:flex justify-center gap-20 px-2 p-12 mx-auto" [ngClass]="{'border-4 border-red-500': !loggedin[0] && submitted}" *ngIf="!loggedin[0]">
-                <app-register-form></app-register-form>
-                <app-login-form></app-login-form>
             </div>
         </div>
-
-        <div id="summary" class="md:w-1/4 w-full px-8 py-10">
-            <h1 class="font-semibold text-2xl border-b pb-8">Order Summary</h1>
-            <div class="flex justify-between mt-10 mb-5">
-                <span class="font-semibold text-sm uppercase">Items 3</span>
-                <span class="font-semibold text-sm">{{data.cost}}</span>
-            </div>
-            <div>
-                <label class="font-medium inline-block mb-3 text-sm uppercase">Shipping</label>
-                <select class="block p-2 text-gray-600 w-full text-sm">
-                    <option>Standard shipping - $10.00</option>
-                </select>
-            </div>
-            <div class="py-10">
-                <label for="promo" class="font-semibold inline-block mb-3 text-sm uppercase">Promo Code</label>
-                <input type="text" id="promo" placeholder="Enter your code" class="p-2 text-sm w-full">
-            </div>
-            <button class="bg-red-500 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase">Apply</button>
-            <div class="border-t mt-8">
-                <div class="flex font-semibold justify-between py-6 text-sm uppercase">
-                    <span>Total cost</span>
-                    <span>{{data.cost}}</span>
-                </div>
-                <button id='btn1' (click)="toPrice()"
-                    class="bg-indigo-500 flex justify-center items-center font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">Checkout</button>
-            </div>
-        </div>
-
-    </div>
+    </main>
+    <app-modal [modalContent]="modal"></app-modal>
 </div>
 
+<ng-template #login>
+    <app-login-form redirect="self"></app-login-form>
+</ng-template>
+<ng-template #register>
+    <app-register-form></app-register-form>
+</ng-template>
+
+<ng-template #selectedPlan>
+    <!-- plan -->
+    <div class="shadow-lg rounded-2xl w-3/4 max-w-[370px] bg-white dark:bg-gray-800 p-4 wow fadeInUp "
+        data-wow-delay=".15s">
+        <p class="text-gray-800 dark:text-gray-50 text-xl font-medium mb-4">
+            {{ data.title }}
+        </p>
+        <p class="dark:text-white text-3xl font-bold text-gray-800">
+            {{ (data.cost |numWithComma) +' تومان' }}
+            <span class="text-gray-300 text-sm">
+                {{
+                data.time? ('/ '+data.time.month +' ماه و '+ data.time.day +' روز'):''
+                }}
+            </span>
+        </p>
+        <p class="text-gray-600 dark:text-gray-100  text-xs mt-4">
+            {{ data.description }}
+        </p>
+        <ul class="text-sm text-gray-600 dark:text-gray-100 w-full mt-6 mb-6">
+            <li class="mb-3 flex items-center" *ngFor="let item of data.items">
+                <svg class="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" width="6" height="6" stroke="currentColor"
+                    fill="#10b981" viewBox="0 0 1792 1792">
+                    <path
+                        d="M1412 734q0-28-18-46l-91-90q-19-19-45-19t-45 19l-408 407-226-226q-19-19-45-19t-45 19l-91 90q-18 18-18 46 0 27 18 45l362 362q19 19 45 19 27 0 46-19l543-543q18-18 18-45zm252 162q0 209-103 385.5t-279.5 279.5-385.5 103-385.5-103-279.5-279.5-103-385.5 103-385.5 279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z">
+                    </path>
+                </svg>
+                {{ item }}
+            </li>
+
+            <li class="mb-3 flex items-center opacity-50" *ngFor="let item of data.exceptions">
+                <svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" class="h-6 w-6 mr-2" fill="red"
+                    viewBox="0 0 1792 1792">
+                    <path
+                        d="M1277 1122q0-26-19-45l-181-181 181-181q19-19 19-45 0-27-19-46l-90-90q-19-19-46-19-26 0-45 19l-181 181-181-181q-19-19-45-19-27 0-46 19l-90 90q-19 19-19 46 0 26 19 45l181 181-181 181q-19 19-19 45 0 27 19 46l90 90q19 19 46 19 26 0 45-19l181-181 181 181q19 19 45 19 27 0 46-19l90-90q19-19 19-46zm387-226q0 209-103 385.5t-279.5 279.5-385.5 103-385.5-103-279.5-279.5-103-385.5 103-385.5 279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z">
+                    </path>
+                </svg>
+                {{ item }}
+            </li>
+
+        </ul>
+        <button type="button" disabled class="btn btn-primary w-full">
+            خرید اشتراک
+        </button>
+    </div>
+</ng-template>

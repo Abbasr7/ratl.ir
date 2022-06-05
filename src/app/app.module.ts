@@ -1,24 +1,23 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { AdminComponent } from './admin/admin.component';
-import { SidebarComponent } from './admin/sidebar/sidebar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { HttpInterceptorInterceptor } from './controlers/interceptors/http-interceptor.interceptor';
+
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { AdminComponent } from './admin/admin.component';
+import { SidebarComponent } from './admin/sidebar/sidebar.component';
 import { UserPanelComponent } from './user-panel/user-panel.component';
 import { RegisterComponent } from './user-panel/register/register.component';
 import { LoginComponent } from './user-panel/login/login.component';
 import { HeaderComponent } from './home/header/header.component';
 import { ProfileComponent } from './user-panel/profile/profile.component';
-import { NewUnitComponent } from './user-panel/new-unit/new-unit.component';
-import { NewPlanComponent } from './admin/new-plan/new-plan.component';
-import { PlansComponent } from './home/plans/plans.component';
+import { NewPlanComponent } from './admin/plans/new-plan/new-plan.component';
 import { CartComponent } from './shoping/cart/cart.component';
 import { MainPageComponent } from './home/main-page/main-page.component';
 import { LoginFormComponent } from './user-panel/login/login-form/login-form.component';
@@ -28,15 +27,26 @@ import { FooterComponent } from './home/footer/footer.component';
 import { HeroComponent } from './home/hero/hero.component';
 import { SettingComponent } from './admin/setting/setting.component';
 import { UsersComponent } from './admin/users/users.component';
-import { ModalDirective } from './controlers/directives/modal.directive';
 import { NotFoundComponent } from './home/not-found/not-found.component';
-import { NgxPaginationModule } from 'ngx-pagination';
-import { OrderModule } from 'ngx-order-pipe';
 import { RolesComponent } from './admin/roles/roles.component';
 import { AssignRolesComponent } from './admin/roles/assign-roles/assign-roles.component';
 import { MenusComponent } from './admin/menus/menus.component';
+import { ShowMenusComponent } from './home/header/show-menus/show-menus.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { OrderModule } from 'ngx-order-pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ShowMenusComponent } from './home/show-menus/show-menus.component';
+import { ScrollToDirective } from './controlers/directives/scroll-to.directive';
+import { PlansComponent } from './admin/plans/plans.component';
+import { PricedPlansComponent } from './user-panel/priced-plans/priced-plans.component';
+import { UserProjactsModule } from './modules/user-projacts/user-projacts.module';
+import { PagesComponent } from './admin/pages/pages.component';
+import { NewPageComponent } from './admin/pages/new-page/new-page.component';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+import { PaymentsComponent } from './admin/payments/payments.component';
+import { ShowPageComponent } from './home/show-page/show-page.component';
+import { LogoutComponent } from './user-panel/logout/logout.component';
+import { SharedModule } from './modules/shared/shared.module';
+import { EstimateComponent } from './user-panel/estimate/estimate.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +59,6 @@ import { ShowMenusComponent } from './home/show-menus/show-menus.component';
     LoginComponent,
     HeaderComponent,
     ProfileComponent,
-    NewUnitComponent,
     NewPlanComponent,
     PlansComponent,
     CartComponent,
@@ -61,12 +70,19 @@ import { ShowMenusComponent } from './home/show-menus/show-menus.component';
     HeroComponent,
     SettingComponent,
     UsersComponent,
-    ModalDirective,
     NotFoundComponent,
     RolesComponent,
     AssignRolesComponent,
     MenusComponent,
-    ShowMenusComponent
+    ShowMenusComponent,
+    PricedPlansComponent,
+    PagesComponent,
+    NewPageComponent,
+    PaymentsComponent,
+    ShowPageComponent,
+    LogoutComponent,
+    ScrollToDirective,
+    EstimateComponent,
   ],
   imports: [
     BrowserModule,
@@ -77,11 +93,15 @@ import { ShowMenusComponent } from './home/show-menus/show-menus.component';
     NgxPaginationModule,
     OrderModule,
     BrowserAnimationsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    UserProjactsModule,
+    AngularEditorModule,
+    SharedModule
   ],
   providers: [
     {provide:HTTP_INTERCEPTORS, useClass:HttpInterceptorInterceptor, multi:true},
     {provide:JWT_OPTIONS, useValue:JWT_OPTIONS},JwtHelperService,
+    Title
   ],
   bootstrap: [AppComponent]
 })

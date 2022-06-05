@@ -1,12 +1,12 @@
-<div class="w-full h-full">
+<div class="w-full max-w-full h-full">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
-    <div class="flex flex-no-wrap" x-data="{sidebar: false}">
+    <div class="flex flex-nowrap" x-data="xdatasetup">
         <app-sidebar></app-sidebar>
-        <div class="container" x-data="xtestdata">
+        <div class="container">
             <!-- TOP NAVIGATION -->
             <header class="flex justify-between items-center p-6">
                 <div class="flex items-center space-x-4 lg:space-x-0">
-                    <button x-on:click="sidebar = true"
+                    <button x-on:click="sidebar = !sidebar"
                         class="text-gray-500 dark:text-gray-300 focus:outline-none lg:hidden ml-2">
                         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M4 6H20M4 12H20M4 18H11" stroke="currentColor" stroke-width="2"
@@ -15,7 +15,7 @@
                     </button>
 
                     <div>
-                        <h1 class="text-2xl font-medium text-gray-800 dark:text-white">Overview</h1>
+                        <h1 class="text-2xl font-medium text-gray-800 dark:text-white">پیشخوان مدیریت</h1>
                     </div>
                 </div>
 
@@ -50,10 +50,9 @@
                     <div x-data="{ dropdownOpen: false }" class="relative">
                         <button x-on:click="dropdownOpen = ! dropdownOpen"
                             class="flex items-center space-x-2 relative focus:outline-none">
-                            <h2 class="text-gray-700 dark:text-gray-300 text-sm hidden sm:block">Jones Ferdinand</h2>
+                            <h2 class="text-gray-700 dark:text-gray-300 text-sm hidden sm:block">{{userInfo.user.fullname}}</h2>
                             <img class="h-9 w-9 rounded-full border-2 border-purple-500 object-cover"
-                                src="/assets/img/profile-pic.png"
-                                alt="Your avatar">
+                            [src]="userInfo.user.imgurl?apiUrl+userInfo.user.imgurl:'/assets/img/profile-pic.png'" crossorigin [alt]="userInfo.user.fullname">
                         </button>
 
                         <div class="absolute left-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10"
@@ -62,20 +61,30 @@
                             x-transition:leave="transition ease-in duration-75 transform"
                             x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
                             x-on:click.away="dropdownOpen = false">
-                            <a href="#"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-600 hover:text-white">Profile</a>
-                            <a href="#"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-600 hover:text-white">Tickets</a>
-                            <a href="/login"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-600 hover:text-white">Logout</a>
+                            <a [routerLink]="['/user/'+userInfo.user._id]"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-600 hover:text-white">پروفایل</a>
+                            <a [routerLink]="['/']"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-600 hover:text-white">پیامها</a>
+                            <a [routerLink]="['/logout']"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-600 hover:text-white">خروج</a>
                         </div>
                     </div>
                 </div>
             </header>
             <div class="w-full mt-2 md:p-5 shadow-sm rounded">
+                <ng-container *ngIf="url == '/admin'">
+                    <ng-container *ngTemplateOutlet="home;"></ng-container>
+                </ng-container>
                 <!-- Place your content here -->
                 <router-outlet></router-outlet>
             </div>
         </div>
     </div>
 </div>
+
+<ng-template #home>
+    <div class="flex flex-wrap">
+        <app-payments class="w-full"></app-payments>
+        <app-users class="w-full mt-10"></app-users>
+    </div>
+</ng-template>

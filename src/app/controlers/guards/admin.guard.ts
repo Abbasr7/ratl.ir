@@ -1,9 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { last, lastValueFrom, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Globals } from 'src/app/globals';
-import { IRole } from '../interfaces/interfaces';
 import { MessagesService } from '../services/messages.service';
 import { UserService } from '../services/user.service';
 
@@ -13,7 +12,6 @@ import { UserService } from '../services/user.service';
 export class AdminGuard implements CanActivate {
 
   constructor(private userService:UserService,
-    private http:HttpClient,
     private msg:MessagesService,
     private router:Router){}
 
@@ -22,13 +20,15 @@ export class AdminGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.isAdmin();
+      let access = route.data['access'];
+
+      return this.hasAccess(route.data['access']);
   }
   
-  async isAdmin(){
-    let access = await this.userService.hasPromit('admin')
+  async hasAccess(access:string){
+    let hasAccess = await this.userService.hasPromit(access)
 
-    if (access) {
+    if (hasAccess) {
       return true
     } else {
       this.msg.sendMessage('شما دسترسی کافی به این مورد را ندارید.','warning')

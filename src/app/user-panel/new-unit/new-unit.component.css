@@ -1,0 +1,3 @@
+.ng-submitted input.ng-invalid{
+    @apply ring-2 ring-red-500 text-red-500 placeholder:text-red-500
+}

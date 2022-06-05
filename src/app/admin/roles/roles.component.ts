@@ -1,9 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ErrorHandler, OnInit } from '@angular/core';
 import { NgForm,FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, catchError, map, Observable, ReplaySubject, Subscription, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, ReplaySubject, Subscription, take, tap, throwError } from 'rxjs';
 import { IRole, SuccessHandle } from 'src/app/controlers/interfaces/interfaces';
 import { ServerService } from 'src/app/controlers/services/server.service';
+import { Globals } from 'src/app/globals';
 
 
 @Component({
@@ -24,7 +25,7 @@ export class RolesComponent implements OnInit {
   accessList:string[]
   admin:IRole
   exists:string ;
-
+  rolesApi = Globals.adminApi
 
   form:FormGroup = new FormGroup({
     role: new FormControl('',[Validators.required]),
@@ -32,8 +33,9 @@ export class RolesComponent implements OnInit {
   })
 
   ngOnInit(): void {
-    this.subscribe = this.server.get('/admin/getdata?type=role').pipe(
-      map(i => i as SuccessHandle)
+    this.subscribe = this.server.get(this.rolesApi.getdata+'?type=role').pipe(
+      map(i => i as SuccessHandle),
+      take(1)
     ).subscribe(res =>{
       this.roles = res.data
       this.admin = res.data.find((role:IRole) => role.nameid == "root-admin")
@@ -55,12 +57,13 @@ export class RolesComponent implements OnInit {
     this.loading = true
     let data = { title :this.form.value['role'], access: this.accessVal }
 
-    this.server.create('/admin/roles',data).pipe(
+    this.server.create(this.rolesApi.createRole,data).pipe(
       catchError((error:HttpErrorResponse) =>{
         this.loading = false
         return throwError(()=> 'error')
       }),
       map(i => i as SuccessHandle),
+      take(1)
     ).subscribe((res) =>{
       this.loading = false
       this.accessVal = []
@@ -108,7 +111,7 @@ export class RolesComponent implements OnInit {
         break;
       case 'delete':
         let selected:any = this.roles.find((i:any) => i.role == nameid);
-        this.server.delete('/roles?data='+selected?.title).pipe().subscribe((res) => {
+        this.server.delete(this.rolesApi.deleteRole+'?nameid='+nameid).pipe().subscribe((res) => {
             console.log(res);
             this.roles.splice(this.roles.indexOf(selected),1)
             this.editMode = '';
@@ -127,7 +130,9 @@ export class RolesComponent implements OnInit {
     let role:any = this.roles.find(i => i.nameid == nameid)
     role.title = title_val
 
-    this.server.update('/admin/roles',role).subscribe((res) => {
+    this.server.update('/admin/roles',role).pipe(
+      take(1)
+    ).subscribe((res) => {
       this.editMode = '';
     })
   }

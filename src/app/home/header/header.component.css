@@ -1,5 +1,5 @@
 .sticky {
-    position: fixed;
+    @apply fixed right-auto;
     z-index: 9999;
     background-color: rgb(255 255 255 / var(--tw-bg-opacity));
     --tw-bg-opacity: 0.8;
@@ -12,10 +12,7 @@
     backdrop-filter: blur(5px);
     box-shadow: inset 0 -1px 0 0 rgb(0 0 0 / 10%);
 }
-.sticky #navbarCollapse li a {
-    --tw-text-opacity: 1;
-    color: rgb(9 14 52 / var(--tw-text-opacity));
-}
+
 .sticky .loginBtn {
     --tw-text-opacity: 1;
     color: rgb(9 14 52 / var(--tw-text-opacity));
@@ -31,7 +28,4 @@
 }
 .sticky .nav-cart {
     @apply text-gray-800
-}
-.sticky #navbarToggler span{
-    @apply bg-gray-800
 }

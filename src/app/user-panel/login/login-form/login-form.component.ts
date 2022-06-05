@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Component, Input, OnInit, Renderer2 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { map } from 'rxjs';
@@ -26,7 +26,7 @@ export class LoginFormComponent implements OnInit {
     ) { }
 
   
-  title:string
+  @Input() redirect:string
   
   loading: boolean = false;
   submitted: boolean = false
@@ -62,7 +62,11 @@ export class LoginFormComponent implements OnInit {
         this.authService.loggedIn = true
         this.user.setUserInfo()
         this.msg.sendMessage('ورود موفقیت آمیز بود.خوش آمدید.','success')
-        this.router.navigate([this.authService.redirectUrl?`/${this.authService.redirectUrl}`:'/'])
+        if (this.redirect == 'self') {
+          location.reload()
+        } else {
+          this.router.navigate([this.authService.redirectUrl?`/${this.authService.redirectUrl}`:'/'])
+        }
       },
       error:(err) =>{
         console.log(err);

@@ -4,9 +4,8 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { activePlans, IRole, IUser, IUserInfo, SuccessHandle } from '../interfaces/interfaces';
 import { Globals } from '../../globals';
 import { Router, UrlSegment } from '@angular/router';
-import { BehaviorSubject, lastValueFrom, map, of, tap } from 'rxjs';
+import { BehaviorSubject, lastValueFrom, map, of, take, tap } from 'rxjs';
 import { AuthService } from './auth.service';
-
 
 @Injectable({
   providedIn: 'root'
@@ -18,11 +17,11 @@ export class UserService {
     this.setUserInfo()
   }
 
-  private Url = Globals.apiUrl;
+  private Url = Globals.apiUrl
+  private usersApi = Globals.usersApi;
   public redirectUrl: UrlSegment[];
   public userInfo = new BehaviorSubject(new IUserInfo)
   public token: string
-
 
   getToken() {
     return <string>localStorage.getItem('auth-token');
@@ -34,7 +33,7 @@ export class UserService {
   getUserInfo() {
     let authenticate = this.auth.isTokenValid()
     if (authenticate) {
-      return this.http.get(this.Url + '/user/userinfo?type=all')
+      return this.http.get(this.Url + this.usersApi.userinfo)
     }
     return of(0)
   }
@@ -73,7 +72,7 @@ export class UserService {
           plans.push(xx)
         } else {
           // برای غیرفعال کردن پلن منقضی شده
-          lastValueFrom(this.http.put(this.Url + "/pay/dpay", { id: x._id })).then();
+          lastValueFrom(this.http.put(this.Url + Globals.paymentsApi.deactivePlan, { id: x._id })).then();
         }
 
       });
@@ -84,11 +83,10 @@ export class UserService {
 
   }
 
-  changePassword(params:{}){
-    console.log(params);
-    
-    return this.http.put(this.Url+'/user/changepassword',params)
+  changePassword(params: {}) {
+    return this.http.put(this.Url + this.usersApi.editPassword, params)
   }
+
   editUser(data: IUser, pic: File) {
     let formData = new FormData();
     formData.append('id', data._id)
@@ -99,29 +97,23 @@ export class UserService {
     data.address ? formData.append('address', data.address) : '';
     data.phone ? formData.append('phone', data.phone) : '';
 
-    return this.http.put(this.Url + '/user/edituser', formData)
+    return this.http.put(this.Url + this.usersApi.edit, formData)
   }
 
   async hasPromit(permit: string) {
-    let res = false
+    let result = false
+    
     let user_info = await lastValueFrom(this.http.get(this.Url + '/user/userinfo?type=role').pipe(
       map(res => res as SuccessHandle),
       map(res => res.data as IRole)
     ))
-
-    if (permit == 'admin') {
-      
-      let access = user_info.access.find((permission: any) => permission == 'all')
-      if (user_info.nameid == 'root-admin' && access) {
-        res = true
-      }
-    } else {
-      let access = user_info.access.find((permission: any) => permission == permit)
-      if (access) {
-        res = true
-      }
+    let access = user_info.access.find((permission: any) => {
+      return permission == 'all' || permission == permit
+    })
+    if (access?.length) {
+      result = true
     }
 
-    return res
+    return result
   }
 }

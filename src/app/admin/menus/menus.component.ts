@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { ServerService } from 'src/app/controlers/services/server.service';
 import * as $ from 'jquery'
 import { lastValueFrom } from 'rxjs';
@@ -6,6 +6,8 @@ import { map } from 'rxjs';
 import { SuccessHandle } from 'src/app/controlers/interfaces/interfaces';
 import { MessagesService } from 'src/app/controlers/services/messages.service';
 import { Spinner } from 'src/app/controlers/utils';
+import { SettingsService } from 'src/app/controlers/services/settings.service';
+import { Globals } from 'src/app/globals';
 const event = new Event('updateOutput');// برای اپدیت کردن ترتیب آیتم های فهرست
 
 @Component({
@@ -17,10 +19,13 @@ export class MenusComponent implements OnInit {
 
   constructor(private server: ServerService,
     private msg: MessagesService,
-    private spinner: Spinner) { }
+    private spinner: Spinner,
+    private settingsService: SettingsService) { }
 
-  list: any[] = []
+  list: any[] = [];
+  settings:any
   loading = false
+  menusApi = Globals.publicApi.getMenus
 
   ngOnInit(): void {
     this.getListsAndItems()
@@ -28,11 +33,11 @@ export class MenusComponent implements OnInit {
   }
 
   getListsAndItems() {
-    this.server.get('/admin/menus').pipe(
+    this.server.get(this.menusApi).pipe(
       map(i => i as SuccessHandle),
     ).subscribe(res => {
-      res.data.lists.map((x: any) => x.order ? x.order = JSON.parse(x.order) : '')
-      this.list = res.data.lists
+      res.data.map((x: any) => x.order ? x.order = JSON.parse(x.order) : '')
+      this.list = res.data
     })
   }
 
@@ -55,9 +60,10 @@ export class MenusComponent implements OnInit {
 
   }
 
-  getCurrentListTitle(id: string) {
-    let currentList = this.list.find(i => i._id == id)
-    return currentList.title
+  getCurrentListSelected(loc: string,id:string) {
+    let settings:any = this.settingsService.settings.value;
+
+    return settings[loc] == id
   }
 
   addList(listName: HTMLInputElement) {
@@ -78,10 +84,34 @@ export class MenusComponent implements OnInit {
     lastValueFrom(this.server.create('/admin/menus', data).pipe(
       map(i => i as SuccessHandle)
     )).then(res => {
-
       this.list.push(res.data)
       $('#lists').append(item)
       listName.value = ''
+    })
+  }
+
+  editList(id:string,title:string){
+    this.loading = true
+    let data = {
+      type: 'editlist',
+      listId: id,
+      title: title
+    }
+    
+    lastValueFrom(this.server.create('/admin/menus', data)).then(res => {
+      this.loading = false
+    })
+  }
+  menuLocation(el:HTMLSelectElement,flag:string){
+    let data:any = {};
+    data[flag] = el.value
+    this.loading = true
+    
+    lastValueFrom(this.server.update('/admin/settings/menu/'+flag ,data)).then((res:any) =>{
+      this.loading = false
+      this.spinner.addSuccessIcon('#spinner')
+    }).catch(()=>{
+      this.loading = false
     })
   }
 
@@ -97,8 +127,6 @@ export class MenusComponent implements OnInit {
     }
     let dataId = Date.now()
     let data = {
-      // type: 'item',
-      // listId: parentList.value,
       id: dataId,
       content: title.value,
       url: url.value
@@ -114,7 +142,7 @@ export class MenusComponent implements OnInit {
   }
 
   openEditSection(item: HTMLElement) {
-    let item_setting = $(item).closest(".dd-item").find(".item-settings").first();
+    let item_setting = $(item).closest(".listitem").find(".item-settings").first();
 
     if (item_setting.hasClass("d-none")) {
       item_setting.removeClass("d-none");
@@ -126,11 +154,10 @@ export class MenusComponent implements OnInit {
   deleteItem(elm: HTMLElement,type:string,id:string = '',index:number = 0) {
     this.loading = true
     if (type=='item') {
+      this.loading = false
       $(elm).closest(".dd-item").first().remove();
       document.dispatchEvent(event)
     } else {
-      console.log(id);
-      
       lastValueFrom(this.server.delete('/admin/menus?id='+id)).then((res:any) => {
         if (res.data == 1) {
           this.loading = false
@@ -142,16 +169,18 @@ export class MenusComponent implements OnInit {
   }
 
   saveMenuOrder(listId: string, order: HTMLTextAreaElement) {
+    this.loading = true
     this.spinner.addSpinner('.saveOrder');
     let data = {
       type: 'order',
       listId: listId,
       order: order.value
     }
-
+    
     lastValueFrom(this.server.create('/admin/menus', data)).then((res: any) => {
       this.spinner.removeSpinner('.saveOrder')
       this.msg.sendMessage('با موفقیت ذخیره شد', 'success')
+      this.loading = false
     })
 
   }

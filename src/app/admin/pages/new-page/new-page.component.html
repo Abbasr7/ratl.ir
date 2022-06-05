@@ -1,0 +1,22 @@
+<div class="mx-auto w-11/12 bg-white shadow">
+    <form [formGroup]="form" class="grid grid-cols-4" (ngSubmit)="save()">
+        <div class="col-span-4 flex flex-col justify-center mb-2 p-5">
+            <h1 class="text-gray-800 text-lg mb-3">ایجاد صفحه جدید:</h1>
+            <div class="w-1/3">
+                <label for="title" class="text-sm text-gray-700">عنوان صفحه</label>
+                <input formControlName="title" type="text" class="text-input" placeholder="عنوان را وارد کنید">
+            </div>
+            <div class="w-1/3">
+                <label for="title" class="text-sm text-gray-700">چکیده</label>
+                <input formControlName="abstract" type="text" class="text-input" placeholder="اختیاری">
+            </div>
+        </div>
+        <angular-editor class="col-span-4" formControlName="htmlcontent" [config]="editorConfig"></angular-editor>
+
+        <div class="col-span-full flex justify-end py-5 px-10">
+            <button class="btn btn-primary flex justify-between items-center publish" [disabled]="loading">ذخیره و انتشار</button>
+        </div>
+    </form>
+</div>
+<br>
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>

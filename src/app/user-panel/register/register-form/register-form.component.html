@@ -1,7 +1,7 @@
 <form [formGroup]="form" (ngSubmit)="register()" class="bg-white">
     <h1 class="text-gray-800 font-bold text-2xl mb-2">به جمع ما بپیوندید!</h1>
     <p class="text-sm font-normal text-gray-600 mb-7">اطلاعات خواسته شده را به دقت وارد کنید.</p>
-    <div class="max-w-xs">
+    <div class="max-w-xs mx-auto">
         <div class="flex items-center border-2 py-2 px-3 mt-4 gap-1 rounded-2xl"
             [ngClass]="{'border-red-300': submitted && f['fullname'].errors}">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20"

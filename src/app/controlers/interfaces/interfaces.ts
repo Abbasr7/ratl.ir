@@ -10,40 +10,52 @@ export interface IRole {
     access: string[]
 }
 
-export interface IUser {
-    _id: string,
-    username: string,
-    email: string,
-    fullname:string,
-    address: string,
-    role: IRole,
-    phone:string,
+export class IUser {
+    _id: string;
+    username: string;
+    email: string;
+    fullname:string;
+    address: string;
+    role: IRole;
+    phone:string;
     imgurl: String  
 }
 
-export interface Iplans{
-    _id:string,
-    title:string,
+export class Iplans{
+    _id:string;
+    title:string;
     time:{
-        month:Number,
+        month:Number;
         day:Number
-    },
-    cost:string,
+    };
+    items:string[];
+    exceptions:string[];
+    cost:number=0;
     description:String
+}
+
+export class IPages{
+    _id: string;
+    userid: IUser;
+    title: string;
+    abstract: string;
+    htmlcontent: string;
+    createdAt:any;
 }
 
 export interface Ipayments{
     _id:string,
-    userid:String,
-    planid:String|Iplans,
+    userid:IUser,
+    planid:Iplans,
     pay_id:String,
     transaction_id:String,
-    amount:string,
+    amount:number,
     active:boolean,
     fullname:string,
     email:String,
     phone:Number,
     description:String,
+    createdAt:String
 }
 
 export class IUserInfo{
@@ -78,10 +90,96 @@ export interface IAccessControlLevel{
 }
 
 // menus
-export interface IMenuItems{
-    _id:string,
-    listId:string,
-    dataId:string,
-    title:string,
-    url:string
+export class IMenu{
+    _id:string;
+    title:string;
+    order:IMenuItems[]
+}
+export class IMenuItems{
+    content:string;
+    url:string;
+    children:IMenuItems[]
+}
+// settings
+export class ISettings{
+    userid: string;
+    title: string;
+    logo: string;
+    keywords:  string;
+    description: string;
+    metatags: object[];
+    headermenu: string;
+    footermenu: string;
+    footer: {
+      social: ISocials;
+      extraHtml: string;
+      description: string
+    }
+}
+
+export class ISocials{
+    telegram: string;
+    instagram: string;
+    twitter: string;
+    linkedin: string;
+    github: string
+}
+
+export interface IProjacts{
+    investForm: {
+        title: {
+            type: String,
+            required: true
+        },
+        building: [],
+        landscaping: [],
+        equipment: [],
+        vehicles: [],
+        officeEquipment: [],
+        preOperation: {
+            research: [],
+            otherVariousCosts: [],
+            staffTraining: [],
+            tolidAzmayeshi: [],
+        },
+        pishbiniNashode: [],
+    },
+    salaryForm: {
+        jobTitles: [],
+        jobLevels: [],
+        employees: [],
+    },
+    fundAndExpensesForm: {
+        time: [],
+        mavadAvalie: [],
+        zarfiyateSalane: [],
+        hazineJari: {
+            water: {
+                count: [],
+                cost: [],
+                percent: [],
+            },
+            gasWarmSeasons: {
+                count: [],
+                cost: [],
+                percent: [],
+            },
+            gasColdSeasons: {
+                count: [],
+                cost: [],
+                percent: [],
+            },
+            electricity: {
+                count: [],
+                cost: [],
+                percent: [],
+            },
+            phoneAndInternet: {
+                count: [],
+                cost: [],
+                percent: [],
+            },
+            salaryPercent: []
+        },
+    }
 }

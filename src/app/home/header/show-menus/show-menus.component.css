@@ -1,0 +1,37 @@
+#navbarToggler span{
+    background-color: #fff;
+}
+#navbarCollapse{
+    @apply absolute w-[97%] lg:py-0 bg-white lg:bg-transparent shadow-lg rounded-lg lg:max-w-full lg:w-full right-4 top-full lg:block lg:static lg:shadow-none
+}
+.menu-1{
+    @apply flex lg:static items-center gap-2 sticky
+}
+.link{
+    @apply inline-flex lg:block px-3 py-4 cursor-pointer text-base lg:text-white lg:group-hover:text-white lg:py-6 
+}
+.has-child{
+    @apply relative pl-6 after:absolute after:w-2 after:h-2 after:border-b-2 after:border-r-2 after:border-current after:rotate-45 after:left-0 after:top-1/2 after:-translate-y-1/2 after:mt-[-2px]
+}
+.submenu-1 .has-child{
+    @apply after:left-2  lg:after:rotate-[135deg]
+}
+.submenu-1{
+    @apply bg-white w-max lg:w-56 hidden lg:py-3 absolute right-1 top-full lg:right-0 lg:top-full lg:hidden opacity-0 shadow-md rounded transition-all
+}
+.submenu-1 li{
+    @apply w-max px-7 lg:px-3 lg:w-full lg:py-3 text-gray-800 hover:bg-gray-100
+}
+.submenu-1 .submenu-1{
+    @apply lg:right-full lg:top-0 top-full
+}
+.has-child:hover > .submenu-1{
+    @apply flex md:block opacity-100 transition-all duration-300
+}
+
+.stiked li.link {
+    color: rgb(9 14 52 / var(--tw-text-opacity));
+}
+.stiked #navbarToggler span{
+    @apply bg-gray-800
+}

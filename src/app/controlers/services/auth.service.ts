@@ -14,11 +14,11 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private msg:MessagesService,
-    private router:Router,
     private jwtHelper: JwtHelperService) { 
     }
 
   private Url = Globals.apiUrl;
+  private usersApi = Globals.usersApi;
   public pattern = /^([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_\-\+\/=]*)/i
   public loggedIn:boolean = false
   public redirectUrl:string|UrlSegment[]
@@ -30,15 +30,14 @@ export class AuthService {
   }
 
   Login(data: string) {
-    return this.http.post(`${this.Url}/user/login`, data);
+    return this.http.post(this.Url+this.usersApi.login, data);
   }
 
   async logOut() {
-    await lastValueFrom(this.http.post(`${this.Url}/user/logout`, '')).then(res =>{
+    await lastValueFrom(this.http.post(this.Url+this.usersApi.logout, '')).then(res =>{
       this.loggedIn = false
       localStorage.removeItem('auth-token');
     }).catch(err => {
-      console.log(err);
       this.msg.sendMessage('مشکلی در خروج از حساب کاربری رخ داد','warning')
     })
   }
@@ -92,7 +91,7 @@ export class AuthService {
 
   private async checkForLogin(){
     let login = false
-    let res = await lastValueFrom(this.http.get(this.Url+`/user/authenticate?token=${this.getToken()}`)).then((val:any) => {
+    await lastValueFrom(this.http.get(this.Url+this.usersApi.verifyToken+`?token=${this.getToken()}`)).then((val:any) => {
       if (val.data[0] == true) {
         login = true
       }

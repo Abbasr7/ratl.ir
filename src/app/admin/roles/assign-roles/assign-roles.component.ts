@@ -4,6 +4,7 @@ import { IRole, IUser, SuccessHandle } from 'src/app/controlers/interfaces/inter
 import { ServerService } from 'src/app/controlers/services/server.service';
 import { UserService } from 'src/app/controlers/services/user.service';
 import { Spinner } from 'src/app/controlers/utils';
+import { Globals } from 'src/app/globals';
 
 @Component({
   selector: 'app-assign-roles',
@@ -34,7 +35,7 @@ export class AssignRolesComponent implements OnInit {
     let selectedItem = (<HTMLInputElement>$event.target).value
     this.user.role._id = selectedItem
 
-    let save = lastValueFrom(this.server.update('/user/changerole',this.user)).then(res => {
+    let save = lastValueFrom(this.server.update(Globals.usersApi.editRole,this.user)).then(res => {
       this.spinner.removeSpinner('#success-icon')
       this.spinner.addSuccessIcon('#success-icon')
     })

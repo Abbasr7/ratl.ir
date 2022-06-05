@@ -1,21 +1,21 @@
 /* Admin Sidebar */
 .sidebar-li {
-    @apply transition-all duration-300 flex w-full justify-between text-gray-400 hover:text-gray-300 cursor-pointer p-3
+    @apply transition-all duration-200 flex w-full justify-between min-h-[48px] text-gray-700 hover:text-blue-900 cursor-pointer p-3
 }
 .sidebar-li-a {
-    @apply flex items-center focus:outline-none 
+    @apply flex items-center focus:outline-none hover:text-sky-700
 }
 .sidebar-rbtn {
-    @apply h-10 w-10 md:hidden text-white bg-gray-800 absolute right-72 mt-16 -mr-10 flex items-center shadow rounded-tr rounded-br justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 rounded focus:ring-gray-800
+    @apply h-10 w-10 md:hidden text-white bg-gray-600 absolute right-72 mt-16 -mr-10 flex items-center shadow rounded-tr rounded-br justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 rounded focus:ring-gray-800
 }
 .sidebar-badge{
-    @apply py-1 px-3 bg-gray-600 rounded text-gray-300 flex items-center justify-center text-xs
+    @apply py-1 px-3 bg-gray-400 rounded text-gray-50 flex items-center justify-center text-xs
 }
 .sidebar-fixed-btn{
     @apply focus:outline-none focus:ring-2 rounded focus:ring-gray-300
 }
 .active {
-    @apply bg-slate-600 rounded-full text-white font-medium transition-all duration-300
+    @apply bg-gray-400 rounded-full text-white font-medium transition-all duration-300
 }
 .active-badges{
     @apply bg-pink-500 text-white font-medium

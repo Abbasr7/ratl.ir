@@ -1,6 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable, Renderer2, RendererFactory2 } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { AbstractControl, FormGroup } from "@angular/forms";
 import * as $ from 'jquery';
 
 @Injectable({
@@ -20,6 +20,18 @@ export class customValidate {
             else {
                 return passwordConfirmationInput.setErrors(null);
             }
+        }
+    }
+
+    checkFormArrayValue(...args: string[]) {
+        return (controls: AbstractControl) => {
+            args.forEach(arg => {
+                if (controls.get(arg)!.value.length == 0 || controls.get(arg)!.value[0].title == '') {
+                    return controls.get(arg)!.setErrors({ required: true })
+                } else {
+                    return controls.get(arg)!.setErrors(null)
+                }
+            });
         }
     }
 

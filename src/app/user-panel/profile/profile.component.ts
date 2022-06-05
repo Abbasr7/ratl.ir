@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, map, of, Subscription, throwError } from 'rxjs';
+import { catchError, map, of, Subscription, take, throwError } from 'rxjs';
 import { IRole, IUser, SuccessHandle } from 'src/app/controlers/interfaces/interfaces';
 import { MessagesService } from 'src/app/controlers/services/messages.service';
 import { ServerService } from 'src/app/controlers/services/server.service';
@@ -147,6 +147,7 @@ export class ProfileComponent implements OnInit, OnDestroy, DoCheck {
         this.loading = false
         return throwError(() => of(error))
       }),
+      take(1)
     )
     .subscribe((res) => {
       this.subscribe.unsubscribe()
