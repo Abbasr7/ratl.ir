@@ -3,26 +3,30 @@ import { CommonModule } from '@angular/common';
 import { NumWithCommaPipe } from 'src/app/controlers/pipes/num-with-comma.pipe';
 import { NumWithCommaDirective } from 'src/app/controlers/directives/num-with-comma.directive';
 import { ModalComponent } from 'src/app/home/modal/modal.component';
-import { ShowPlansComponent } from 'src/app/home/plans/show-plans.component';
-
-
+import { AppRoutingModule } from 'src/app/app-routing.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
     NumWithCommaPipe,
     NumWithCommaDirective,
     ModalComponent,
-    ShowPlansComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    AppRoutingModule,
+    MatTooltipModule,
+    MatTabsModule
   ],
   exports: [
     CommonModule,
     NumWithCommaDirective,
     NumWithCommaPipe,
     ModalComponent,
-    ShowPlansComponent
+    MatTooltipModule,
+    AppRoutingModule,
+    MatTabsModule
   ]
 })
 export class SharedModule { }

@@ -5,13 +5,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class NumWithCommaPipe implements PipeTransform {
 
-  transform(value: number, ...args: number[]): string {
-    return this.numberWithCommas(value);
-
+  transform(value: any, ...args: number[]): string {
+    return value?this.numberWithCommas(value):'';
   }
 
-  numberWithCommas (x:number) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  numberWithCommas (x:any) {
+    let v = Math.round(x)
+    return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
 }

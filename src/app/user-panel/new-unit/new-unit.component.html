@@ -767,7 +767,7 @@
                             </svg>
                         </button>
                         <!-- if user Has Active Plan -->
-                        <button *ngIf="userHasActivePlan()" class="btn btn-success flex gap-2"
+                        <button *ngIf="userHasActivePlan()" id="estimate" class="btn btn-success flex gap-2"
                             (click)="saveAndEstimate()" matStepperNext>
                             <span>پایان</span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -780,20 +780,6 @@
 
                     </div>
                 </form>
-            </div>
-        </mat-step>
-        <!-- 4 -->
-        <mat-step>
-            <ng-template matStepLabel>
-                <p>براورد هزینه ها</p>
-            </ng-template>
-            <div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <div class="mt-1 mb-3 col-span-6">
-                    <span>جدول استهلاك ماشین آلات تجهيزات </span>
-                    <ng-container
-                        *ngTemplateOutlet="estehlak; context:{$implicit: investForm.value.equipment, type: 'equipment'}">
-                    </ng-container>
-                </div>
             </div>
         </mat-step>
 
@@ -838,55 +824,6 @@
     <option *ngFor="let item of fundAndExpensesForm.value.mavadAvalie" [value]="item.scale">
 </datalist>
 
-<!-- estehlak -->
-<ng-template #estehlak let-list let-type="type">
-    <div class="text-gray-700 mb-3 text-sm flex items-center gap-2">
-        <span class="flex items-center gap-2">
-            <span>نرخ(درصد)</span>
-            <input class="text-input" type="number" (change)="rateChanged($event,type)" [value]="rateValue(type)">
-        </span>
-        <div class="relative flex items-center px-3">
-            <span class="ml-2">- سال:</span>
-            <select [(ngModel)]="year"
-                class="border border-gray-300 rounded-full text-gray-600 h-10 px-4 bg-white hover:border-gray-400 focus:outline-none">
-                <option [value]="1">اول</option>
-                <option [value]="2">دوم</option>
-                <option [value]="3">سوم</option>
-                <option [value]="4">چهارم</option>
-                <option [value]="5">پنجم</option>
-                <option [value]="6">ششم</option>
-                <option [value]="7">هفتم</option>
-                <option [value]="8">هشتم</option>
-                <option [value]="9">نهم</option>
-                <option [value]="10">دهم</option>
-            </select>
-        </div>
-    </div>
-    <table class="w-full table-auto">
-        <thead>
-            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                <th class="py-3 px-6 text-right cursor-pointer">شرح</th>
-                <th class="py-3 px-6 text-right cursor-pointer">استهلاک</th>
-                <th class="py-3 px-6 text-right cursor-pointer">ارزش دفتری</th>
-            </tr>
-        </thead>
-        <tbody class="text-gray-700 text-sm font-light">
-            <tr *ngFor="let item of list" class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
-                <td class="py-3 px-6 font-normal">
-                    <span>{{ item.title }}</span>
-                </td>
-                <td class="py-3 px-6 font-normal">
-                    <input type="text" #testt hidden [value]="estehlakHarSal(type,item,year).estehlak">
-                    <span>{{ estehlakHarSal(type,item,year).estehlak |numWithComma }}</span>
-                </td>
-                <td class="py-3 px-6 font-normal">
-                    <span>{{ estehlakHarSal(type,item,year).arzeshDaftari |numWithComma }}</span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</ng-template>
-
 <ng-template #plans>
     <h2>برای ادامه باید دارای عضویت ویژه باشید.</h2>
     <div class="my-5">
@@ -894,8 +831,8 @@
             برای عضویت ویژه ابتدا باید یکی از اشتراک های موجود سایت را تهیه نمایید.</p>
         <p class="text-gray-700 text-right"> نکته: عضویت ویژه بلافاصله پس از پرداخت فعال خواهد شد.</p>
     </div>
-    <div class="flex mt-10 justify-center items-center">
-        <button class="btn btn-pink">انصراف</button>
-        <button class="btn btn-success">خریرد اشتراک ویژه</button>
+    <div class="flex mt-10 justify-center items-center gap-3">
+        <button class="btn btn-pink" type="button" x-on:click="modal = !modal">انصراف</button>
+        <button class="btn btn-success" type="button" [routerLink]="['/plans']">خریرد اشتراک ویژه</button>
     </div>
 </ng-template>

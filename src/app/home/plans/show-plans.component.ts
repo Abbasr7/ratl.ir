@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map} from 'rxjs';
 import { SuccessHandle } from 'src/app/controlers/interfaces/interfaces';
 import { CartService } from 'src/app/controlers/services/cart.service';
@@ -14,8 +14,9 @@ import { Globals } from 'src/app/globals';
 export class ShowPlansComponent implements OnInit {
 
   constructor(private server:ServerService,private cart:CartService,
-    private router:Router) { }
+    private router:Router, private route: ActivatedRoute) { }
 
+  type = this.route.snapshot.data['type'];
   data:any;
   grid = false;
 

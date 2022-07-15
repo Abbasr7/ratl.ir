@@ -47,6 +47,11 @@ import { ShowPageComponent } from './home/show-page/show-page.component';
 import { LogoutComponent } from './user-panel/logout/logout.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { EstimateComponent } from './user-panel/estimate/estimate.component';
+import { ShowPlansComponent } from './home/plans/show-plans.component';
+import { SalaryFormComponent } from './user-panel/estimate/salary-form/salary-form.component';
+import { DepreciationsComponent } from './user-panel/estimate/depreciations/depreciations.component';
+import { WorkingCapitalComponent } from './user-panel/estimate/working-capital/working-capital.component';
+import { BankFacilitiesComponent } from './user-panel/estimate/bank-facilities/bank-facilities.component';
 
 @NgModule({
   declarations: [
@@ -83,10 +88,14 @@ import { EstimateComponent } from './user-panel/estimate/estimate.component';
     LogoutComponent,
     ScrollToDirective,
     EstimateComponent,
+    ShowPlansComponent,
+    SalaryFormComponent,
+    DepreciationsComponent,
+    WorkingCapitalComponent,
+    BankFacilitiesComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,

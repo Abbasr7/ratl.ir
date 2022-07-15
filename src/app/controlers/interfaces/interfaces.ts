@@ -14,110 +14,110 @@ export class IUser {
     _id: string;
     username: string;
     email: string;
-    fullname:string;
+    fullname: string;
     address: string;
     role: IRole;
-    phone:string;
-    imgurl: String  
+    phone: string;
+    imgurl: String
 }
 
-export class Iplans{
-    _id:string;
-    title:string;
-    time:{
-        month:Number;
-        day:Number
+export class Iplans {
+    _id: string;
+    title: string;
+    time: {
+        month: Number;
+        day: Number
     };
-    items:string[];
-    exceptions:string[];
-    cost:number=0;
-    description:String
+    items: string[];
+    exceptions: string[];
+    cost: number = 0;
+    description: String
 }
 
-export class IPages{
+export class IPages {
     _id: string;
     userid: IUser;
     title: string;
     abstract: string;
     htmlcontent: string;
-    createdAt:any;
+    createdAt: any;
 }
 
-export interface Ipayments{
-    _id:string,
-    userid:IUser,
-    planid:Iplans,
-    pay_id:String,
-    transaction_id:String,
-    amount:number,
-    active:boolean,
-    fullname:string,
-    email:String,
-    phone:Number,
-    description:String,
-    createdAt:String
+export interface Ipayments {
+    _id: string,
+    userid: IUser,
+    planid: Iplans,
+    pay_id: String,
+    transaction_id: String,
+    amount: number,
+    active: boolean,
+    fullname: string,
+    email: String,
+    phone: Number,
+    description: String,
+    createdAt: String
 }
 
-export class IUserInfo{
-    payments:Ipayments[];
-    user:IUser
+export class IUserInfo {
+    payments: Ipayments[];
+    user: IUser
 }
 export interface activePlans {
     pay_id: string,
-    planid: string|null,
-    planLifeTime:number,
+    planid: string | null,
+    planLifeTime: number,
     percentOfUse: number,
     used: number,
-    remaining:number
+    remaining: number
 }
 
 export class Product {
     _id: string;
     cost: string;
     title: string;
-    time:{
-        month:number;
-        day:number;
+    time: {
+        month: number;
+        day: number;
     };
-    description:string;
+    description: string;
     detail: string;
-    count:number
+    count: number
 }
 
-export interface IAccessControlLevel{
-    id:string,
-    access:string
+export interface IAccessControlLevel {
+    id: string,
+    access: string
 }
 
 // menus
-export class IMenu{
-    _id:string;
-    title:string;
-    order:IMenuItems[]
+export class IMenu {
+    _id: string;
+    title: string;
+    order: IMenuItems[]
 }
-export class IMenuItems{
-    content:string;
-    url:string;
-    children:IMenuItems[]
+export class IMenuItems {
+    content: string;
+    url: string;
+    children: IMenuItems[]
 }
 // settings
-export class ISettings{
+export class ISettings {
     userid: string;
     title: string;
     logo: string;
-    keywords:  string;
+    keywords: string;
     description: string;
     metatags: object[];
     headermenu: string;
     footermenu: string;
     footer: {
-      social: ISocials;
-      extraHtml: string;
-      description: string
+        social: ISocials;
+        extraHtml: string;
+        description: string
     }
 }
 
-export class ISocials{
+export class ISocials {
     telegram: string;
     instagram: string;
     twitter: string;
@@ -125,61 +125,118 @@ export class ISocials{
     github: string
 }
 
-export interface IProjacts{
+export class IProjact {
+    _id: string;
+    userid: string;
     investForm: {
-        title: {
-            type: String,
-            required: true
+        title: string;
+        ground:{
+            count: string,
+            cost: string,
         },
-        building: [],
-        landscaping: [],
-        equipment: [],
-        vehicles: [],
-        officeEquipment: [],
+        building: [];
+        landscaping: [];
+        equipment: [];
+        vehicles: [];
+        officeEquipment: [];
         preOperation: {
-            research: [],
-            otherVariousCosts: [],
-            staffTraining: [],
-            tolidAzmayeshi: [],
-        },
-        pishbiniNashode: [],
-    },
+            research: string;
+            otherCosts1: string;
+            otherCosts2: string;
+            otherCosts3: string;
+            otherCosts4: string;
+            otherCosts5: string;
+            staffTraining: number;
+            tolidAzmayeshi: number;
+        };
+        pishbiniNashode: string;
+    };
     salaryForm: {
-        jobTitles: [],
-        jobLevels: [],
-        employees: [],
-    },
+        jobTitles: any[];
+        jobLevels: any[];
+        employees: any[];
+    };
     fundAndExpensesForm: {
-        time: [],
-        mavadAvalie: [],
-        zarfiyateSalane: [],
+        time: string;
+        mavadAvalie: [];
+        zarfiyateSalane: string;
+        tankhah: number;
+        mojodiKala: number;
+        motalebat: number;
+        ghalebMasrafi: number;
         hazineJari: {
             water: {
-                count: [],
-                cost: [],
-                percent: [],
-            },
+                count: string;
+                cost: string;
+                percent: string;
+            };
             gasWarmSeasons: {
-                count: [],
-                cost: [],
-                percent: [],
-            },
+                count: string;
+                cost: string;
+                percent: string;
+            };
             gasColdSeasons: {
-                count: [],
-                cost: [],
-                percent: [],
-            },
+                count: string;
+                cost: string;
+                percent: string;
+            };
             electricity: {
-                count: [],
-                cost: [],
-                percent: [],
-            },
+                count: string;
+                cost: string;
+                percent: string;
+            };
             phoneAndInternet: {
-                count: [],
-                cost: [],
-                percent: [],
-            },
-            salaryPercent: []
-        },
+                count: string;
+                cost: string;
+                percent: string;
+            };
+            salaryPercent: string
+        };
     }
 }
+export class IEstimate {
+    building: IEstehlak[];
+    landscaping: IEstehlak[];
+    equipment: IEstehlak[];
+    vehicles: IEstehlak[];
+    maintenanceCost: {
+        building: number;
+        equipment: number;
+        vehicles: number;
+    }
+    officeEquipment: IEstehlak[];
+    preOperation: {
+        research: string;
+        otherCosts1: string;
+        otherCosts2: string;
+        otherCosts3: string;
+        otherCosts4: string;
+        otherCosts5: string;
+        staffTraining: string;
+        tolidAzmayeshi: string;
+    };
+    pishbiniNashode: string;
+    employees: any[];
+    sumSalaryCosts: any;
+    salaryBase: any[];
+    workingCapital: any;
+    salesAndAdsRate: any;
+    financialSummary: any;
+}
+//* for estimate
+export interface IRate {
+    building: number,
+    equipment: number,
+    vehicles: number,
+    officeEquipment: number,
+    preOperation: number,
+    pishbiniNashode: number,
+}
+export interface IEstehlak {
+    title: string,
+    year: number,
+    estehlak: number,
+    arzeshDaftari: number,
+    sumOfCosts: number
+}
+// *

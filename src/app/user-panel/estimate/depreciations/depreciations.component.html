@@ -1,0 +1,84 @@
+<h2 class="w-full z-10 text-gray-50 p-2 py-4 my-5 bg-head rounded sticky top-24 lg:top-40">
+    هزینه‌های استهلاک
+</h2>
+
+<div class="w-full col-span-1 grid grid-cols-1 lg:grid-cols-12 gap-4 pb-10">
+
+    <div class="mt-1 mb-3 col-span-6">
+        <span>جدول استهلاك ساختمان تولیدی و اداری </span>
+        <ng-container *ngTemplateOutlet="estehlak; context:{$implicit: estimated.building, type: 'building'}">
+        </ng-container>
+    </div>
+    <!--  -->
+    <div class="mt-1 mb-3 col-span-6">
+        <span>جدول استهلاك ماشین آلات و تجهيزات و وسایل آزمایشگاهی </span>
+        <ng-container *ngTemplateOutlet="estehlak; context:{$implicit: estimated.equipment, type: 'equipment'}">
+        </ng-container>
+    </div>
+    <!--  -->
+    <div class="mt-1 mb-3 col-span-6">
+        <span>جدول استهلاك وسایل نقلیه </span>
+        <ng-container *ngTemplateOutlet="estehlak; context:{$implicit: estimated.vehicles, type: 'vehicles'}">
+        </ng-container>
+    </div>
+    <!--  -->
+    <div class="mt-1 mb-3 col-span-6">
+        <span>جدول استهلاك اثاثيه و ملزومات اداري </span>
+        <ng-container
+            *ngTemplateOutlet="estehlak; context:{$implicit: estimated.officeEquipment, type: 'officeEquipment'}">
+        </ng-container>
+    </div>
+</div>
+
+
+<!-- estehlak -->
+<ng-template #estehlak let-list let-type="type">
+    <div class="text-gray-700 mb-3 text-sm flex items-center gap-2">
+        <span class="flex items-center gap-2">
+            <span>نرخ(درصد)</span>
+            <input class="text-input" type="number" (change)="rateChanged($event,type)" [value]="rateValue(type)">
+        </span>
+        <div class="relative flex items-center px-3">
+            <span class="ml-2">- سال:</span>
+            <select [(ngModel)]="year[type]" (change)="changeYear($event,type)"
+                class="border border-gray-300 rounded-full text-gray-600 h-10 px-4 bg-white hover:border-gray-400 focus:outline-none">
+                <option [value]="1">اول</option>
+                <option [value]="2">دوم</option>
+                <option [value]="3">سوم</option>
+                <option [value]="4">چهارم</option>
+                <option [value]="5">پنجم</option>
+                <option [value]="6">ششم</option>
+                <option [value]="7">هفتم</option>
+                <option [value]="8">هشتم</option>
+                <option [value]="9">نهم</option>
+                <option [value]="10">دهم</option>
+            </select>
+        </div>
+    </div>
+    <table class="w-full table-auto">
+        <thead>
+            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                <th class="py-3 px-6 text-right cursor-pointer">شرح</th>
+                <th class="py-3 px-6 text-right cursor-pointer">استهلاک</th>
+                <th class="py-3 px-6 text-right cursor-pointer">ارزش دفتری</th>
+            </tr>
+        </thead>
+        <tbody class="text-gray-700 text-sm font-light">
+            <tr *ngFor="let item of list" class="border estehlak-table border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                <td class="py-3 px-6 font-normal">
+                    <span>{{ item.title }}</span>
+                </td>
+                <td class="py-3 px-6 font-normal">
+                    <span>{{ item.estehlak |numWithComma }}</span>
+                </td>
+                <td class="py-3 px-6 font-normal">
+                    <span>{{ item.arzeshDaftari |numWithComma }}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="w-full flex gap-2 px-6 py-3 bg-lime-100 text-sm text-gray-800">
+        <span class="w-2/3 ">هزینه تعمیر و نگهداری</span>
+        <span class="w-1/3">{{ maintenanceCost(type) | numWithComma }}</span>
+    </div>
+</ng-template>

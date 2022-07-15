@@ -2,12 +2,13 @@ import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { KeyValue } from '@angular/common';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map, take } from 'rxjs';
-import { SuccessHandle } from 'src/app/controlers/interfaces/interfaces';
+import { IProjact, SuccessHandle } from 'src/app/controlers/interfaces/interfaces';
 import { MessagesService } from 'src/app/controlers/services/messages.service';
 import { ProjactsService } from 'src/app/controlers/services/projacts.service';
 import { UserService } from 'src/app/controlers/services/user.service';
-import { customValidate } from 'src/app/controlers/utils';
+import { customValidate, Spinner } from 'src/app/controlers/utils';
 
 @Component({
   selector: 'app-new-unit',
@@ -27,22 +28,13 @@ export class NewUnitComponent implements OnInit {
     private msg: MessagesService,
     private projacts: ProjactsService,
     private customValidator: customValidate,
-    private userService: UserService
+    private userService: UserService,
+    private spinner: Spinner,
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
-  net = {
-    building: 1, // %
-    equipment: 15, // %
-    vehicles: 5, // %
-  }
-  rate: IRate = {
-    building: 7, // %
-    equipment: 10, // %
-    vehicles: 25, // %
-    officeEquipment: 10, // %
-    preOperation: 20, // %
-    pishbiniNashode: 10 // %
-  }
+  editId = this.route.snapshot.paramMap.get('id');
   investForm: FormGroup = this.fb.group({
     title: ['', Validators.required],
     ground: this.fb.group({
@@ -94,8 +86,6 @@ export class NewUnitComponent implements OnInit {
   modal: TemplateRef<any>
   langTip: string = "حتما زبان صفحه کلید خودرا به انگلیسی تغییر دهید"
   submitted = false;
-  year = 1;
-
 
   ngOnInit(): void {
     this.assignData('investForm', 'salaryForm', 'fundAndExpensesForm')
@@ -111,7 +101,7 @@ export class NewUnitComponent implements OnInit {
     return this.fundAndExpensesForm.controls
   }
 
-  createFormGroup(type: string) {
+  createFormGroup(type: string):FormGroup {
     switch (type) {
       case 'invest':
         return this.fb.group({
@@ -121,6 +111,7 @@ export class NewUnitComponent implements OnInit {
         })
         break;
       case 'jobTitles':
+      case 'jobLevels':
         return this.fb.group({
           title: ['']
         })
@@ -149,58 +140,114 @@ export class NewUnitComponent implements OnInit {
           percent: ['', Validators.required],
         })
       default:
-        return ''
+        return this.fb.group({})
         break;
     }
 
   }
 
   assignData(...formNames: string[]) { // برای بازیابی آخرین اطلاعات وارد شده توسط کاربر
+    
+    if (this.editId) {
+      this.projacts.getById(this.editId).pipe(
+        map(response => response as SuccessHandle),
+        map(res => res.data as IProjact),
+        take(1)
+      ).subscribe({
+        next: res => {
 
-    formNames.forEach(formName => {
-      let data = JSON.parse(localStorage.getItem(formName) as string)
+          this.setFormArray(res,'landscaping','building','equipment','vehicles','officeEquipment','jobTitles', 'jobLevels', 'employees','mavadAvalie')
+          this.investForm.patchValue(res.investForm);
+          this.fundAndExpensesForm.patchValue(res.fundAndExpensesForm);
+          this.salaryForm.patchValue(res.salaryForm);
 
-      if (localStorage.getItem(formName)) {
-        let currentDate = Date.now()
-
-        if (currentDate <= data.expire) {
-          switch (formName) {
-            case 'investForm':
-              this.investForm.patchValue(data);
-              break;
-            case 'salaryForm':
-              this.salaryForm.patchValue(data);
-              break;
-            case 'fundAndExpensesForm':
-              this.fundAndExpensesForm.patchValue(data);
-              break;
-            default:
-              break;
-          }
+          console.log(res,this.investForm.value);
+          
         }
-
-      }
-
-    })
-
-    if (localStorage.getItem('salaryForm')) {
-      let data = JSON.parse(localStorage.getItem('salaryForm') as string)
-      this.salaryForm.patchValue(data)
+      })
+    } else {
+      
+      formNames.forEach(formName => {
+        let data = JSON.parse(localStorage.getItem(formName) as string)
+  
+        if (localStorage.getItem(formName)) {
+          let currentDate = Date.now()
+  
+          if (currentDate <= data.expire) {
+            switch (formName) {
+              case 'investForm':
+                this.investForm.patchValue(data);
+                break;
+              case 'salaryForm':
+                this.salaryForm.patchValue(data);
+                break;
+              case 'fundAndExpensesForm':
+                this.fundAndExpensesForm.patchValue(data);
+                break;
+              default:
+                break;
+            }
+          } else {
+            this.resetAllForms()
+          }
+  
+        }
+  
+      })
     }
 
-    if (localStorage.getItem('fundAndExpensesForm')) {
-      let data = JSON.parse(localStorage.getItem('fundAndExpensesForm') as string)
-      this.fundAndExpensesForm.patchValue(data)
-    }
+    // if (localStorage.getItem('salaryForm')) {
+    //   let data = JSON.parse(localStorage.getItem('salaryForm') as string)
+    //   this.salaryForm.patchValue(data)
+    // }
+
+    // if (localStorage.getItem('fundAndExpensesForm')) {
+    //   let data = JSON.parse(localStorage.getItem('fundAndExpensesForm') as string)
+    //   this.fundAndExpensesForm.patchValue(data)
+    // }
   }
 
-  resetAllForms(){
-    this.investForm.reset()
-    // this.salaryForm.reset()
-    this.fundAndExpensesForm.reset()
+  getFormArray(form:FormGroup,key:string){
+    return form.get(key) as FormArray
+  }
+
+  setFormArray(object:any,...args:string[]){
+    let invest = ['landscaping','building','equipment','vehicles','officeEquipment']
+    let salary = ['jobTitles', 'jobLevels', 'employees']
+    args.forEach(arg => {
+
+      if (invest.includes(arg)) {
+
+        this.getFormArray(this.investForm,arg).removeAt(0)
+        object.investForm[arg].forEach((item:any) => {
+          this.getFormArray(this.investForm,arg).push(this.createFormGroup('invest'))
+        });
+
+      } else if (salary.includes(arg)) {
+
+        this.getFormArray(this.salaryForm,arg).removeAt(0)
+        object.salaryForm[arg].forEach((item:any) => {
+            this.getFormArray(this.salaryForm,arg).push(this.createFormGroup(arg))
+        });
+
+      } else if (arg == 'mavadAvalie') {
+
+        this.getFormArray(this.fundAndExpensesForm,arg).removeAt(0)
+        object.fundAndExpensesForm[arg].forEach((item:any) => {
+            this.getFormArray(this.fundAndExpensesForm,arg).push(this.createFormGroup(arg))
+        });
+
+      }
+    })
+  }
+
+  resetAllForms() {
     localStorage.removeItem('investForm')
     localStorage.removeItem('salaryForm')
     localStorage.removeItem('fundAndExpensesForm')
+    this.investForm.reset()
+    // this.salaryForm.reset()
+    this.fundAndExpensesForm.reset()
   }
 
   addItem(form: FormGroup, fieldName: string, ...args: (HTMLInputElement | HTMLSelectElement)[]) {
@@ -253,9 +300,7 @@ export class NewUnitComponent implements OnInit {
       return
     }
 
-    if (!this.userService.getPlansBalance().length) {
-      
-    }
+    this.spinner.addSpinner('#estimate')
 
     let data = {
       investForm: this.investForm.value,
@@ -263,75 +308,29 @@ export class NewUnitComponent implements OnInit {
       fundAndExpensesForm: this.fundAndExpensesForm.value
     }
 
-    this.projacts.newProjact(data).pipe(
+    let action = this.editId? this.projacts.update(this.editId,data) : this.projacts.newProjact(data);
+
+    action.pipe(
       map(res => res as SuccessHandle),
+      map(res => res.data as IProjact),
       take(1)
-    ).subscribe(res => {
-      this.submitted = false
-      this.msg.sendMessage('مقادیر با موفقیت پردازش و ذخیره گردید.', 'success');
+    ).subscribe({
+      next: res => {
+        this.submitted = false
+        this.msg.sendMessage('مقادیر با موفقیت پردازش و ذخیره گردید.', 'success');
+        this.spinner.removeSpinner('#estimate');
+        this.projacts.projact.next(res)
+        this.router.navigate(['/panel/estimate/' + res._id],{state:{newForm: 'yes'}})
+      },
+      error: err => {
+        this.spinner.removeSpinner('#estimate')
+      }
     })
 
   }
 
-  userHasActivePlan(){
-    return this.userService.getPlansBalance().length? true : false
-  }
-  
-  estehlakHarSal(type: any, item: any, year: number): IEstehlak {
-    let value = item
-    let data: any;
-
-    const calculate = (arzeshDaftari: number, years: number) => {
-      let e = {
-        year: year - years,
-        estehlak: Math.round(arzeshDaftari * this.rate[type as keyof IRate] / 100),
-        get arzeshDaftari() {
-          return arzeshDaftari - this.estehlak
-        }
-      }
-      if (years != 0) {
-        calculate(e.arzeshDaftari, years - 1)
-      } else {
-        data = e
-      }
-    };
-
-    let totalCost = this.justNum(value.count) * this.justNum(value.cost)
-    calculate(totalCost, year - 1)
-
-    return data;
+  userHasActivePlan() {
+    return this.userService.getPlansBalance().length ? true : false
   }
 
-  maintenanceCost(type: HTMLInputElement) {
-    // let sum = this.estimate.investForm[type as string]
-
-    return type.value
-
-  }
-
-  justNum(x: any) {
-    return +x.replace(/\D/g, "")
-  }
-
-  rateChanged(event: Event, type: any) {
-    return this.rate[type as keyof IRate] = (<HTMLInputElement>event.target).valueAsNumber
-  }
-
-  rateValue(type: any) {
-    return this.rate[type as keyof IRate]
-  }
-}
-
-export interface IRate {
-  building: number,
-  equipment: number,
-  vehicles: number,
-  officeEquipment: number,
-  preOperation: number,
-  pishbiniNashode: number,
-}
-export interface IEstehlak {
-  year: number,
-  estehlak: number,
-  arzeshDaftari: number
 }

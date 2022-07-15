@@ -1,1 +1,252 @@
-<p>estimate works!</p>
+<div class="bg-white w-full -mt-3 p-3 shadow" x-data='{activeTab: 0}'>
+    <h2 class="mb-4 text-gray-400 text-center">براورد هزینه ها</h2>
+    <nav class="sticky top-12 lg:top-28 bg-white z-20">
+        <ul class="flex justify-start items-center my-4 ">
+            <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
+                x-bind:class="activeTab===0 ? 'text-sky-500 border-sky-500' : ''" x-on:click="activeTab = 0"> فهرست ها
+            </li>
+            <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
+                x-bind:class="activeTab===1 ? 'text-pink-500 border-pink-500' : ''" x-on:click="activeTab = 1">افزودن
+                فهرست جدید</li>
+            <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
+                x-bind:class="activeTab===4 ? 'text-purple-500 border-purple-500' : ''" x-on:click="activeTab = 4">
+                چکیده مالی
+            </li>
+        </ul>
+    </nav>
+    <div x-show="activeTab===0">
+        <div>
+            <app-depreciations></app-depreciations>
+        </div>
+        <!-- Hoghog -->
+        <div>
+            <app-salary-form></app-salary-form>
+        </div>
+
+        <!-- سرمایه در گردش -->
+        <div>
+            <app-working-capital></app-working-capital>
+        </div>
+    </div>
+    <div x-show="activeTab===1">
+        <app-bank-facilities></app-bank-facilities>
+    </div>
+    <!-- چکیده مالی  -->
+    <div x-show="activeTab===4">
+
+        <h2 class="w-full z-10 text-gray-50 p-2 py-4 my-5 bg-head rounded sticky top-24 lg:top-40">
+            چکیده مالی و نحوه‌ی سرمایه گزاری
+        </h2>
+        <div class="mb-3 grid grid-cols-12 gap-2">
+            <div class="md:col-span-6 col-span-12">
+                <h3 class="mb-3 text-base">چکیده مالی</h3>
+                <table class="w-full table-auto">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-right cursor-pointer">شرح</th>
+                            <th class="py-3 px-6 text-right cursor-pointer">مقدار</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700 text-sm font-light">
+                        <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                            <td class="py-3 px-6 font-normal">
+                                <span>زمین</span>
+                            </td>
+                            <td class="py-3 px-6 font-normal">
+                                <span>
+                                    {{ this.estimated.financialSummary.ground | numWithComma }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                            <td class="py-3 px-6 font-normal">
+                                <span>محوطه سازی</span>
+                            </td>
+                            <td class="py-3 px-6 font-normal">
+                                <span>
+                                    {{ this.estimated.financialSummary.landscaping | numWithComma }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                            <td class="py-3 px-6 font-normal">
+                                <span>ساختمان</span>
+                            </td>
+                            <td class="py-3 px-6 font-normal">
+                                <span>
+                                    {{ this.estimated.financialSummary.building | numWithComma }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                            <td class="py-3 px-6 font-normal">
+                                <span>تجهیزات فنی</span>
+                            </td>
+                            <td class="py-3 px-6 font-normal">
+                                <span>
+                                    {{ this.estimated.financialSummary.equipment | numWithComma }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                            <td class="py-3 px-6 font-normal">
+                                <span>وسایل نقلیه</span>
+                            </td>
+                            <td class="py-3 px-6 font-normal">
+                                <span>
+                                    {{ this.estimated.financialSummary.vehicles | numWithComma }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                            <td class="py-3 px-6 font-normal">
+                                <span>اثاثیه و ملزومات اداری</span>
+                            </td>
+                            <td class="py-3 px-6 font-normal">
+                                <span>
+                                    {{ this.estimated.financialSummary.officeEquipment | numWithComma }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                            <td class="py-3 px-6 font-normal">
+                                <span>هزینه‌های قبل از بهره‌برداری</span>
+                            </td>
+                            <td class="py-3 px-6 font-normal">
+                                <span>
+                                    {{ this.estimated.financialSummary.preOperation | numWithComma }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                            <td class="py-3 px-6 font-normal">
+                                <span>هزینه‌های متفرقه پیش‌بینی نشده</span>
+                            </td>
+                            <td class="py-3 px-6 font-normal">
+                                <span>
+                                    {{ this.estimated.financialSummary.unforeseen | numWithComma }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                            <td class="py-3 px-6 font-normal">
+                                <span>جمع سرمایه ثابت</span>
+                            </td>
+                            <td class="py-3 px-6 font-normal">
+                                <span>
+                                    {{ estimated.financialSummary.sum | numWithComma }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                            <td class="py-3 px-6 font-normal">
+                                <span>سرمایه درگردش</span>
+                            </td>
+                            <td class="py-3 px-6 font-normal">
+                                <span>
+                                    {{ estimated.workingCapital.sum | numWithComma }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="border border-gray-200 bg-lime-100 hover:bg-lime-200 first:w-[50%]">
+                            <td class="py-3 px-6 font-normal">
+                                <span>جمع سرمایه موردنیاز</span>
+                            </td>
+                            <td class="py-3 px-6 font-normal">
+                                <span>
+                                    {{ estimated.workingCapital.sum+estimated.financialSummary.sum | numWithComma }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="lg:col-span-6 col-span-12">
+                <h3 class="mb-3 text-base">نحوه‌ سرمایه گذاری</h3>
+                <table class="w-full table-auto text-gray-700 text-sm font-light">
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm text-center leading-normal">
+                        <td rowspan="2" class="py-3 px-6 cursor-pointer">
+                            شرح
+                        </td>
+                        <th colspan="2" scope="colgroup" class="py-3 px-6 cursor-pointer border border-gray-300">
+                            سهم متقاضی
+                        </th>
+                        <th colspan="2" scope="colgroup" class="py-3 px-6 cursor-pointer border border-gray-300">
+                            تسهیلات بانکی
+                        </th>
+                    </tr>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm text-center leading-normal">
+                        <th scope="col" class="py-3 border border-gray-300 px-6 cursor-pointer">مبلغ</th>
+                        <th scope="col" class="py-3 border border-gray-300 px-6 cursor-pointer">درصد</th>
+                        <th scope="col" class="py-3 border border-gray-300 px-6 cursor-pointer">مبلغ</th>
+                        <th scope="col" class="py-3 border border-gray-300 px-6 cursor-pointer">درصد</th>
+                    </tr>
+                    <tr class="text-center border border-gray-200 hover:bg-gray-100">
+                        <th scope="rowgroup">سرمایه ثابت</th>
+                        <td>
+                            {{ estimated.financialSummary.sum * (percents.fixedCapital/100) | numWithComma }}
+                        </td>
+                        <td>
+                            <input type="number" [(ngModel)]="percents.fixedCapital"
+                             class="px-3 py-1 border mx-auto max-w-[80px]">
+                        </td>
+                        <td>{{ estimated.financialSummary.sum * (100-percents.fixedCapital)/100 | numWithComma }}</td>
+                        <td>{{ 100-percents.fixedCapital }}</td>
+                    </tr>
+                    <tr class="text-center border border-gray-200 hover:bg-gray-100">
+                        <th scope="rowgroup">سرمایه در گردش</th>
+                        <td>
+                            {{ estimated.workingCapital.sum * percents.workingCapital/100 | numWithComma }}
+                        </td>
+                        <td>
+                            <input type="number" [(ngModel)]="percents.workingCapital"
+                             class="px-3 py-1 border mx-auto max-w-[80px]">
+                        </td>
+                        <td>{{ estimated.workingCapital.sum * (100-percents.workingCapital)/100 | numWithComma }}</td>
+                        <td>{{ 100-percents.workingCapital }}</td>
+                    </tr>
+                    <tr class="text-center border border-gray-200 hover:bg-gray-100">
+                        <th scope="rowgroup">کل سرمایه گذاری</th>
+                        <td>
+                            {{ (estimated.financialSummary.sum * percents.fixedCapital/100)
+                            + (estimated.workingCapital.sum * percents.workingCapital/100) | numWithComma }}
+                        </td>
+                        <td>--</td>
+                        <td>
+                            {{ (estimated.financialSummary.sum * (100-percents.fixedCapital)/100)
+                            + (estimated.workingCapital.sum * (100-percents.workingCapital)/100 )| numWithComma }}
+                        </td>
+                        <td>--</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- table -->
+<ng-template #table let-list let-header="header">
+    <div class="mt-1 mb-3 col-span-12" *ngIf="list.length">
+        <table class="w-full table-auto">
+            <thead *ngIf="header">
+                <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <th class="py-3 px-6 text-right cursor-pointer">شرح</th>
+                    <th class="py-3 px-6 text-right cursor-pointer">مقدار</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-700 text-sm font-light">
+                <ng-container *ngFor="let item of list">
+                    <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]"
+                        *ngFor="let i of item | keyvalue : orderbyValueAsc ; let indx = index">
+                        <td class="py-3 px-6 font-normal">
+                            <span> {{header[indx]}} </span>
+                        </td>
+                        <td class="py-3 px-6 font-normal">
+                            <span>{{i.value}}</span>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+</ng-template>

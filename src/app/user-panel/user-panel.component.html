@@ -4,7 +4,7 @@
 <div class="bg-whiteleading-normal tracking-normal">
 
     <nav x-data="{userdata:false,menu:false}" id="header"
-        class="bg-white sticky w-full z-10 top-0 border-b-2 border-gray-200 pb-2">
+        class="bg-white sticky w-full z-20 top-0 border-b-2 border-gray-200 pb-2">
         <div class="w-full container mx-auto flex flex-wrap items-center mt-0 pt-3 pb-3 md:pb-0">
             <div class="w-1/2 pr-4">
                 <div class="flex relative float-right">
@@ -66,7 +66,7 @@
                 </svg>
             </div>
 
-            <div x-bind:class="menu? 'block':'hidden'" x-on:click.away="menu = !menu" class="w-full flex-grow lg:flex lg:items-center lg:w-auto -pb-2 mt-2 lg:mt-3 bg-white z-20"
+            <div x-bind:class="menu? 'block':'hidden'" class="w-full flex-grow lg:flex lg:items-center lg:w-auto -pb-2 mt-2 lg:mt-3 bg-white z-20"
                 id="nav-content">
                 <ul class="list-reset lg:flex flex-1 items-center px-4 md:px-0">
                     <li class="mr-6 my-2 md:my-0">

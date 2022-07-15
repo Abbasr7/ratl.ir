@@ -18,7 +18,6 @@ import { SharedModule } from '../shared/shared.module';
     FormsModule,
     ReactiveFormsModule,
     MatStepperModule,
-    MatTooltipModule,
     SharedModule
   ],
   providers: [

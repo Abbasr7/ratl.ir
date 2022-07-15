@@ -1,0 +1,6 @@
+.estehlak-table:last-child {
+    @apply bg-slate-300
+}
+td{
+    @apply py-3 px-6 font-normal
+}

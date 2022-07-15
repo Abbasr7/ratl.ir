@@ -76,6 +76,9 @@ h3 {
 .btn{
     @apply flex cursor-pointer mt-2 text-white shadow shadow-blue-500/50 disabled:shadow-none hover:bg-gradient-to-bl rounded-full px-8 py-2 transition-all duration-300 active:bg-gradient-to-tl active:ring-2 active:ring-blue-300 disabled:from-gray-300 disabled:to-gray-200 disabled:text-black disabled:cursor-not-allowed disabled:px-5
 }
+.bg-head {
+    @apply bg-gradient-to-r from-green-400 to-blue-500
+}
 .bg-warning{
     @apply bg-amber-500
 }
