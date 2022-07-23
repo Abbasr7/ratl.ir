@@ -31,11 +31,14 @@ export class EstimateComponent implements OnInit {
     preOperation: 1,
     pishbiniNashode: 1,
     workingCapital: 1,
-    salesAndAdsRate: 1
+    salesAndAdsRate: 1,
+    bankFacilities: 1,
   };
   profitAndLoss:any;
 
   percents = this.projactService.percents
+
+  money:string;
 
   ngOnInit(): void {
 
@@ -75,6 +78,8 @@ export class EstimateComponent implements OnInit {
     this.salesAndAdsRate()
 
     this.financialSummary()
+
+    this.bankFacilities()
 
   }
 
@@ -380,7 +385,8 @@ export class EstimateComponent implements OnInit {
         return this.ground + this.landscaping + this.building
           + this.equipment + this.vehicles + this.officeEquipment
           + this.preOperation + this.unforeseen
-      }
+      },
+      totalCapitalRequired: 0
     }
 
     // building
@@ -423,6 +429,9 @@ export class EstimateComponent implements OnInit {
     e.preOperation = this.toNum(PO.otherCosts1) +this.toNum(PO.otherCosts2) +this.toNum(PO.otherCosts3)
       +this.toNum(PO.otherCosts4) +this.toNum(PO.otherCosts5) +this.toNum(PO.research)
       +this.toNum(PO.staffTraining) +this.toNum(PO.tolidAzmayeshi)
+    
+    // totalCapitalRequired
+    e.totalCapitalRequired = e.sum + this.estimated.workingCapital.sum
 
     this.estimated.financialSummary = e;
 
@@ -430,12 +439,105 @@ export class EstimateComponent implements OnInit {
 
   // تسهیلات بانکی
   bankFacilities(){
+    let e = {
+      PMT: 0,
+      bankLoan: this.estimated.financialSummary.totalCapitalRequired * this.percents.bankLoansFromTotalCapital/100,
+      fullRefund: 0,
+      get totalInterest(){
+        return this.fullRefund - this.bankLoan
+      }
+    }
+    e.PMT = -this.projactService.PMT((this.percents.bankInterestRate/100)/12,this.percents.installmentCount,e.bankLoan);
+    e.fullRefund = this.percents.installmentCount * e.PMT;
 
+    this.estimated.bankFacilities = e
+
+    // اقساط
+    let q:any = {
+      installment: this.estimated.bankFacilities.PMT,
+      principal: <any>[],
+      interest: <any>[],
+      remaining: <any>[],
+    }
+    // Interest & Principal
+    let firstInstallmentInterest = (this.percents.bankInterestRate/100)/12 * this.estimated.bankFacilities.bankLoan;
+    let firstInstallmentPrincipal = q.installment - firstInstallmentInterest
+    
+    this.principalAndInterest(firstInstallmentInterest,
+      firstInstallmentPrincipal,
+      this.percents.installmentCount-1,
+      q);
+
+    // Remaining
+
+    let firstRemaining = this.estimated.bankFacilities.bankLoan - firstInstallmentPrincipal
+    const remainingCalculate = (remaining:number,IN:number) => {
+      let v = remaining - q.principal[this.percents.installmentCount-IN+1]      
+
+      if (IN-1 < 0 ) {
+        return
+      } else {
+        if (v) {
+          q.remaining.push(v)
+        } else {
+          q.remaining.push('0')
+        }
+        remainingCalculate(v,IN-1)
+      }
+    }
+
+    q.remaining.push(firstRemaining)
+    remainingCalculate(firstRemaining,this.percents.installmentCount)
+
+    // years of installments
+    if (q.hasOwnProperty('year') && q.years.length) {
+      let newLength = Math.ceil(q.principal.length/12) + 1
+      if (newLength > q.years.length) {
+        q.years.push('1')
+      } else if (newLength < q.years.length) {
+        (<Array<any>>q.years).pop()
+      }
+    } else {
+      let num = Math.ceil(q.principal.length/12) + 1
+      q.years = new Array(num)
+    }
+
+    this.estimated.bankFacilities.installments = q;
   }
-  
+
+  principalAndInterest(interest:number,principal:number,INCount:number,Obj:any):any{
+    let interestList:any[] = []
+    let principalList:any[] = []
+    interestList.push(interest);
+    principalList.push(principal);
+
+    const calculate = (principal:number,IN:number) => {
+      let newPrincipal = principal * (1 + (this.percents.bankInterestRate/100)/12);
+      let newInterest = this.estimated.bankFacilities.PMT - newPrincipal;
+
+      if (IN-1 < 0 ) {
+        Obj.principal = principalList;
+        Obj.interest = interestList;
+        return
+      } else {
+        interestList.push(newInterest);
+        principalList.push(newPrincipal);
+        calculate(newPrincipal,IN-1)
+      }
+      
+    }
+
+    calculate(principal,INCount)
+  }
+
+  // هزینه های جاری
+  hazinehayeJari(){
+    let e = {
+      
+    }
+  }
   // Events
   focus(e:Event){
-    console.log(e);
     let elm = (<HTMLElement>e.target)
     if (elm.clientWidth < 50)
       elm.parentElement?.setAttribute('colspan','3')
@@ -450,10 +552,6 @@ export class EstimateComponent implements OnInit {
     this.depreciationCalculate(type, this.year[type as keyof IRate])
   }
 
-  changeYear(event: Event, type: string) {
-    this.depreciationCalculate(type, this.year[type as keyof IRate])
-  }
-
   rateValue(type: any) {
     return this.rate[type as keyof IRate]
   }
@@ -461,6 +559,7 @@ export class EstimateComponent implements OnInit {
   orderbyValueAsc = (a: KeyValue<string, string>, b: KeyValue<string, string>): number => {
     return a.key > b.key ? -1 : (a.key > b.key) ? 0 : 1
   }
+
   SAInputsChange(event:Event){
     this.salesAndAdsRate()
   }

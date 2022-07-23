@@ -5,8 +5,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class NumWithCommaPipe implements PipeTransform {
 
-  transform(value: any, ...args: number[]): string {
-    return value?this.numberWithCommas(value):'';
+  transform(value: any, scale: string = ''): string {
+    return value?this.numberWithCommas(value) + ` ${scale}`:'';
   }
 
   numberWithCommas (x:any) {

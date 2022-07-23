@@ -1,0 +1,253 @@
+<div class="sticky z-10 top-10 overflow-hidden" x-data="{setting: false}" x-bind:class="setting? 'shadow-md':''">
+    <h2 class="w-full flex justify-between text-gray-50 p-2 py-4 bg-head rounded-md">
+        تسهیلات بانکی
+        <a x-on:click="setting = !setting" class="cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+        </a>
+    </h2>
+    <!-- تنظیمات -->
+    <div x-bind:class="setting == false? 'h-0 opacity-0':'h-auto opacity-100'"
+        class="bg-white flex flex-wrap gap-3 text-sm text-gray-700 p-3 transition-all duration-300">
+        <h3 class="w-full"></h3>
+        <div class="w-full md:w-1/4">
+            <label class="text-gray-700"> دوره زمانی(ماه)
+                <input type="number" class="text-input" [(ngModel)]="unit.fundAndExpensesForm.time"
+                    matTooltip="دوره زمانی سرمایه در گردش" placeholder="براساس ماه">
+            </label>
+        </div>
+        <div class="w-full md:w-1/4">
+            <label class="text-gray-700"> ظرفیت واقعی سالانه
+                <input type="number" class="text-input" [(ngModel)]="unit.fundAndExpensesForm.zarfiyateSalane">
+            </label>
+        </div>
+        <div class="w-1/4 flex items-end">
+            <button class="btn btn-purple" (click)="getWorkingCapital()">اعمال</button>
+        </div>
+    </div>
+</div>
+<hr class="bg-gray-400">
+<div class="mb-3 grid grid-cols-12 items-center gap-2">
+    <h3 class="w-full col-span-12 flex-shrink-0 text-gray-800 p-4">تسهیلات بانکی</h3>
+    <div class="md:col-span-5 col-span-12">
+        <table class="w-full table-auto">
+            <thead>
+                <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <th class="py-3 px-6 text-right cursor-pointer">شرح</th>
+                    <th class="py-3 px-6 text-right cursor-pointer">مقدار</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-700 text-sm font-light">
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            درصد اخذ تسهیلات بانکی از کل سرمایه
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <input type="number" [(ngModel)]="percents.bankLoansFromTotalCapital"
+                            (change)="bankFacilities()" class="editable-field">
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>نرخ بهره ساليانه</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <input type="number" [(ngModel)]="percents.bankInterestRate" (change)="bankFacilities()"
+                            class="editable-field">
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>تعداد اقساط (ماه)</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <input type="number" [(ngModel)]="percents.installmentCount" (change)="bankFacilities()"
+                            class="editable-field">
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>کل سرمایه مورد نیاز اجرای طرح</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.financialSummary.totalCapitalRequired | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>میزان تسهیلات بانکی دریافتی</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.bankFacilities.bankLoan | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>اختلاف کل سرمایه و تسهیلات بانکی</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.financialSummary.totalCapitalRequired - estimated.bankFacilities.bankLoan |
+                            numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>مبلغ هر قسط (اصل + بهره)</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.bankFacilities.PMT | numWithComma }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>مبلغ کل اقساط سال</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.bankFacilities.PMT * 12 | numWithComma }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>كل مبلغ باز پرداخت</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.bankFacilities.fullRefund | numWithComma }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>جمع بهره پرداختي طی دوره بازپرداخت</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.bankFacilities.fullRefund - estimated.bankFacilities.bankLoan | numWithComma }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- اقساط -->
+    <div class="md:col-span-7 col-span-12">
+        <h3 class="mb-3 text-base">جزئیات اقساط</h3>
+        <div class="text-gray-700 mb-3 text-sm flex items-center gap-2 z-0">
+            <div class="relative flex items-center px-3">
+                <span class="ml-2"> سال:</span>
+                <select [(ngModel)]="year['bankFacilities']" (change)="bankFacilities()"
+                    class="border border-gray-300 rounded-full text-gray-600 h-10 px-4 bg-white hover:border-gray-400 focus:outline-none">
+                    <option [value]="1">اول</option>
+                    <option [value]="2" *ngIf="percents.installmentCount > 12">دوم</option>
+                    <option [value]="3" *ngIf="percents.installmentCount > 24">سوم</option>
+                    <option [value]="4" *ngIf="percents.installmentCount > 36">چهارم</option>
+                    <option [value]="5" *ngIf="percents.installmentCount > 48">پنجم</option>
+                    <option [value]="6" *ngIf="percents.installmentCount > 60">ششم</option>
+                    <option [value]="7" *ngIf="percents.installmentCount > 72">هفتم</option>
+                    <option [value]="8" *ngIf="percents.installmentCount > 84">هشتم</option>
+                    <option [value]="9" *ngIf="percents.installmentCount > 96">نهم</option>
+                    <option [value]="10" *ngIf="percents.installmentCount > 108">دهم</option>
+                </select>
+            </div>
+        </div>
+        <table class="w-full table-auto">
+            <thead>
+                <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <th class="py-3 px-6 text-right cursor-pointer">شماره قسط</th>
+                    <th class="py-3 px-6 text-right cursor-pointer">مبلغ قسط</th>
+                    <th class="py-3 px-6 text-right cursor-pointer">اصل مبلغ</th>
+                    <th class="py-3 px-6 text-right cursor-pointer">بهره</th>
+                    <th class="py-3 px-6 text-right cursor-pointer">باقی‌مانده تسهیلات</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-700 text-sm font-light">
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]"
+                    *ngFor="let m of [].constructor(12); let i = index">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ '# '+(i+((year.bankFacilities-1)*12)+1) }}
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.bankFacilities.PMT | numWithComma:money }}
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.bankFacilities.installments.principal[i+((year.bankFacilities-1)*12)] | numWithComma:money }}
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.bankFacilities.installments.interest[i+((year.bankFacilities-1)*12)] | numWithComma:money }}
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.bankFacilities.installments.remaining[i+((year.bankFacilities-1)*12)] | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- چکیده -->
+    <div class="md:col-span-12 col-span-12">
+        <h3 class="mb-3 text-base"></h3>
+        <table class="w-full table-auto">
+            <thead>
+                <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <th class="py-3 px-6 text-right cursor-pointer">شماره سال</th>
+                    <th class="py-3 px-6 text-right cursor-pointer">مبلغ کل اقساط سال </th>
+                    <th class="py-3 px-6 text-right cursor-pointer">اصل تسهیلات بازپرداخت شده</th>
+                    <th class="py-3 px-6 text-right cursor-pointer">بهره پرداختی هر سال</th>
+                    <th class="py-3 px-6 text-right cursor-pointer">باقی مانده تسهیلات در پایان سال</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-700 text-sm font-light">
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]"
+                    *ngFor="let item of estimated.bankFacilities.installments.years ; let i = index">
+                    <td class="py-3 px-6 font-normal">
+                        <span>{{ '# '+i }}</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>{{ i == 0? 0 :
+                                  estimated.bankFacilities.PMT * 12 | numWithComma }}</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        {{ i == 0? 0 :
+                            getSumOfArrays(estimated.bankFacilities.installments.principal,i*12) | numWithComma }}
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        {{ i == 0? 0 :
+                            getSumOfArrays(estimated.bankFacilities.installments.interest,i*12) | numWithComma}}
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{  (i == 0? estimated.bankFacilities.bankLoan :
+                                estimated.bankFacilities.installments.remaining[i*12]) | numWithComma }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

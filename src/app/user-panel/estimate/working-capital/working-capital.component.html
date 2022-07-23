@@ -1,4 +1,4 @@
-<div class="sticky top-24 lg:top-40 overflow-hidden" x-data="{setting: false}" x-bind:class="setting? 'shadow-md':''">
+<div class="sticky top-10 overflow-hidden" x-data="{setting: false}" x-bind:class="setting? 'shadow-md':''">
     <h2 class="w-full z-10 flex justify-between text-gray-50 p-2 py-4 bg-head rounded-md">
         سرمایه در گردش
         <a x-on:click="setting = !setting" class="cursor-pointer">
@@ -123,7 +123,8 @@
         </ng-container>
     </div>
     <!-- ضرایب فروش -->
-    <div class="md:col-span-12 col-span-12">
+    <div class="md:col-span-12 col-span-12 mt-3">
+        <h4 class="mb-3">ضرایب فروش و تبلیفات</h4>
         <table class="w-full table-auto">
             <thead>
                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -142,14 +143,14 @@
                         <span>{{ estimated.salesAndAdsRate.count }}</span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        <input type="text" class="text-input max-w-[200px]"
+                        <input type="text" class="editable-field" style="max-width:160px !important"
                          (change)="SAInputsChange($event)"
                          (focus)="focus($event)" (focusout)="focusOut($event)"
                          [(ngModel)]="estimated.salesAndAdsRate.basePrice"
                          appNumWithComma>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        <input type="number" class="text-input max-w-[100px]"
+                        <input type="number" class="editable-field max-w-[100px]"
                          (change)="SAInputsChange($event)"
                          [(ngModel)]="estimated.salesAndAdsRate.priceIncreaseRate">
                     </td>
@@ -164,7 +165,7 @@
                         </span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        <input type="number" class="text-input max-w-[100px]"
+                        <input type="number" class="editable-field max-w-[100px]"
                          (change)="SAInputsChange($event)"
                          [(ngModel)]="estimated.salesAndAdsRate.adsPercent">
                     </td>
@@ -192,7 +193,7 @@
                 <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]"
                     *ngFor="let item of list; let indx = index">
                     <td class="py-3 px-6 font-normal" *ngFor="let i of item | keyvalue : orderbyValueAsc">
-                        <span>{{ i.key == 'percent'? i.value + ' %': i.key == 'title'? i.value : (i.value | numWithComma) }}</span>
+                        <span>{{ i.key == 'percent'? i.value + ' %': i.key == 'title'|| i.key == 'scale'? i.value : (i.value | numWithComma) }}</span>
                     </td>
                 </tr>
                 <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">

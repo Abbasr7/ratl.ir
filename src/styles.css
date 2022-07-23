@@ -116,6 +116,9 @@ h3 {
 .sticky #navbarToggler span{
     background-color: #333 !important;
 }
+.editable-field {
+    @apply px-3 py-1 border mx-auto max-w-[80px]
+}
 
 
 /**

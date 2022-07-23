@@ -42,6 +42,9 @@ export class ProjactsService {
     ghalebMasrafi: 1,
     fixedCapital: 30,
     workingCapital: 30,
+    bankLoansFromTotalCapital: 50,
+    bankInterestRate: 4,
+    installmentCount: 60,
   }
   newProjact(data:{}){
     return this.server.create(this.projactsApi.create,data)
@@ -105,6 +108,33 @@ export class ProjactsService {
       calculate(firstYearMaintenanceCost,year)
       return maintenanceCost
     }
+  }
+
+  PMT(rate:number, nper:number, pv:number, fv:number=0, type:number=0) {
+    /*
+     * rate   - interest rate per month
+     * nper   - number of periods (months)
+     * pv   - present value
+     * fv   - future value
+     * type - when the payments are due:
+     *        0: end of the period, e.g. end of month (default)
+     *        1: beginning of period
+     */
+    let pmt, pvif;
+
+    fv || (fv = 0);
+    type || (type = 0);
+
+    if (rate === 0)
+      return -(pv + fv) / nper;
+
+    pvif = Math.pow(1 + rate, nper);
+    pmt = - rate * (pv * pvif + fv) / (pvif - 1);
+
+    if (type === 1)
+      pmt /= (1 + rate);
+
+    return pmt;
   }
 
   justNum(x: any) {

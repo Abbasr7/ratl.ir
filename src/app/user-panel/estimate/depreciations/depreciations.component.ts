@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { IRate } from 'src/app/controlers/interfaces/interfaces';
 import { EstimateComponent } from '../estimate.component';
 
 @Component({
@@ -8,5 +9,9 @@ import { EstimateComponent } from '../estimate.component';
 })
 export class DepreciationsComponent extends EstimateComponent {
 
+
+  changeYear(event: Event, type: string) {
+    this.depreciationCalculate(type, this.year[type as keyof IRate])
+  }
 
 }

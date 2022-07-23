@@ -222,6 +222,7 @@ export class IEstimate {
     workingCapital: any;
     salesAndAdsRate: any;
     financialSummary: any;
+    bankFacilities: any;
 }
 //* for estimate
 export interface IRate {
