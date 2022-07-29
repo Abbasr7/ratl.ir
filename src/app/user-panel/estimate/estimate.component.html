@@ -10,6 +10,10 @@
                 تسهیلات بانکی
             </li>
             <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
+                x-bind:class="activeTab===2 ? 'text-rose-500 border-rose-500' : ''" x-on:click="activeTab = 2">
+                هزینه های جاری
+            </li>
+            <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
                 x-bind:class="activeTab===4 ? 'text-purple-500 border-purple-500' : ''" x-on:click="activeTab = 4">
                 چکیده مالی
             </li>
@@ -24,18 +28,19 @@
             <app-salary-form></app-salary-form>
         </div>
 
-        <!-- سرمایه در گردش -->
-        <div>
-            <app-working-capital></app-working-capital>
-        </div>
     </div>
+    <!-- تهسیلات بانکی -->
     <div x-show="activeTab===1">
         <app-bank-facilities></app-bank-facilities>
+    </div>
+    <!-- سرمایه در گردش - هزینه های جاری -->
+    <div x-show="activeTab===2">
+        <app-working-capital></app-working-capital>
     </div>
     <!-- چکیده مالی  -->
     <div x-show="activeTab===4">
 
-        <h2 class="w-full z-10 text-gray-50 p-2 py-4 my-5 bg-head rounded sticky top-24 lg:top-40">
+        <h2 class="w-full z-10 text-gray-50 p-2 py-4 my-5 bg-head rounded sticky top-10">
             چکیده مالی و نحوه‌ی سرمایه گزاری
         </h2>
         <div class="mb-3 grid grid-cols-12 gap-2">

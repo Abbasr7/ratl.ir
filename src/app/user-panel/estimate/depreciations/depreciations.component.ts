@@ -14,4 +14,14 @@ export class DepreciationsComponent extends EstimateComponent {
     this.depreciationCalculate(type, this.year[type as keyof IRate])
   }
 
+  rateChanged(event: Event, type: any) {
+    this.rate[type as keyof IRate] = (<HTMLInputElement>event.target).valueAsNumber
+    this.depreciationCalculate(type, this.year[type as keyof IRate])
+  }
+
+  rateValue(type: any) {
+    return this.rate[type as keyof IRate]
+  }
+
+
 }

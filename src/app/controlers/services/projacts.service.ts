@@ -45,6 +45,7 @@ export class ProjactsService {
     bankLoansFromTotalCapital: 50,
     bankInterestRate: 4,
     installmentCount: 60,
+    rawMaterials: 0,
   }
   newProjact(data:{}){
     return this.server.create(this.projactsApi.create,data)
@@ -90,23 +91,23 @@ export class ProjactsService {
   }
 
   getMaintenanceCost(type: string,list:IEstehlak[],year:number) {
-    let maintenanceCost = 0
+    let MaintenanceCost = 0
     let sum = list[list.length-1]
 
     let firstYearMaintenanceCost = sum.sumOfCosts * this.maintenance[type as keyof IRate]/100
-    const calculate = (firstYearMaintenanceCost:number,year:number) => {
-      let mCost = firstYearMaintenanceCost + this.net[type as keyof IRate]/100 * firstYearMaintenanceCost
-      if (year != 0) {
-        calculate(mCost,year-1)
+    const calculate = (maintenanceCost:number,year:number) => {
+      let mCost = maintenanceCost + this.net[type as keyof IRate]/100 * maintenanceCost
+      if (year <= 2) {
+        MaintenanceCost = Math.round(mCost)
       } else {
-        maintenanceCost = Math.round(mCost)
+        calculate(mCost,year-1)
       }
     }
     if (year == 1) {
       return firstYearMaintenanceCost
     } else {
       calculate(firstYearMaintenanceCost,year)
-      return maintenanceCost
+      return MaintenanceCost
     }
   }
 
@@ -138,7 +139,12 @@ export class ProjactsService {
   }
 
   justNum(x: any) {
-    let xx = x.toString()
+    let xx;
+    if (typeof x == 'number') {
+      xx = Math.round(x).toString()
+    } else {
+      xx = x.toString()
+    }
     return +xx.replace(/\D/g, "")
   }
 

@@ -33,7 +33,8 @@ numberWithCommas(x: any) {
 }
 
 justNum(x: any) {
-  return +x.replace(/\D/g, "")
+  let xx = x.toString()
+  return +xx.replace(/\D/g, "")
 }
 
 persianNumToEng(str: any) {

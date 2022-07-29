@@ -39,7 +39,7 @@ export class EstimateComponent implements OnInit {
   percents = this.projactService.percents
 
   money:string;
-
+  period: number;
   ngOnInit(): void {
 
     this.unit = this.projactService.projact.value
@@ -59,6 +59,7 @@ export class EstimateComponent implements OnInit {
         map(res => res as SuccessHandle),
         map(res => res.data as IProjact),
       ))
+      this.period = this.toNum(this.unit.fundAndExpensesForm.time)
       this.toEstimate()
       
       console.log(this.unit,this.estimated);
@@ -111,7 +112,7 @@ export class EstimateComponent implements OnInit {
       return maintenanceCost
     }
     
-    if (calculate) {
+    if (calculate) { // for programmerly use
       let maintenance = {
         building: 0,
         equipment: 0,
@@ -124,8 +125,8 @@ export class EstimateComponent implements OnInit {
       })
 
       this.estimated.maintenanceCost = maintenance
-    } else {
-      
+
+    } else { // for use in Html file
       return estimateMaintenanceCost(type)
     }
 
@@ -231,12 +232,24 @@ export class EstimateComponent implements OnInit {
   }
 
   // سرمایه در گردش
+  totalRawMaterials: number;
+  netSumRawMaterials = 0;
   getWorkingCapital(year = 1){
     let e = {
-      mavadAvalie: 0,
-      sumMavadAvalie:0,
+      netSumRawMaterials:0,
+      totalRawMaterials: 0,
       salary: 0,
-      WEGT: 0,
+      WEGT: {
+        water: 0,
+        gasWarmSeasons: 0,
+        gasColdSeasons: 0,
+        electricity: 0,
+        phoneAndInternet: 0,
+        get sum(){
+          return this.electricity +this.water +this.gasColdSeasons +this.gasWarmSeasons +this.phoneAndInternet
+        },
+      },
+      bime: 0,
       maintenanceCost: 0,
       ghalebMasrafi:0,
       mojodiKala:0,
@@ -246,67 +259,118 @@ export class EstimateComponent implements OnInit {
         return sum * 5/100
       },
       get sum(){
-        return this.mavadAvalie + this.salary + this.WEGT +
+        return this.totalRawMaterials + this.salary + this.WEGT.sum +
          this.maintenanceCost + this.mojodiKala + this.motalebat +
           this.ghalebMasrafi + this.tankhah
       }
     }
     // mavadAvalie
-    let sumMavadAvalie = 0;
-    this.unit.fundAndExpensesForm.mavadAvalie.forEach((object:any) => {
-      sumMavadAvalie += (this.toNum(object.cost)* this.toNum(object.count) * this.toNum(object.percent))
-    })
-    e.mavadAvalie = (this.toNum(this.unit.fundAndExpensesForm.zarfiyateSalane)/12) * 
-     (sumMavadAvalie + e.unforeseen(sumMavadAvalie) ) *
-     this.toNum(this.unit.fundAndExpensesForm.time)
-    // sum mavad avlie
-    e.sumMavadAvalie = sumMavadAvalie
+    const rawMat_Calc = (totalRawMat:number,year:number) => {
+      let v = (totalRawMat + (totalRawMat * this.percents.rawMaterials/100))
+              * this.estimated.salesAndAdsRate.count[11-year]/this.estimated.salesAndAdsRate.count[10-year]
+      if (year <= 2) {
+        e.totalRawMaterials = v;
+        return
+      } else {
+        rawMat_Calc(v,year-1)
+      }
+    }
+    if (this.totalRawMaterials == undefined) {
+      // jame khales mavad avlie
+      this.unit.fundAndExpensesForm.mavadAvalie.forEach((object:any) => {
+        this.netSumRawMaterials += (this.toNum(object.cost)* this.toNum(object.count) * this.toNum(object.percent))
+      })
+      // جمع کل (مجموع مواد اولیه با پیشبینی نشده های مواد اولیه)
+      this.totalRawMaterials = e.totalRawMaterials = (this.toNum(this.unit.fundAndExpensesForm.zarfiyateSalane)/12) * 
+       (this.netSumRawMaterials + e.unforeseen(this.netSumRawMaterials) ) *
+       this.toNum(this.unit.fundAndExpensesForm.time)
+    }
+    if(this.year.workingCapital != 1) {
+      rawMat_Calc(this.totalRawMaterials,this.year.workingCapital)
+    } else {
+      e.totalRawMaterials = this.totalRawMaterials
+    }
+    e.netSumRawMaterials = this.netSumRawMaterials
 
     // salary
     e.salary = (this.estimated.sumSalaryCosts.sum * this.percents.salary/100) * 12/(this.toNum(this.unit.fundAndExpensesForm.time))
+    const salary_Calc = (salary:number,year:number) => {
+      let v = salary * 120/100;
+      if (year <= 2) {
+        e.salary = v;
+        return;
+      } else {
+        salary_Calc(v,year-1);
+      }
+    }
+    if (this.year.workingCapital > 1) {
+      salary_Calc(e.salary,this.year.workingCapital)
+    }
 
     // WEGT
-    e.WEGT = (
-       this.toNum(this.unit.fundAndExpensesForm.hazineJari.electricity.cost) * this.toNum(this.unit.fundAndExpensesForm.hazineJari.electricity.count)
-     + this.toNum(this.unit.fundAndExpensesForm.hazineJari.gasColdSeasons.cost) * this.toNum(this.unit.fundAndExpensesForm.hazineJari.gasColdSeasons.count)
-     + this.toNum(this.unit.fundAndExpensesForm.hazineJari.gasWarmSeasons.cost) * this.toNum(this.unit.fundAndExpensesForm.hazineJari.gasWarmSeasons.count)
-     + this.toNum(this.unit.fundAndExpensesForm.hazineJari.phoneAndInternet.cost) * this.toNum(this.unit.fundAndExpensesForm.hazineJari.phoneAndInternet.count)
-     + this.toNum(this.unit.fundAndExpensesForm.hazineJari.water.cost) * this.toNum(this.unit.fundAndExpensesForm.hazineJari.water.count)
-    )
-     * 12/this.toNum(this.unit.fundAndExpensesForm.time);
+    let HZ = this.unit.fundAndExpensesForm.hazineJari;
+    let electricity = this.toNum(HZ.electricity.cost) * this.toNum(HZ.electricity.count);
+    let gasColdSeasons = this.toNum(HZ.gasColdSeasons.cost) * this.toNum(HZ.gasColdSeasons.count);
+    let gasWarmSeasons = this.toNum(HZ.gasWarmSeasons.cost) * this.toNum(HZ.gasWarmSeasons.count);
+    let phoneAndInternet = this.toNum(HZ.phoneAndInternet.cost) * this.toNum(HZ.phoneAndInternet.count);
+    let water = this.toNum(HZ.water.cost) * this.toNum(HZ.water.count);
+    
+    const WEGT_Calc = (cost:number,percent:number,variable:string,year=this.year.workingCapital) => {
+      let v = cost + (cost * percent / 100)
+      if (year <= 2) {
+        e.WEGT[variable as keyof WEGT] = v;
+        return;
+      } else {
+        WEGT_Calc(v,percent,variable,year-1)
+      }
+    }
 
+    if (this.year.workingCapital == 1) {
+      e.WEGT.electricity = electricity
+      e.WEGT.gasColdSeasons = gasColdSeasons
+      e.WEGT.gasWarmSeasons = gasWarmSeasons
+      e.WEGT.phoneAndInternet = phoneAndInternet
+      e.WEGT.water = water
+    } else {
+      WEGT_Calc(electricity,+HZ.electricity.percent,'electricity');
+      WEGT_Calc(gasColdSeasons,+HZ.gasColdSeasons.percent,'gasColdSeasons');
+      WEGT_Calc(gasWarmSeasons,+HZ.gasWarmSeasons.percent,'gasWarmSeasons');
+      WEGT_Calc(phoneAndInternet,+HZ.phoneAndInternet.percent,'phoneAndInternet');
+      WEGT_Calc(water,+HZ.water.percent,'water');
+    }
+    
     // Maintenance Costs
     e.maintenanceCost = this.estimated.maintenanceCost.building
      + this.estimated.maintenanceCost.equipment
      + this.estimated.maintenanceCost.vehicles;
 
     // Mojodi Kala
-    (() => {
-      let mjkl = this.toNum(this.unit.fundAndExpensesForm.mojodiKala)
-      let es = (value:number,year:number) =>{
-        let v = value * 1.2
-        if (year-1 <= 0) {
-          e.mojodiKala = v
-        } else {
-          es(v, year-1)
-        }
+    let mjkl = this.toNum(this.unit.fundAndExpensesForm.mojodiKala)
+    let es = (value:number,year:number) =>{
+      let v = value * 1.2
+      if (year <= 2) {
+        e.mojodiKala = v
+      } else {
+        es(v, year-1)
       }
-      this.year.workingCapital <= 1? e.mojodiKala = mjkl :
-        es(mjkl,this.year.workingCapital)
-    })()
+    }
+    this.year.workingCapital <= 1? e.mojodiKala = mjkl :
+      es(mjkl,this.year.workingCapital)
 
     // Motalebat
     e.motalebat = this.toNum(this.unit.fundAndExpensesForm.motalebat);
 
     // tankah
-    if (this.year.workingCapital <= 1)
-      e.tankhah = this.toNum(this.unit.fundAndExpensesForm.tankhah)
+    // if (this.year.workingCapital <= 1)
+    e.tankhah = this.toNum(this.unit.fundAndExpensesForm.tankhah)
 
     // ghalebMasrafi
     let ghmsrfi = (ghalebMasrafi:number,year:number) =>{
-      let v = this.toNum(ghalebMasrafi) + (this.toNum(ghalebMasrafi)*this.percents.ghalebMasrafi/100)
-      if (year-1 <= 0) {
-        e.ghalebMasrafi = this.toNum(v)
+      let v = ghalebMasrafi + ghalebMasrafi*this.percents.ghalebMasrafi/100
+
+      if (year <= 1) {
+        e.ghalebMasrafi = v;
+        return;
       } else {
         ghmsrfi(v,year-1)
       }
@@ -314,37 +378,36 @@ export class EstimateComponent implements OnInit {
     if (this.year.workingCapital == 1) {
       e.ghalebMasrafi = this.toNum(this.unit.fundAndExpensesForm.ghalebMasrafi)
     } else {
-      ghmsrfi(this.unit.fundAndExpensesForm.ghalebMasrafi,this.year.workingCapital)
+      ghmsrfi(this.toNum(this.unit.fundAndExpensesForm.ghalebMasrafi),this.year.workingCapital)
     }
     // compelete
     this.estimated.workingCapital = e;
-
-
   }
 
   // ضریب فروش و تبلیغات
-  salesAndAdsRate(){
+  salesAndAdsRate(year=0){
     let e = {
-      count: 0,
+      count: <Array<any>>[],
       basePrice: 1,
-      priceIncreaseRate: 0,
-      yearlyPrice: 0,
-      get AnnualIncome(){
-        return this.yearlyPrice * this.count
+      priceIncreaseRate: [0,20,20,20,20,20,20,20,20,20],
+      yearlyPrice: <Array<any>>[],
+      AnnualIncome(index:number){
+        return this.yearlyPrice[index] * this.count[index]
       },
-      adsPercent: 1,
-      get adsCost(){
-        return this.adsPercent * this.AnnualIncome/100
+      adsPercent: [1,1,1,1,1,1,1,1,1,1],
+      adsCost(index:number){
+        return this.adsPercent[index] * this.AnnualIncome(index)/100
       }
     }
     // yearly Price And count
     let calculate = (count:number,price:number,year:number ) => {
       let c = count * 1.3
-      let yp = price * (1+e.priceIncreaseRate/100)
-      if (year-1 <= 0) {
-        e.count = c
-        e.yearlyPrice = yp
+      let yp = price * (1+e.priceIncreaseRate[10-year]/100)
+      if (year-1 < 0) {
+        return;
       } else {
+        e.count.push(c)
+        e.yearlyPrice.push(yp)
         calculate(c,yp, year-1)
       }
     }
@@ -356,12 +419,14 @@ export class EstimateComponent implements OnInit {
       e.adsPercent = this.estimated.salesAndAdsRate.adsPercent
     }
     
-    e.count = this.toNum(this.unit.fundAndExpensesForm.zarfiyateSalane)
-    e.yearlyPrice = this.toNum(e.basePrice) * (1+e.priceIncreaseRate)
-    if (this.year.salesAndAdsRate != 1) {
-      e.priceIncreaseRate = 20
-      calculate(e.count,e.yearlyPrice,this.year.salesAndAdsRate)
-    }    
+    let count = this.toNum(this.unit.fundAndExpensesForm.zarfiyateSalane)
+    let yearlyPrice = this.toNum(e.basePrice) * (1+e.priceIncreaseRate[0])
+
+    // سال اول
+    e.count.push(count);
+    e.yearlyPrice.push(yearlyPrice)
+    // سالهای بعدی
+    calculate(count,yearlyPrice,9)
 
     this.estimated.salesAndAdsRate = e    
   }
@@ -423,9 +488,8 @@ export class EstimateComponent implements OnInit {
       sumYearlySalary += item.cost * 12
     })
     PO.staffTraining = sumYearlySalary * 2/100
-    PO.tolidAzmayeshi = (this.estimated.workingCapital.WEGT+this.estimated.workingCapital.mavadAvalie)
-                        / this.toNum(this.unit.fundAndExpensesForm.time) / (30/15)
-
+    PO.tolidAzmayeshi = (this.estimated.workingCapital.WEGT.sum+this.estimated.workingCapital.totalRawMaterials) / this.toNum(this.unit.fundAndExpensesForm.time) / (30/15)
+    
     e.preOperation = this.toNum(PO.otherCosts1) +this.toNum(PO.otherCosts2) +this.toNum(PO.otherCosts3)
       +this.toNum(PO.otherCosts4) +this.toNum(PO.otherCosts5) +this.toNum(PO.research)
       +this.toNum(PO.staffTraining) +this.toNum(PO.tolidAzmayeshi)
@@ -489,7 +553,7 @@ export class EstimateComponent implements OnInit {
     q.remaining.push(firstRemaining)
     remainingCalculate(firstRemaining,this.percents.installmentCount)
 
-    // years of installments
+    // years of installments. to add new row in lastest table
     if (q.hasOwnProperty('year') && q.years.length) {
       let newLength = Math.ceil(q.principal.length/12) + 1
       if (newLength > q.years.length) {
@@ -530,38 +594,21 @@ export class EstimateComponent implements OnInit {
     calculate(principal,INCount)
   }
 
-  // هزینه های جاری
-  hazinehayeJari(){
-    let e = {
-      
-    }
-  }
   // Events
+
   focus(e:Event){
     let elm = (<HTMLElement>e.target)
     if (elm.clientWidth < 50)
-      elm.parentElement?.setAttribute('colspan','3')
-    
+      elm.parentElement?.setAttribute('colspan','3') 
   }
+
   focusOut(e:Event){
     let elm = (<HTMLElement>e.target)
     elm.parentElement?.setAttribute('colspan','1')
   }
-  rateChanged(event: Event, type: any) {
-    this.rate[type as keyof IRate] = (<HTMLInputElement>event.target).valueAsNumber
-    this.depreciationCalculate(type, this.year[type as keyof IRate])
-  }
-
-  rateValue(type: any) {
-    return this.rate[type as keyof IRate]
-  }
 
   orderbyValueAsc = (a: KeyValue<string, string>, b: KeyValue<string, string>): number => {
     return a.key > b.key ? -1 : (a.key > b.key) ? 0 : 1
-  }
-
-  SAInputsChange(event:Event){
-    this.salesAndAdsRate()
   }
 
   toNum(x:any){
@@ -587,4 +634,11 @@ export interface IEmployeesCosts {
   eidi: number,
   reward: number,
   bime: number,
+}
+export interface WEGT{
+  water: number,
+  gasWarmSeasons: number,
+  gasColdSeasons: number,
+  electricity: number,
+  phoneAndInternet: number,
 }

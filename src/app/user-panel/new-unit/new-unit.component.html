@@ -446,7 +446,7 @@
                         <form class="grid grid-cols-12 gap-2">
                             <div class="col-span-4">
                                 <label class="text-gray-700">عنوان شغلی</label>
-                                <select id="default" #jtitle name="title" class="select-input">
+                                <select id="default" #jtitle name="title" class="select-input mb-6">
                                     <option selected>...</option>
                                     <option *ngFor="let item of salaryForm.value.jobTitles" [value]="item.title">
                                         {{item.title}}</option>
@@ -454,7 +454,7 @@
                             </div>
                             <div class="col-span-3">
                                 <label class="text-gray-700">رده شغلی</label>
-                                <select id="default" #jlevel name="level" class="select-input">
+                                <select id="default" #jlevel name="level" class="select-input mb-6">
                                     <option selected>...</option>
                                     <option *ngFor="let item of salaryForm.value.jobLevels" [value]="item.title">
                                         {{item.title}}</option>
