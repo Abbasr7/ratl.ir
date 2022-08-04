@@ -6,38 +6,28 @@ import { EstimateComponent } from '../estimate.component';
   templateUrl: './working-capital.component.html',
   styleUrls: ['./working-capital.component.css']
 })
-export class WorkingCapitalComponent extends EstimateComponent implements OnInit,AfterViewInit{
+export class WorkingCapitalComponent extends EstimateComponent implements AfterViewInit{
   
   ngAfterViewInit(): void {
-  }
-  override ngOnInit(): void {
     this.bime()
-    
   }
+
   // هزینه های جاری
   applyChanges(){
     this.year.building = this.year.workingCapital;
     this.year.equipment = this.year.workingCapital;
     this.year.vehicles = this.year.workingCapital;
-    // this.year.officeEquipment = this.year.workingCapital;
-    // this.year.preOperation = this.year.workingCapital;
     this.year.salesAndAdsRate = this.year.workingCapital;
-    // this.year.bankFacilities = this.year.workingCapital;
+
 
     this.depreciationCalculate('equipment', this.year.equipment)
     this.depreciationCalculate('building', this.year.building)
     this.depreciationCalculate('vehicles', this.year.vehicles)
-    // this.depreciationCalculate('officeEquipment', this.year.officeEquipment);
+
     this.maintenanceCost('any',true)
-
-    // this.salaryFormEstimate()
-
     this.getWorkingCapital()
+    this.salesAndAdsRate()
     this.bime()
-
-    // this.financialSummary()
-
-    // this.bankFacilities()
   }
 
   bime() {
@@ -59,6 +49,4 @@ export class WorkingCapitalComponent extends EstimateComponent implements OnInit
       calculate(firstYearBime,this.year.workingCapital);
     }
   }
-
-
 }

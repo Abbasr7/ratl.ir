@@ -258,10 +258,11 @@ export class EstimateComponent implements OnInit {
       unforeseen(sum:number){
         return sum * 5/100
       },
+      sumInPeriod: 0,
       get sum(){
-        return this.totalRawMaterials + this.salary + this.WEGT.sum +
-         this.maintenanceCost + this.mojodiKala + this.motalebat +
-          this.ghalebMasrafi + this.tankhah
+        return this.maintenanceCost + this.totalRawMaterials + this.ghalebMasrafi
+          + this.tankhah + this.WEGT.sum + this.bime 
+          // + this.salary + this.mojodiKala + this.motalebat +
       }
     }
     // mavadAvalie
@@ -280,11 +281,10 @@ export class EstimateComponent implements OnInit {
       this.unit.fundAndExpensesForm.mavadAvalie.forEach((object:any) => {
         this.netSumRawMaterials += (this.toNum(object.cost)* this.toNum(object.count) * this.toNum(object.percent))
       })
-      // جمع کل (مجموع مواد اولیه با پیشبینی نشده های مواد اولیه)
-      this.totalRawMaterials = e.totalRawMaterials = (this.toNum(this.unit.fundAndExpensesForm.zarfiyateSalane)/12) * 
-       (this.netSumRawMaterials + e.unforeseen(this.netSumRawMaterials) ) *
-       this.toNum(this.unit.fundAndExpensesForm.time)
     }
+    // جمع کل (مجموع مواد اولیه با پیشبینی نشده های مواد اولیه)
+    this.totalRawMaterials = e.totalRawMaterials = (this.toNum(this.unit.fundAndExpensesForm.zarfiyateSalane)/12) * 
+     (this.netSumRawMaterials + e.unforeseen(this.netSumRawMaterials) ) * 12
     if(this.year.workingCapital != 1) {
       rawMat_Calc(this.totalRawMaterials,this.year.workingCapital)
     } else {
@@ -293,7 +293,7 @@ export class EstimateComponent implements OnInit {
     e.netSumRawMaterials = this.netSumRawMaterials
 
     // salary
-    e.salary = (this.estimated.sumSalaryCosts.sum * this.percents.salary/100) * 12/(this.toNum(this.unit.fundAndExpensesForm.time))
+    e.salary = (this.estimated.sumSalaryCosts.sum * this.percents.salary/100)
     const salary_Calc = (salary:number,year:number) => {
       let v = salary * 120/100;
       if (year <= 2) {
@@ -361,8 +361,11 @@ export class EstimateComponent implements OnInit {
     e.motalebat = this.toNum(this.unit.fundAndExpensesForm.motalebat);
 
     // tankah
-    // if (this.year.workingCapital <= 1)
-    e.tankhah = this.toNum(this.unit.fundAndExpensesForm.tankhah)
+    if (this.year.workingCapital == 1) {
+      e.tankhah = this.toNum(this.unit.fundAndExpensesForm.tankhah)
+    } else {
+      e.tankhah = this.toNum(this.unit.fundAndExpensesForm.tankhah) * 2
+    }
 
     // ghalebMasrafi
     let ghmsrfi = (ghalebMasrafi:number,year:number) =>{
@@ -376,10 +379,17 @@ export class EstimateComponent implements OnInit {
       }
     }
     if (this.year.workingCapital == 1) {
-      e.ghalebMasrafi = this.toNum(this.unit.fundAndExpensesForm.ghalebMasrafi)
+      e.ghalebMasrafi = this.toNum(this.unit.fundAndExpensesForm.ghalebMasrafi) * 4
     } else {
-      ghmsrfi(this.toNum(this.unit.fundAndExpensesForm.ghalebMasrafi),this.year.workingCapital)
+      let g = this.toNum(this.unit.fundAndExpensesForm.ghalebMasrafi) * 4
+      ghmsrfi(g,this.year.workingCapital)
     }
+
+    // Sum Costs in defined Period
+    e.sumInPeriod = this.totalRawMaterials / (12/this.period)
+                    + e.salary / (12/this.period) + e.WEGT.sum / (12/this.period)
+                    + e.maintenanceCost / (12/this.period) + e.mojodiKala
+                    + e.motalebat + e.ghalebMasrafi/4 + e.tankhah
     // compelete
     this.estimated.workingCapital = e;
   }
@@ -488,14 +498,14 @@ export class EstimateComponent implements OnInit {
       sumYearlySalary += item.cost * 12
     })
     PO.staffTraining = sumYearlySalary * 2/100
-    PO.tolidAzmayeshi = (this.estimated.workingCapital.WEGT.sum+this.estimated.workingCapital.totalRawMaterials) / this.toNum(this.unit.fundAndExpensesForm.time) / (30/15)
+    PO.tolidAzmayeshi = (this.estimated.workingCapital.WEGT.sum+this.estimated.workingCapital.totalRawMaterials) / this.period / (30/15)
     
     e.preOperation = this.toNum(PO.otherCosts1) +this.toNum(PO.otherCosts2) +this.toNum(PO.otherCosts3)
       +this.toNum(PO.otherCosts4) +this.toNum(PO.otherCosts5) +this.toNum(PO.research)
       +this.toNum(PO.staffTraining) +this.toNum(PO.tolidAzmayeshi)
     
     // totalCapitalRequired
-    e.totalCapitalRequired = e.sum + this.estimated.workingCapital.sum
+    e.totalCapitalRequired = e.sum + this.estimated.workingCapital.sumInPeriod
 
     this.estimated.financialSummary = e;
 

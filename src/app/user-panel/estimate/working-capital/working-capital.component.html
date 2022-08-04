@@ -17,7 +17,7 @@
         <div class="px-3">
             <label class="text-gray-700"> دوره زمانی(ماه)
                 <input type="number" class="editable-field"
-                    [(ngModel)]="unit.fundAndExpensesForm.time"
+                    [(ngModel)]="period"
                     matTooltip="دوره زمانی سرمایه در گردش" placeholder="براساس ماه">
             </label>
         </div>
@@ -26,6 +26,7 @@
                 <input type="number" class="editable-field"
                     style="max-width: 150px !important;"
                     [(ngModel)]="unit.fundAndExpensesForm.zarfiyateSalane">
+                    {{unit.fundAndExpensesForm.zarfiyateSalane}}
             </label>
         </div>
         <div class="relative px-3">
@@ -77,7 +78,7 @@
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <span>
-                            {{ estimated.workingCapital.salary | numWithComma }}
+                            {{ estimated.workingCapital.salary / (12/period) | numWithComma }}
                         </span>
                     </td>
                 </tr>
@@ -87,7 +88,7 @@
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <span>
-                            {{ estimated.workingCapital.WEGT.sum | numWithComma }}
+                            {{ estimated.workingCapital.WEGT.sum / (12/period) | numWithComma }}
                         </span>
                     </td>
                 </tr>
@@ -97,7 +98,7 @@
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <span>
-                            {{ estimated.workingCapital.maintenanceCost | numWithComma }}
+                            {{ estimated.workingCapital.maintenanceCost / (12/period) | numWithComma }}
                         </span>
                     </td>
                 </tr>
@@ -117,7 +118,7 @@
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <span>
-                            {{ estimated.workingCapital.ghalebMasrafi | numWithComma }}
+                            {{ estimated.workingCapital.ghalebMasrafi/4 | numWithComma }}
                         </span>
                     </td>
                 </tr>
@@ -127,7 +128,7 @@
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <span>
-                            {{ estimated.workingCapital.sum | numWithComma }}
+                            {{ estimated.workingCapital.sumInPeriod | numWithComma }}
                         </span>
                     </td>
                 </tr>
@@ -254,6 +255,44 @@
                 </tr>
                 <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
                     <td class="py-3 px-6 font-normal">
+                        <span>قالب‌های مصرفی</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        --
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        --
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        --
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.workingCapital.ghalebMasrafi | numWithComma }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>تنخواه</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        --
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        --
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        --
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.workingCapital.tankhah | numWithComma }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
                         <span>مصرف آب</span>
                     </td>
                     <td class="py-3 px-6 font-normal">
@@ -347,13 +386,13 @@
                         </span>
                     </td>
                 </tr>
-                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
-                    <td class="py-3 px-6 font-normal">
-                        <span>جمع بهره پرداختي طی دوره بازپرداخت</span>
+                <tr class="border-2 bg-lime-100 border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td colspan="2" class="py-3 border px-6 font-normal">
+                        <span>مجموع</span>
                     </td>
-                    <td class="py-3 px-6 font-normal">
+                    <td colspan="3" class="py-3 border px-6 font-normal">
                         <span>
-                            {{ estimated.bankFacilities.fullRefund - estimated.bankFacilities.bankLoan | numWithComma }}
+                            {{ estimated.workingCapital.sum | numWithComma }}
                         </span>
                     </td>
                 </tr>
