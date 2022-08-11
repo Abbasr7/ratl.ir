@@ -17,6 +17,7 @@ export class AnnualProductionCostsComponent extends EstimateComponent implements
     this.year.building = this.year.annualPC;
     this.year.equipment = this.year.annualPC;
     this.year.vehicles = this.year.annualPC;
+    this.year.officeEquipment = this.year.annualPC
     this.year.salesAndAdsRate = this.year.annualPC;
     this.year.workingCapital = this.year.annualPC;
     
@@ -24,11 +25,12 @@ export class AnnualProductionCostsComponent extends EstimateComponent implements
     this.depreciationCalculate('equipment', this.year.equipment);
     this.depreciationCalculate('building', this.year.building);
     this.depreciationCalculate('vehicles', this.year.vehicles);
+    this.depreciationCalculate('officeEquipment', this.year.officeEquipment);
     
     this.maintenanceCost('any',true);
     this.getWorkingCapital();
     this.salesAndAdsRate();
-    this.annualProductionCosts();
+    this.annualProductionCosts();    
   }
 
 }

@@ -428,7 +428,7 @@
                         <span *ngIf="i != 0">{{ estimated.salesAndAdsRate.basePrice }}</span>
                         <input type="text" *ngIf="i == 0"
                             class="editable-field" style="max-width:160px !important"
-                            (change)="salesAndAdsRate()"
+                            (change)="applyChanges()"
                             (focus)="focus($event)" (focusout)="focusOut($event)"
                             [(ngModel)]="estimated.salesAndAdsRate.basePrice"
                             appNumWithComma
@@ -436,7 +436,7 @@
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <input type="number" class="editable-field max-w-[100px]"
-                         (change)="salesAndAdsRate()"
+                         (change)="applyChanges()"
                          [(ngModel)]="estimated.salesAndAdsRate.priceIncreaseRate[i]">
                     </td>
                     <td class="py-3 px-6 font-normal">
@@ -451,7 +451,7 @@
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <input type="number" class="editable-field max-w-[100px]"
-                         (change)="salesAndAdsRate()"
+                         (change)="applyChanges()"
                          [(ngModel)]="estimated.salesAndAdsRate.adsPercent[i]">
                     </td>
                     <td class="py-3 px-6 font-normal">

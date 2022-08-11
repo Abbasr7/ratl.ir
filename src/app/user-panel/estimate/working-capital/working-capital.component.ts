@@ -27,7 +27,14 @@ export class WorkingCapitalComponent extends EstimateComponent implements AfterV
     this.maintenanceCost('any',true)
     this.getWorkingCapital()
     this.salesAndAdsRate()
-    this.bime(this.estimated.workingCapital,this.year.workingCapital)
+    this.bime(this.estimated.workingCapital,this.year.workingCapital);
+    
+    this.projactService.setChanges.next(this.estimated);
+  }
+  
+  setChanges(){
+    this.salesAndAdsRate();
+    this.projactService.setChanges.next(this.estimated);
   }
 
 }

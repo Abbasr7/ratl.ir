@@ -30,6 +30,7 @@ import { PricedPlansComponent } from './user-panel/priced-plans/priced-plans.com
 import { ProfileComponent } from './user-panel/profile/profile.component';
 import { RegisterComponent } from './user-panel/register/register.component';
 import { UserPanelComponent } from './user-panel/user-panel.component';
+import { UserProjactsComponent } from './user-panel/user-projacts/user-projacts.component';
 
 const routes: Routes = [
   {path:'', component:HomeComponent,children:[
@@ -58,6 +59,7 @@ const routes: Routes = [
     {path:'newunit',component:NewUnitComponent,data:{title: 'ایجاد پروژه جدید'}},
     {path:'editunit/:id',component:NewUnitComponent,data:{title: 'ویرایش پروژه'}},
     {path:'payments',component:PricedPlansComponent,data:{title: 'لیست تراکنشها'}},
+    {path:'projacts',component:UserProjactsComponent,data:{title: 'لیست پروژه ها'}},
     {path:'estimate/:id',component:EstimateComponent,data:{title: 'نتیجه امکان سنجی مالی'}},
   ],data:{title: 'حساب کاربری'}},
   {path:'register', component:RegisterComponent,canActivate:[LoginGuard],data:{title: 'ثبت نام'}},

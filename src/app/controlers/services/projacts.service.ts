@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Globals } from 'src/app/globals';
-import { IEstehlak, IProjact, IRate } from '../interfaces/interfaces';
+import { IEstehlak, IEstimate, IProjact, IRate } from '../interfaces/interfaces';
 import { ServerService } from './server.service';
 
 @Injectable({
@@ -11,6 +11,7 @@ export class ProjactsService {
 
   constructor(private server:ServerService) { }
 
+  setChanges = new BehaviorSubject(new IEstimate);
   projactsApi = Globals.projactsApi
   projact = new BehaviorSubject(new IProjact());
   net = {
@@ -66,6 +67,9 @@ export class ProjactsService {
     return this.server.get(this.projactsApi.getAll)
   }
 
+  getCahnges(){
+    return this.setChanges.asObservable();
+  }
 
   estehlakHarSal(type: any, item: any, year: number): IEstehlak {
     let value = item

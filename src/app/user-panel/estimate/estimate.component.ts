@@ -52,10 +52,12 @@ export class EstimateComponent implements OnInit {
       this.toEstimate()
     }
 
+    this.projactService.getCahnges().subscribe(res => {
+      this.estimated = res
+    })
   }
 
   private getCurrentUnit() {
-    let data;
     (async () => {
       this.unit = await lastValueFrom(this.projactService.getById(this.unit_id!).pipe(
         map(res => res as SuccessHandle),
@@ -85,7 +87,6 @@ export class EstimateComponent implements OnInit {
     this.bankFacilities();
 
     this.annualProductionCosts();
-
   }
 
   depreciationCalculate(type: string, year: number, customItem:any = null) {

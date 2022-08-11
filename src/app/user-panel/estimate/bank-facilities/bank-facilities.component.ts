@@ -8,5 +8,8 @@ import { EstimateComponent } from '../estimate.component';
 })
 export class BankFacilitiesComponent extends EstimateComponent {
 
-
+  applyChanges() {
+    this.bankFacilities();
+    this.projactService.setChanges.next(this.estimated);
+  }
 }

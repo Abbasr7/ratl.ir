@@ -50,7 +50,7 @@
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <input type="number" [(ngModel)]="percents.bankLoansFromTotalCapital"
-                            (change)="bankFacilities()" class="editable-field">
+                            (change)="applyChanges()" class="editable-field">
                     </td>
                 </tr>
                 <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
@@ -58,7 +58,7 @@
                         <span>نرخ بهره ساليانه</span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        <input type="number" [(ngModel)]="percents.bankInterestRate" (change)="bankFacilities()"
+                        <input type="number" [(ngModel)]="percents.bankInterestRate" (change)="applyChanges()"
                             class="editable-field">
                     </td>
                 </tr>
@@ -67,7 +67,7 @@
                         <span>تعداد اقساط (ماه)</span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        <input type="number" [(ngModel)]="percents.installmentCount" (change)="bankFacilities()"
+                        <input type="number" [(ngModel)]="percents.installmentCount" (change)="applyChanges()"
                             class="editable-field">
                     </td>
                 </tr>

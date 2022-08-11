@@ -53,6 +53,8 @@ import { DepreciationsComponent } from './user-panel/estimate/depreciations/depr
 import { WorkingCapitalComponent } from './user-panel/estimate/working-capital/working-capital.component';
 import { BankFacilitiesComponent } from './user-panel/estimate/bank-facilities/bank-facilities.component';
 import { AnnualProductionCostsComponent } from './user-panel/estimate/annual-production-costs/annual-production-costs.component';
+import { UserProjactsComponent } from './user-panel/user-projacts/user-projacts.component';
+import { ProfitAndLossComponent } from './user-panel/estimate/profit-and-loss/profit-and-loss.component';
 
 @NgModule({
   declarations: [
@@ -94,7 +96,9 @@ import { AnnualProductionCostsComponent } from './user-panel/estimate/annual-pro
     DepreciationsComponent,
     WorkingCapitalComponent,
     BankFacilitiesComponent,
-    AnnualProductionCostsComponent
+    AnnualProductionCostsComponent,
+    UserProjactsComponent,
+    ProfitAndLossComponent
   ],
   imports: [
     BrowserModule,
