@@ -9,7 +9,7 @@ import { EstimateComponent } from '../estimate.component';
 export class WorkingCapitalComponent extends EstimateComponent implements AfterViewInit{
   
   ngAfterViewInit(): void {
-    this.bime()
+    this.bime(this.estimated.workingCapital,this.year.workingCapital);
   }
 
   // هزینه های جاری
@@ -27,26 +27,7 @@ export class WorkingCapitalComponent extends EstimateComponent implements AfterV
     this.maintenanceCost('any',true)
     this.getWorkingCapital()
     this.salesAndAdsRate()
-    this.bime()
+    this.bime(this.estimated.workingCapital,this.year.workingCapital)
   }
 
-  bime() {
-    let firstYearBime = this.estimated.financialSummary.sum * 0.002
-
-    const calculate = (bime:number,year:number) => {
-      let v = bime * 1.1;
-      if (year <=2 ) {
-        this.estimated.workingCapital.bime = v;
-        return;
-      } else {
-        calculate(v,year-1);
-      }
-    }
-
-    if (this.year.workingCapital == 1) {
-      this.estimated.workingCapital.bime = firstYearBime;
-    } else {
-      calculate(firstYearBime,this.year.workingCapital);
-    }
-  }
 }

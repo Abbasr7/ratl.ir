@@ -1,0 +1,337 @@
+<div class="sticky top-10 mb-3" x-data="{setting: false}" x-bind:class="setting? 'shadow-md':''">
+    <h2 class="w-full z-10 flex justify-start items-center gap-3 text-gray-600 p-2 py-4 bg-white rounded-md"
+        style="box-shadow: 0 2px 2px -2px;">
+        هزینه‌های تولید سالانه
+        <div class="text-gray-700 text-sm flex items-center gap-2 z-0">
+            <div class="relative flex items-center px-3">
+                <span class="ml-2"> سال:</span>
+                <select [(ngModel)]="year['annualPC']" (change)="applyChanges()"
+                    class="border border-gray-300 rounded-full text-gray-600 h-10 px-4 bg-white hover:border-gray-400 focus:outline-none">
+                    <option [value]="1">اول</option>
+                    <option [value]="2">دوم</option>
+                    <option [value]="3">سوم</option>
+                    <option [value]="4">چهارم</option>
+                    <option [value]="5">پنجم</option>
+                    <option [value]="6">ششم</option>
+                    <option [value]="7">هفتم</option>
+                    <option [value]="8">هشتم</option>
+                    <option [value]="9">نهم</option>
+                    <option [value]="10">دهم</option>
+                </select>
+            </div>
+        </div>
+    </h2>
+</div>
+
+<div class="mb-3 grid grid-cols-12 items-center gap-2">
+    <div class="md:col-span-7 col-span-12 ">
+        <table class="w-full table-auto">
+            <thead>
+                <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <th class="py-3 px-6 text-right cursor-pointer">شرح</th>
+                    <th class="py-3 px-6 text-right cursor-pointer">افزایش سالانه</th>
+                    <th class="py-3 px-6 text-right cursor-pointer">هزینه‌های سالانه</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-700 text-sm font-light">
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            تعمیر نگهداری ساختمان
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            --
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.maintenanceCost.building | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            تعمیر نگهداری تجهیزات
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            --
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.maintenanceCost.equipment | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            تعمیر نگهداری وسایل نقلیه
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            --
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.maintenanceCost.vehicles | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            مواد اولیه و بسته‌بندی
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <input type="number" class="editable-field max-w-[100px]"
+                            (change)="applyChanges()"
+                            [(ngModel)]="percents.rawMaterials">
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.workingCapital.totalRawMaterials | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            حقوق و دستمزد
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            <input type="number" class="editable-field max-w-[100px]"
+                            (change)="applyChanges()"
+                            [(ngModel)]="percents.salary">
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.annualProductionCosts.salary | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            مصرف آب
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ unit.fundAndExpensesForm.hazineJari.water.percent | numWithComma:'%' }}
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.workingCapital.WEGT.water | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            مصرف گاز (فصول گرم)
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ unit.fundAndExpensesForm.hazineJari.gasWarmSeasons.percent | numWithComma:'%' }}
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.workingCapital.WEGT.gasWarmSeasons | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>مصرف گاز (فصول سرد)</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        {{ unit.fundAndExpensesForm.hazineJari.gasColdSeasons.percent | numWithComma:'%' }}
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.workingCapital.WEGT.gasColdSeasons | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>مصرف برق</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        {{ unit.fundAndExpensesForm.hazineJari.electricity.percent | numWithComma:'%' }}
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.workingCapital.WEGT.electricity | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>مصرف تلفن و اینترنت</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        {{ unit.fundAndExpensesForm.hazineJari.phoneAndInternet.percent | numWithComma:'%' }}
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.workingCapital.WEGT.phoneAndInternet | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            پیش بینی نشده (5 % اقلام بالا)
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            --
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.annualProductionCosts.unforseen | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            هزینه‌های اداری و فروش (۱٪ اقلام بالا)
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            --
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.annualProductionCosts.administrativeAndSellingExpenses | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            هزینه تسهیلات بانکی
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            --
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.annualProductionCosts.bankFacilityCosts | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            هزینه‌ی استهلاک
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                        -- 
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.annualProductionCosts.depreciationCosts  | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span matTooltip="20 % هزينه هاي قبل از بهره برداري">
+                            هزينه استهلاک قبل از بهره برداري
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                        -- 
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.annualProductionCosts.preOperationDepreciationCosts  | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            قالبهای مصرفی
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <input type="number" class="editable-field max-w-[100px]"
+                            (change)="applyChanges()"
+                            [(ngModel)]="percents.ghalebMasrafi">
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.annualProductionCosts.ghalebMasrafi  | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            بیمه کارخانه
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                        -- 
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.annualProductionCosts.bime  | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+                <!-- مجموع -->
+                <tr class="border border-gray-200 bg-lime-100 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            جمع کل هزینه ها (ریال)
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                        -- 
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ estimated.annualProductionCosts.sum | numWithComma:money }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

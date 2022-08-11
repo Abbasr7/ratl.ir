@@ -117,7 +117,7 @@ h3 {
     background-color: #333 !important;
 }
 .editable-field {
-    @apply px-3 py-1 border mx-auto max-w-[80px]
+    @apply px-3 py-1 border border-slate-400 mx-auto max-w-[80px] focus:border-sky-400 focus:outline-sky-400
 }
 
 

@@ -9,12 +9,4 @@ import { EstimateComponent } from '../estimate.component';
 export class BankFacilitiesComponent extends EstimateComponent {
 
 
-  getSumOfArrays(array:number[],toAndis:number){
-    let sum = 0;
-    let from = toAndis - 12;
-    for (let i = from; i < toAndis; i++) {
-      sum += array[i];
-    }
-    return sum
-  }
 }

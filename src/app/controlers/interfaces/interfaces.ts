@@ -205,17 +205,8 @@ export class IEstimate {
         vehicles: number;
     }
     officeEquipment: IEstehlak[];
-    preOperation: {
-        research: string;
-        otherCosts1: string;
-        otherCosts2: string;
-        otherCosts3: string;
-        otherCosts4: string;
-        otherCosts5: string;
-        staffTraining: string;
-        tolidAzmayeshi: string;
-    };
-    pishbiniNashode: string;
+    preOperation: IEstehlak[];
+    unforeseen: IEstehlak[];
     employees: any[];
     sumSalaryCosts: any;
     salaryBase: any[];
@@ -223,6 +214,7 @@ export class IEstimate {
     salesAndAdsRate: any;
     financialSummary: any;
     bankFacilities: any;
+    annualProductionCosts: any;
 }
 //* for estimate
 export interface IRate {
@@ -231,7 +223,7 @@ export interface IRate {
     vehicles: number,
     officeEquipment: number,
     preOperation: number,
-    pishbiniNashode: number,
+    unforeseen: number,
 }
 export interface IEstehlak {
     title: string,

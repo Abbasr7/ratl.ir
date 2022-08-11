@@ -19,7 +19,7 @@ export class ProjactsService {
     vehicles: 5, // %
     officeEquipment: 0, // %
     preOperation: 0, // %
-    pishbiniNashode: 0 // %
+    unforeseen: 0 // %
   }
   rate: IRate = {
     building: 7, // %
@@ -27,7 +27,7 @@ export class ProjactsService {
     vehicles: 25, // %
     officeEquipment: 10, // %
     preOperation: 20, // %
-    pishbiniNashode: 10, // %
+    unforeseen: 10, // %
   }
   maintenance = {
     building: 2, // %
@@ -35,10 +35,10 @@ export class ProjactsService {
     vehicles: 10, // %
     officeEquipment: 0, // %
     preOperation: 0, // %
-    pishbiniNashode: 0 // %
+    unforeseen: 0 // %
   }
   percents = {
-    salary: 65,
+    salary: 0,
     ghalebMasrafi: 1,
     fixedCapital: 30,
     workingCapital: 30,
@@ -46,6 +46,9 @@ export class ProjactsService {
     bankInterestRate: 4,
     installmentCount: 60,
     rawMaterials: 0,
+  }
+  profitAndLossPercents = {
+    salary: 65,
   }
   newProjact(data:{}){
     return this.server.create(this.projactsApi.create,data)

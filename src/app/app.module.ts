@@ -52,6 +52,7 @@ import { SalaryFormComponent } from './user-panel/estimate/salary-form/salary-fo
 import { DepreciationsComponent } from './user-panel/estimate/depreciations/depreciations.component';
 import { WorkingCapitalComponent } from './user-panel/estimate/working-capital/working-capital.component';
 import { BankFacilitiesComponent } from './user-panel/estimate/bank-facilities/bank-facilities.component';
+import { AnnualProductionCostsComponent } from './user-panel/estimate/annual-production-costs/annual-production-costs.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { BankFacilitiesComponent } from './user-panel/estimate/bank-facilities/b
     SalaryFormComponent,
     DepreciationsComponent,
     WorkingCapitalComponent,
-    BankFacilitiesComponent
+    BankFacilitiesComponent,
+    AnnualProductionCostsComponent
   ],
   imports: [
     BrowserModule,

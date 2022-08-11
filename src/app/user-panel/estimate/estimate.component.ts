@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
-import { Component, DoCheck, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { lastValueFrom, map, take } from 'rxjs';
 import { IEstehlak, IEstimate, IProjact, IRate, SuccessHandle } from 'src/app/controlers/interfaces/interfaces';
@@ -29,14 +29,16 @@ export class EstimateComponent implements OnInit {
     vehicles: 1,
     officeEquipment: 1,
     preOperation: 1,
-    pishbiniNashode: 1,
+    unforeseen: 1,
     workingCapital: 1,
     salesAndAdsRate: 1,
     bankFacilities: 1,
+    annualPC: 1,
   };
   profitAndLoss:any;
 
-  percents = this.projactService.percents
+  percents = this.projactService.percents;
+  profitAndLossPercents = this.projactService.profitAndLossPercents;
 
   money:string;
   period: number;
@@ -60,45 +62,60 @@ export class EstimateComponent implements OnInit {
         map(res => res.data as IProjact),
       ))
       this.period = this.toNum(this.unit.fundAndExpensesForm.time)
-      this.toEstimate()
+      this.toEstimate();
       
       console.log(this.unit,this.estimated);
     })()
   }
 
   toEstimate() {
-    this.depreciationCalculate('equipment', this.year.equipment)
-    this.depreciationCalculate('building', this.year.building)
-    this.depreciationCalculate('vehicles', this.year.vehicles)
+    this.depreciationCalculate('equipment', this.year.equipment);
+    this.depreciationCalculate('building', this.year.building);
+    this.depreciationCalculate('vehicles', this.year.vehicles);
     this.depreciationCalculate('officeEquipment', this.year.officeEquipment);
-    this.maintenanceCost('any',true)
+    this.maintenanceCost('any',true);
 
-    this.salaryFormEstimate()
+    this.salaryFormEstimate();
 
-    this.getWorkingCapital()
-    this.salesAndAdsRate()
+    this.getWorkingCapital();
+    this.salesAndAdsRate();
 
-    this.financialSummary()
+    this.financialSummary();
 
-    this.bankFacilities()
+    this.bankFacilities();
+
+    this.annualProductionCosts();
 
   }
 
-  depreciationCalculate(type: string, year: number) {
-    let sum = {
+  depreciationCalculate(type: string, year: number, customItem:any = null) {
+    let sum:IEstehlak = {
+      year: year,
       title: 'مجموع',
       estehlak: 0,
       arzeshDaftari: 0,
       sumOfCosts: 0,
     }
-    let vals: any = []
-    this.unit.investForm[type as keyof IHasDepreciation].forEach((item: any) => {
+    let vals: IEstehlak[] = []
+    let items = customItem? customItem : this.unit.investForm[type as keyof IHasDepreciation];
+    items.forEach((item: any) => {
       let getEstehlak = this.projactService.estehlakHarSal(type, item, year)
       sum.estehlak += getEstehlak.estehlak
       sum.arzeshDaftari += getEstehlak.arzeshDaftari
       sum.sumOfCosts += this.toNum(item.count) * this.toNum(item.cost)
       vals.push(getEstehlak)
     })
+    if (type == 'officeEquipment'){
+      let other = {
+        count: 1,
+        cost: sum.sumOfCosts * 5/100,
+        title: 'سایر'
+      };
+      let othersData = this.projactService.estehlakHarSal(type, other, year)
+      sum.estehlak += othersData.estehlak;
+      sum.arzeshDaftari += othersData.arzeshDaftari;
+      sum.sumOfCosts += other.cost;
+    }
     vals.push(sum);
     this.estimated[type as keyof IEstimate] = vals;
 
@@ -112,7 +129,7 @@ export class EstimateComponent implements OnInit {
       return maintenanceCost
     }
     
-    if (calculate) { // for programmerly use
+    if (calculate) { // for programmatically use
       let maintenance = {
         building: 0,
         equipment: 0,
@@ -293,7 +310,7 @@ export class EstimateComponent implements OnInit {
     e.netSumRawMaterials = this.netSumRawMaterials
 
     // salary
-    e.salary = (this.estimated.sumSalaryCosts.sum * this.percents.salary/100)
+    e.salary = (this.estimated.sumSalaryCosts.sum * this.profitAndLossPercents.salary/100)
     const salary_Calc = (salary:number,year:number) => {
       let v = salary * 120/100;
       if (year <= 2) {
@@ -371,7 +388,7 @@ export class EstimateComponent implements OnInit {
     let ghmsrfi = (ghalebMasrafi:number,year:number) =>{
       let v = ghalebMasrafi + ghalebMasrafi*this.percents.ghalebMasrafi/100
 
-      if (year <= 1) {
+      if (year <= 2) {
         e.ghalebMasrafi = v;
         return;
       } else {
@@ -389,7 +406,7 @@ export class EstimateComponent implements OnInit {
     e.sumInPeriod = this.totalRawMaterials / (12/this.period)
                     + e.salary / (12/this.period) + e.WEGT.sum / (12/this.period)
                     + e.maintenanceCost / (12/this.period) + e.mojodiKala
-                    + e.motalebat + e.ghalebMasrafi/4 + e.tankhah
+                    + e.motalebat + e.ghalebMasrafi/4 + e.tankhah;
     // compelete
     this.estimated.workingCapital = e;
   }
@@ -604,7 +621,141 @@ export class EstimateComponent implements OnInit {
     calculate(principal,INCount)
   }
 
+  // هزینه های تولید سالانه
+  annualProductionCost:any;
+  annualProductionCosts(){
+    let e = {
+      maintenanceCost: this.estimated.workingCapital.maintenanceCost,
+      totalRawMaterials: this.estimated.workingCapital.totalRawMaterials,
+      salary: 0,
+      WEGT: this.estimated.workingCapital.WEGT.sum,
+      get unforseen() {
+        return (this.maintenanceCost+this.totalRawMaterials+this.salary+this.WEGT) * 5/100;
+      },
+      get administrativeAndSellingExpenses() {
+        return (this.maintenanceCost+this.totalRawMaterials+this.salary+this.WEGT+this.unforseen) * 1/100;
+      },
+      bankFacilityCosts: 0,
+      depreciationCosts: 0,
+      preOperationDepreciationCosts: 0,
+      ghalebMasrafi: 0,
+      bime: 0,
+      get sum() {
+        return this.WEGT + this.maintenanceCost + this.totalRawMaterials + this.salary 
+        + this.unforseen + this.administrativeAndSellingExpenses + this.bime
+        + this.depreciationCosts + this.preOperationDepreciationCosts + this.ghalebMasrafi
+        + this.bankFacilityCosts
+      }
+    }
+
+    // salary
+    e.salary = this.estimated.sumSalaryCosts.sum
+    const salary_Calc = (value:number,year:number) => {
+      let v = value * (100 + this.percents.salary)/100
+      if (year <= 2) {
+        e.salary = v;
+        return;
+      } else {
+        salary_Calc(v,year-1)
+      }
+    }
+    if (this.year.annualPC > 1)
+      salary_Calc(e.salary,this.year.annualPC);
+    
+    // bankFacilityCosts
+    e.bankFacilityCosts = this.percents.installmentCount > (this.year.annualPC-1)*12 ?
+                          this.getSumOfArrays(this.estimated.bankFacilities.installments.interest,(this.year.annualPC-1)*12):
+                          0;
+
+    // depreciationCosts
+    // بدلیل اینکه این محاسبات وابسته به محاسبات کلی دیگر بودند  در داخل این تابع محاسبه نمودم
+    let PO = {
+      count: 1,
+      cost: this.estimated.financialSummary.preOperation,
+      title: 'هزینه‌های قبل از بهره‌برداری'
+    };
+    this.depreciationCalculate('preOperation',this.year.annualPC,[PO]);
+    let unforeseen = {
+      count: 1,
+      cost: (this.estimated.financialSummary.building
+            + this.estimated.financialSummary.equipment
+            + this.estimated.financialSummary.vehicles
+            + this.estimated.financialSummary.officeEquipment
+            + this.estimated.financialSummary.landscaping
+            + this.estimated.financialSummary.ground) * 10/100,
+      title: 'پیش‌بینی نشده'
+    }
+    this.depreciationCalculate('unforeseen',this.year.annualPC,[unforeseen]);
+
+    e.depreciationCosts = this.estimated.building[this.estimated.building.length-1].estehlak
+                          + this.estimated.equipment[this.estimated.equipment.length-1].estehlak
+                          + this.estimated.officeEquipment[this.estimated.officeEquipment.length-1].estehlak
+                          + this.estimated.vehicles[this.estimated.vehicles.length-1].estehlak
+                          + this.estimated.unforeseen[this.estimated.unforeseen.length-1].estehlak;
+    if (this.year.annualPC > 1)
+      e.depreciationCosts += this.estimated.preOperation[this.estimated.preOperation.length-1].estehlak;
+
+    // preOperationDepreciationCosts
+    e.preOperationDepreciationCosts = this.estimated.preOperation[this.estimated.preOperation.length-1].estehlak
+
+    // ghalebMasrafi
+    let ghmsrfi = (ghalebMasrafi:number,year:number) =>{
+      let v = ghalebMasrafi + (ghalebMasrafi*this.percents.ghalebMasrafi/100)
+
+      if (year <= 2) {
+        e.ghalebMasrafi = v;
+        return;
+      } else {
+        ghmsrfi(v,year-1)
+      }
+    }
+    if (this.year.annualPC == 1) {
+      e.ghalebMasrafi = this.toNum(this.unit.fundAndExpensesForm.ghalebMasrafi) * 4
+    } else {
+      let g = this.toNum(this.unit.fundAndExpensesForm.ghalebMasrafi) * 4
+      ghmsrfi(g,this.year.annualPC)
+    }
+
+    // bime
+    this.bime(e,this.year.annualPC);
+
+    // compelete
+    this.annualProductionCost = e;
+    this.estimated.annualProductionCosts = e;
+
+  }
+
+  bime(object:any,objYear:number) {
+    let firstYearBime = this.estimated.financialSummary.sum * 0.002
+
+    const calculate = (bime:number,year:number) => {
+      let v = bime * 1.1;
+      if (year <=2 ) {
+        object.bime = v;
+        return;
+      } else {
+        calculate(v,year-1);
+      }
+    }
+
+    if (objYear == 1) {
+      object.bime = firstYearBime;
+    } else {
+      calculate(firstYearBime,objYear);
+    }
+  }
   // Events
+
+  getSumOfArrays(array:number[],toAndis:number){
+    let sum = 0;
+    let from = toAndis - 12;
+    if (from >= 0) {
+      for (let i = from; i < toAndis; i++) {
+        sum += array[i];
+      }
+    }
+    return sum
+  }
 
   focus(e:Event){
     let elm = (<HTMLElement>e.target)
