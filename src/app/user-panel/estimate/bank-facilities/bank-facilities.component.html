@@ -16,12 +16,12 @@
         <h3 class="w-full"></h3>
         <div class="w-full md:w-1/4">
             <label class="text-gray-700"> دوره زمانی(ماه)
-                <input type="number" class="text-input" [(ngModel)]="unit.fundAndExpensesForm.time"
+                <input type="number" class="text-input" [(ngModel)]="period"
                     matTooltip="دوره زمانی سرمایه در گردش" placeholder="براساس ماه">
             </label>
         </div>
         <div class="w-full md:w-1/4">
-            <label class="text-gray-700"> ظرفیت واقعی سالانه
+            <label class="text-gray-700" *ngIf="unit.fundAndExpensesForm"> ظرفیت واقعی سالانه
                 <input type="number" class="text-input" [(ngModel)]="unit.fundAndExpensesForm.zarfiyateSalane">
             </label>
         </div>

@@ -22,11 +22,10 @@
             </label>
         </div>
         <div class="px-3">
-            <label class="text-gray-700"> ظرفیت واقعی سالانه
+            <label class="text-gray-700" *ngIf="unit.fundAndExpensesForm"> ظرفیت واقعی سالانه
                 <input type="number" class="editable-field"
                     style="max-width: 150px !important;"
                     [(ngModel)]="unit.fundAndExpensesForm.zarfiyateSalane">
-                    {{unit.fundAndExpensesForm.zarfiyateSalane}}
             </label>
         </div>
         <div class="relative px-3">
@@ -52,7 +51,7 @@
 </div>
 <hr class="bg-gray-400">
 <div class="mb-3 grid grid-cols-12 items-center gap-2">
-    <h3 class="w-full col-span-12 flex-shrink-0 text-gray-800 p-4">سرمایه در گردش {{ unit.fundAndExpensesForm.time }} ماهه</h3>
+    <h3 class="w-full col-span-12 flex-shrink-0 text-gray-800 p-4">سرمایه در گردش {{ period }} ماهه</h3>
     <div class="md:col-span-4 col-span-12">
         <table class="w-full table-auto">
             <thead>
@@ -139,7 +138,7 @@
     <div class="mt-1 mb-3 lg:col-span-8 col-span-12">
         <span>مواد اولیه مورد نیاز</span>
         <ng-container
-            *ngTemplateOutlet="table; context: {$implicit : unit.fundAndExpensesForm.mavadAvalie, header:['شرح','واحد','ضریب (درصد)','مقدار','قیمت واحد']}">
+            *ngTemplateOutlet="table; context: {$implicit : unit.fundAndExpensesForm?.mavadAvalie, header:['شرح','واحد','ضریب (درصد)','مقدار','قیمت واحد']}">
         </ng-container>
     </div>
     <!-- هزینه های جاری -->
@@ -296,13 +295,13 @@
                         <span>مصرف آب</span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.water.count | numWithComma }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.water.count | numWithComma }}
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.water.cost | numWithComma:money }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.water.cost | numWithComma:money }}
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.water.percent | numWithComma }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.water.percent | numWithComma }}
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <span>
@@ -315,13 +314,13 @@
                         <span>مصرف گاز (فصول گرم)</span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.gasWarmSeasons.count | numWithComma }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.gasWarmSeasons.count | numWithComma }}
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.gasWarmSeasons.cost | numWithComma:money }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.gasWarmSeasons.cost | numWithComma:money }}
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.gasWarmSeasons.percent | numWithComma }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.gasWarmSeasons.percent | numWithComma }}
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <span>
@@ -334,13 +333,13 @@
                         <span>مصرف گاز (فصول سرد)</span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.gasColdSeasons.count | numWithComma }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.gasColdSeasons.count | numWithComma }}
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.gasColdSeasons.cost | numWithComma:money }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.gasColdSeasons.cost | numWithComma:money }}
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.gasColdSeasons.percent | numWithComma }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.gasColdSeasons.percent | numWithComma }}
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <span>
@@ -353,13 +352,13 @@
                         <span>مصرف برق</span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.electricity.count | numWithComma }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.electricity.count | numWithComma }}
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.electricity.cost | numWithComma:money }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.electricity.cost | numWithComma:money }}
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.electricity.percent | numWithComma }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.electricity.percent | numWithComma }}
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <span>
@@ -372,13 +371,13 @@
                         <span>مصرف تلفن و اینترنت</span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.phoneAndInternet.count | numWithComma }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.phoneAndInternet.count | numWithComma }}
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.phoneAndInternet.cost | numWithComma:money }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.phoneAndInternet.cost | numWithComma:money }}
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.phoneAndInternet.percent | numWithComma }}
+                        {{ unit.fundAndExpensesForm?.hazineJari.phoneAndInternet.percent | numWithComma }}
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <span>
@@ -467,7 +466,7 @@
 
 <!-- mavad avalie -->
 <ng-template #table let-list let-header="header">
-    <div class="mt-1 mb-3 col-span-12" *ngIf="list.length">
+    <div class="mt-1 mb-3 col-span-12" *ngIf="list">
         <table class="w-full table-auto">
             <thead *ngIf="header">
                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">

@@ -128,7 +128,7 @@
                         </span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        <span>
+                        <span *ngIf="unit.fundAndExpensesForm">
                             {{ unit.fundAndExpensesForm.hazineJari.water.percent | numWithComma:'%' }}
                         </span>
                     </td>
@@ -145,7 +145,7 @@
                         </span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        <span>
+                        <span *ngIf="unit.fundAndExpensesForm">
                             {{ unit.fundAndExpensesForm.hazineJari.gasWarmSeasons.percent | numWithComma:'%' }}
                         </span>
                     </td>
@@ -160,7 +160,9 @@
                         <span>مصرف گاز (فصول سرد)</span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.gasColdSeasons.percent | numWithComma:'%' }}
+                        <span *ngIf="unit.fundAndExpensesForm">
+                            {{ unit.fundAndExpensesForm.hazineJari.gasColdSeasons.percent | numWithComma:'%' }}
+                        </span>
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <span>
@@ -173,7 +175,9 @@
                         <span>مصرف برق</span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.electricity.percent | numWithComma:'%' }}
+                        <span *ngIf="unit.fundAndExpensesForm">
+                            {{ unit.fundAndExpensesForm.hazineJari.electricity.percent | numWithComma:'%' }}
+                        </span>
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <span>
@@ -186,7 +190,9 @@
                         <span>مصرف تلفن و اینترنت</span>
                     </td>
                     <td class="py-3 px-6 font-normal">
-                        {{ unit.fundAndExpensesForm.hazineJari.phoneAndInternet.percent | numWithComma:'%' }}
+                        <span>
+                            {{ unit.fundAndExpensesForm?.hazineJari.phoneAndInternet.percent | numWithComma:'%' }}
+                        </span>
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <span>

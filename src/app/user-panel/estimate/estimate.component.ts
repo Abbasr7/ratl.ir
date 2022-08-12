@@ -40,6 +40,7 @@ export class EstimateComponent implements OnInit {
   percents = this.projactService.percents;
   profitAndLossPercents = this.projactService.profitAndLossPercents;
 
+  activeTab: number = 0;
   money:string;
   period: number;
   ngOnInit(): void {

@@ -98,10 +98,10 @@ export class ProjactsService {
   }
 
   getMaintenanceCost(type: string,list:IEstehlak[],year:number) {
-    let MaintenanceCost = 0
-    let sum = list[list.length-1]
+    let MaintenanceCost = 0;
+    let sum = list[list.length-1];
+    let firstYearMaintenanceCost = sum.sumOfCosts * this.maintenance[type as keyof IRate]/100;
 
-    let firstYearMaintenanceCost = sum.sumOfCosts * this.maintenance[type as keyof IRate]/100
     const calculate = (maintenanceCost:number,year:number) => {
       let mCost = maintenanceCost + this.net[type as keyof IRate]/100 * maintenanceCost
       if (year <= 2) {
@@ -110,6 +110,7 @@ export class ProjactsService {
         calculate(mCost,year-1)
       }
     }
+
     if (year == 1) {
       return firstYearMaintenanceCost
     } else {

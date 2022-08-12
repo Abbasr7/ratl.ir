@@ -15,7 +15,7 @@
     <div x-bind:class="setting == false? 'h-0 opacity-0':'h-auto opacity-100'"
         class="bg-white flex flex-wrap gap-3 text-sm text-gray-700 p-3 transition-all duration-300">
         <h3 class="w-full">پایه حقوق</h3>
-        <div class="w-full md:w-1/4" *ngFor="let item of unit.salaryForm.jobLevels;let i = index">
+        <div class="w-full md:w-1/4" *ngFor="let item of unit.salaryForm?.jobLevels;let i = index">
             <label class="text-gray-700"> نیروی {{ item.title }}
                 <input type="number" class="text-input" [(ngModel)]="estimated.salaryBase[i].salaryBase"
                     matTooltip="پایه حقوق سالیانه" placeholder="پایه حقوق">
@@ -34,19 +34,19 @@
             <thead>
                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                     <th class="py-3 px-6 text-right cursor-pointer">عنوان شغلی</th>
-                    <th class="py-3 px-6 text-right cursor-pointer" *ngFor="let item of unit.salaryForm.jobLevels">
+                    <th class="py-3 px-6 text-right cursor-pointer" *ngFor="let item of unit.salaryForm?.jobLevels">
                         تعداد
                         نیروی {{item.title}}</th>
                     <!-- <th class="py-3 px-6 text-right cursor-pointer">ارزش دفتری</th> -->
                 </tr>
             </thead>
             <tbody class="text-gray-700 text-sm font-light">
-                <tr *ngFor="let job of unit.salaryForm.jobTitles"
+                <tr *ngFor="let job of unit.salaryForm?.jobTitles"
                     class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
                     <td class="py-3 px-6 font-normal">
                         <span>{{ job.title}}</span>
                     </td>
-                    <td class="py-3 px-6 font-normal" *ngFor="let level of unit.salaryForm.jobLevels">
+                    <td class="py-3 px-6 font-normal" *ngFor="let level of unit.salaryForm?.jobLevels">
                         <span>{{ getSalaryFormDetails(job.title,level.title)?.count?
                             getSalaryFormDetails(job.title,level.title)?.count + ' نفر با حقوق ' : '0' }}</span>
                         <span>{{ getSalaryFormDetails(job.title,level.title)?.cost | numWithComma }}</span>
@@ -99,18 +99,18 @@
                     <th class="py-3 px-6 text-right cursor-pointer">عنوان شغلی</th>
 
                     <th class="py-3 px-6 text-right cursor-pointer"
-                        *ngFor="let item of unit.salaryForm.jobLevels;let i = index">
+                        *ngFor="let item of unit.salaryForm?.jobLevels;let i = index">
                         عیدی نیروی {{item.title}}
                     </th>
                 </tr>
             </thead>
             <tbody class="text-gray-700 text-sm font-light">
-                <tr *ngFor="let job of unit.salaryForm.jobTitles"
+                <tr *ngFor="let job of unit.salaryForm?.jobTitles"
                     class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
                     <td class="py-3 px-6 font-normal">
                         <span>{{ job.title}}</span>
                     </td>
-                    <td class="py-3 px-6 font-normal" *ngFor="let level of unit.salaryForm.jobLevels">
+                    <td class="py-3 px-6 font-normal" *ngFor="let level of unit.salaryForm?.jobLevels">
                         <span>{{
                             reward(getSalaryFormDetails(job.title,level.title)?.count,getSalaryFormDetails(job.title,level.title)?.cost,level.title)
                             | numWithComma
@@ -130,18 +130,18 @@
                     <th class="py-3 px-6 text-right cursor-pointer">عنوان شغلی</th>
 
                     <th class="py-3 px-6 text-right cursor-pointer"
-                        *ngFor="let item of unit.salaryForm.jobLevels;let i = index">
+                        *ngFor="let item of unit.salaryForm?.jobLevels;let i = index">
                         پاداش نیروی {{item.title}}
                     </th>
                 </tr>
             </thead>
             <tbody class="text-gray-700 text-sm font-light">
-                <tr *ngFor="let job of unit.salaryForm.jobTitles"
+                <tr *ngFor="let job of unit.salaryForm?.jobTitles"
                     class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
                     <td class="py-3 px-6 font-normal">
                         <span>{{ job.title}}</span>
                     </td>
-                    <td class="py-3 px-6 font-normal" *ngFor="let level of unit.salaryForm.jobLevels">
+                    <td class="py-3 px-6 font-normal" *ngFor="let level of unit.salaryForm?.jobLevels">
                         <span>
                             {{ (getSalaryFormDetails(job.title,level.title)?.count *
                             getSalaryFormDetails(job.title,level.title)?.cost * 2 | numWithComma) }}
@@ -195,9 +195,9 @@
                 </tr>
                 <tr class="border bg-lime-200 border-gray-200 hover:bg-gray-100">
                     <td class="py-3 px-6 font-normal">مجموع</td>
-                    <td class="py-3 px-6 font-normal">{{this.estimated.sumSalaryCosts.costs | numWithComma}}</td>
-                    <td class="py-3 px-6 font-normal">{{ this.estimated.sumSalaryCosts.oneMonthLiquidityOutput | numWithComma }}</td>
-                    <td class="py-3 px-6 font-normal">{{ this.estimated.sumSalaryCosts.sum | numWithComma }}</td>
+                    <td class="py-3 px-6 font-normal">{{this.estimated.sumSalaryCosts?.costs | numWithComma}}</td>
+                    <td class="py-3 px-6 font-normal">{{ this.estimated.sumSalaryCosts?.oneMonthLiquidityOutput | numWithComma }}</td>
+                    <td class="py-3 px-6 font-normal">{{ this.estimated.sumSalaryCosts?.sum | numWithComma }}</td>
                 </tr>
             </tbody>
         </table>

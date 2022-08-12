@@ -1,29 +1,33 @@
-<div class="bg-white w-full -mt-3 p-3 shadow" x-data='{activeTab: 0}'>
+<div class="bg-white w-full -mt-3 p-3 shadow">
     <h2 class="mb-4 text-gray-400 text-center">براورد هزینه ها</h2>
     <nav class="sticky top-0 bg-white z-20">
         <ul class="flex justify-start items-center my-4 ">
             <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
-                x-bind:class="activeTab===0 ? 'text-sky-500 border-sky-500' : ''" x-on:click="activeTab = 0"> فهرست ها
+                [ngClass]="[activeTab===0 ? 'text-sky-500 border-sky-500' : '']" (click)="activeTab = 0"> فهرست ها
             </li>
             <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
-                x-bind:class="activeTab===1 ? 'text-pink-500 border-pink-500' : ''" x-on:click="activeTab = 1">
+                [ngClass]="[activeTab===1 ? 'text-pink-500 border-pink-500' : '']" (click)="activeTab = 1">
                 تسهیلات بانکی
             </li>
             <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
-                x-bind:class="activeTab===2 ? 'text-rose-500 border-rose-500' : ''" x-on:click="activeTab = 2">
+                [ngClass]="activeTab===2 ? 'text-rose-500 border-rose-500' : ''" (click)="activeTab = 2">
                 هزینه های جاری
             </li>
             <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
-                x-bind:class="activeTab===3 ? 'text-orange-500 border-orange-500' : ''" x-on:click="activeTab = 3">
+                [ngClass]="activeTab===3 ? 'text-orange-500 border-orange-500' : ''" (click)="activeTab = 3">
                 هزینه‌های تولید سالانه
             </li>
             <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
-                x-bind:class="activeTab===4 ? 'text-purple-500 border-purple-500' : ''" x-on:click="activeTab = 4">
+                [ngClass]="activeTab===4 ? 'text-purple-500 border-purple-500' : ''" (click)="activeTab = 4">
                 چکیده مالی
+            </li>
+            <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
+                [ngClass]="activeTab===5 ? 'text-purple-500 border-purple-500' : ''" (click)="activeTab = 5">
+                سود و زیان پیش‌بینی شده
             </li>
         </ul>
     </nav>
-    <div x-show="activeTab===0">
+    <div *ngIf="activeTab===0">
         <div>
             <app-depreciations></app-depreciations>
         </div>
@@ -34,19 +38,19 @@
 
     </div>
     <!-- تهسیلات بانکی -->
-    <div x-show="activeTab===1">
+    <div *ngIf="activeTab===1">
         <app-bank-facilities></app-bank-facilities>
     </div>
     <!-- سرمایه در گردش - هزینه های جاری -->
-    <div x-show="activeTab===2">
+    <div *ngIf="activeTab===2">
         <app-working-capital></app-working-capital>
     </div>
     <!-- هزینه های تولید سالانه -->
-    <div x-show="activeTab===3">
+    <div *ngIf="activeTab===3">
         <app-annual-production-costs></app-annual-production-costs>
     </div>
     <!-- چکیده مالی  -->
-    <div x-show="activeTab===4">
+    <div *ngIf="activeTab===4">
 
         <h2 class="w-full z-10 text-gray-50 p-2 py-4 my-5 bg-head rounded sticky top-10">
             چکیده مالی و نحوه‌ی سرمایه گزاری
@@ -235,6 +239,10 @@
                 </table>
             </div>
         </div>
+    </div>
+    <!-- سود و زیان پیش‌بینی شده -->
+    <div *ngIf="activeTab===5">
+        <app-profit-and-loss></app-profit-and-loss>
     </div>
 </div>
 
