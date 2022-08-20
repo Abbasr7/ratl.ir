@@ -1,0 +1,109 @@
+<div class="sticky top-10 overflow-hidden" x-data="{setting: false}" x-bind:class="setting? 'shadow-md':''">
+    <h2 class="w-full z-10 flex justify-between text-gray-50 p-2 py-4 bg-head rounded-md">
+        سود و زیان
+        <a x-on:click="setting = !setting" class="cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+        </a>
+    </h2>
+    <!-- تنظیمات -->
+    <div x-bind:class="setting == false? 'h-0 opacity-0':'h-auto opacity-100'"
+        class="bg-white flex items-center flex-wrap gap-3 text-sm text-gray-700 p-1 transition-all duration-300">
+        <h3 class="w-full"></h3>
+        <div class="px-3">
+            <label class="text-gray-700"> دوره زمانی(ماه)
+                <!-- <input type="number" class="editable-field"
+                    [(ngModel)]="period"
+                    matTooltip="دوره زمانی سرمایه در گردش" placeholder="براساس ماه"> -->
+            </label>
+        </div>
+        <div class="px-3">
+            <label class="text-gray-700"> ظرفیت واقعی سالانه
+                <!-- <input type="number" class="editable-field"
+                    style="max-width: 150px !important;"
+                    [(ngModel)]="unit.fundAndExpensesForm.zarfiyateSalane"> -->
+            </label>
+        </div>
+        <div class="relative px-3">
+            <span class="ml-2"> سال:</span>
+            <!-- [(ngModel)]="year['workingCapital']" (change)="applyChanges()" -->
+            <select
+                class="border border-gray-300 text-gray-600 h-8 px-4 bg-white hover:border-gray-400 focus:outline-none">
+                <option [value]="1">اول</option>
+                <option [value]="2">دوم</option>
+                <option [value]="3">سوم</option>
+                <option [value]="4">چهارم</option>
+                <option [value]="5">پنجم</option>
+                <option [value]="6">ششم</option>
+                <option [value]="7">هفتم</option>
+                <option [value]="8">هشتم</option>
+                <option [value]="9">نهم</option>
+                <option [value]="10">دهم</option>
+            </select>
+        </div>
+        <div class="">
+            <button class="btn btn-purple" style="margin-top: 0 !important;" >اعمال</button>
+        </div>
+    </div>
+</div>
+
+<div class="my-3 grid grid-cols-12 gap-3">
+    <div class="lg:col-span-5 col-span-12 ">
+        <h3 class="mb-3 text-base">پيش بيني درآمدها</h3>
+        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.incomes, heads:['سال','%','فروش سالانه']}"></ng-container>
+    </div>
+    <div class="lg:col-span-7 col-span-12 ">
+        <h3 class="mb-3 text-base">پيش بيني هزينه‌های متغیر</h3>
+        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.var}"></ng-container>
+    </div>
+    <div class="lg:col-span-5 col-span-12 ">
+        <h3 class="mb-3 text-base">پيش بيني درآمدها</h3>
+        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.profitLoss, heads:['شرح','%','هزینه']}"></ng-container>
+    </div>
+    <div class="lg:col-span-7 col-span-12 ">
+        <h3 class="mb-3 text-base">پيش بيني هزينه‌های ثابت</h3>
+        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.fix}"></ng-container>
+    </div>
+</div>
+
+<ng-template #table let-list let-heads="heads">
+    <table class="w-full table-auto">
+        <thead>
+            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal" *ngIf="!heads">
+                <th class="py-3 px-6 text-right cursor-pointer">شرح هزینه ها</th>
+                <th class="py-3 px-6 text-right cursor-pointer">درصد افزایش سالانه</th>
+                <th class="py-3 px-6 text-right cursor-pointer">هزینه‌های سالانه</th>
+            </tr>
+            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal" *ngIf="heads">
+                <th class="py-3 px-6 text-right cursor-pointer" *ngFor="let th of heads">{{th}}</th>
+            </tr>
+        </thead>
+        <tbody class="text-gray-700 text-sm font-light">
+            <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]"
+                *ngFor="let item of list; let i=index" [ngClass]="{'bg-lime-100': i == list.length-1}">
+                <td class="py-3 px-4 font-normal">
+                    <span [matTooltip]="item.description">
+                        {{ item.title }}
+                    </span>
+                </td>
+                <td class="py-3 px-4 font-normal">
+                    <span *ngIf="!item.percent && item.percent != 0">
+                        --
+                    </span>
+                    <input *ngIf="item.percent || item.percent == 0" type="number" class="editable-field max-w-[100px]"
+                            (change)="applyChanges()"
+                            [(ngModel)]="item.percent">
+                </td>
+                <td class="py-3 px-4 font-normal" [ngClass]="{'color-red': item.finalCost()<0}">
+                    <span>
+                        {{ item.finalCost() | numWithComma:money }}
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</ng-template>

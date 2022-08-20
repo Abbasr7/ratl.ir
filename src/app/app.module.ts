@@ -55,6 +55,7 @@ import { BankFacilitiesComponent } from './user-panel/estimate/bank-facilities/b
 import { AnnualProductionCostsComponent } from './user-panel/estimate/annual-production-costs/annual-production-costs.component';
 import { UserProjactsComponent } from './user-panel/user-projacts/user-projacts.component';
 import { ProfitAndLossComponent } from './user-panel/estimate/profit-and-loss/profit-and-loss.component';
+import { FinancialSummaryComponent } from './user-panel/estimate/financial-summary/financial-summary.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +99,8 @@ import { ProfitAndLossComponent } from './user-panel/estimate/profit-and-loss/pr
     BankFacilitiesComponent,
     AnnualProductionCostsComponent,
     UserProjactsComponent,
-    ProfitAndLossComponent
+    ProfitAndLossComponent,
+    FinancialSummaryComponent
   ],
   imports: [
     BrowserModule,

@@ -3,11 +3,11 @@ import { take } from 'rxjs';
 import { EstimateComponent } from '../estimate.component';
 
 @Component({
-  selector: 'app-bank-facilities',
-  templateUrl: './bank-facilities.component.html',
-  styleUrls: ['./bank-facilities.component.css']
+  selector: 'app-financial-summary',
+  templateUrl: './financial-summary.component.html',
+  styleUrls: ['./financial-summary.component.css']
 })
-export class BankFacilitiesComponent extends EstimateComponent implements OnInit {
+export class FinancialSummaryComponent extends EstimateComponent implements OnInit {
 
   ngOnInit(): void {
     this.projactService.getCahnges().pipe(
@@ -22,8 +22,4 @@ export class BankFacilitiesComponent extends EstimateComponent implements OnInit
     });
   }
 
-  applyChanges() {
-    this.bankFacilities();
-    this.projactService.setChanges.next(this.estimated);
-  }
 }

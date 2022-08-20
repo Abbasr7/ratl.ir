@@ -1,17 +1,19 @@
 import { KeyValue } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { lastValueFrom, map, take } from 'rxjs';
+import { BehaviorSubject, lastValueFrom, map, take } from 'rxjs';
+import { MenusComponent } from 'src/app/admin/menus/menus.component';
 import { IEstehlak, IEstimate, IProjact, IRate, SuccessHandle } from 'src/app/controlers/interfaces/interfaces';
 import { ProjactsService } from 'src/app/controlers/services/projacts.service';
 import { ServerService } from 'src/app/controlers/services/server.service';
+import { WorkingCapitalComponent } from './working-capital/working-capital.component';
 
 @Component({
   selector: 'app-estimate',
   templateUrl: './estimate.component.html',
   styleUrls: ['./estimate.component.css']
 })
-export class EstimateComponent implements OnInit {
+export class EstimateComponent {
 
   constructor(
     public route: ActivatedRoute,
@@ -23,47 +25,24 @@ export class EstimateComponent implements OnInit {
   unit_id = this.route.snapshot.paramMap.get('id')
   rate = this.projactService.rate
   estimated = new IEstimate;
-  year:any = {
-    building: 1,
-    equipment: 1,
-    vehicles: 1,
-    officeEquipment: 1,
-    preOperation: 1,
-    unforeseen: 1,
-    workingCapital: 1,
-    salesAndAdsRate: 1,
-    bankFacilities: 1,
-    annualPC: 1,
-  };
-  profitAndLoss:any;
+  doActions = new BehaviorSubject(new DoActon)
 
+  year:any = this.projactService.year;
   percents = this.projactService.percents;
   profitAndLossPercents = this.projactService.profitAndLossPercents;
 
   activeTab: number = 0;
   money:string;
   period: number;
-  ngOnInit(): void {
 
-    this.unit = this.projactService.projact.value
-
-    if (this.unit_id && !this.unit._id) {
-      this.getCurrentUnit()
-    } else if (this.unit._id) {
-      this.toEstimate()
-    }
-
-    this.projactService.getCahnges().subscribe(res => {
-      this.estimated = res
-    })
-  }
-
-  private getCurrentUnit() {
+  getCurrentUnit() {
     (async () => {
       this.unit = await lastValueFrom(this.projactService.getById(this.unit_id!).pipe(
         map(res => res as SuccessHandle),
         map(res => res.data as IProjact),
       ))
+      this.projactService.setUnit.next(this.unit);
+
       this.period = this.toNum(this.unit.fundAndExpensesForm.time)
       this.toEstimate();
       
@@ -80,14 +59,17 @@ export class EstimateComponent implements OnInit {
 
     this.salaryFormEstimate();
 
-    this.getWorkingCapital();
+    this.workingCapital();
     this.salesAndAdsRate();
-
     this.financialSummary();
+    
+    this.bime(this.estimated.workingCapital,this.year.workingCapital);
 
     this.bankFacilities();
 
     this.annualProductionCosts();
+  
+    this.projactService.setChanges.next(this.estimated);
   }
 
   depreciationCalculate(type: string, year: number, customItem:any = null) {
@@ -253,7 +235,7 @@ export class EstimateComponent implements OnInit {
   // سرمایه در گردش
   totalRawMaterials: number;
   netSumRawMaterials = 0;
-  getWorkingCapital(year = 1){
+  workingCapital(year = 1){
     let e = {
       netSumRawMaterials:0,
       totalRawMaterials: 0,
@@ -312,7 +294,7 @@ export class EstimateComponent implements OnInit {
     e.netSumRawMaterials = this.netSumRawMaterials
 
     // salary
-    e.salary = (this.estimated.sumSalaryCosts.sum * this.profitAndLossPercents.salary/100)
+    e.salary = (this.estimated.sumSalaryCosts.sum * this.profitAndLossPercents.salary_fix/100)
     const salary_Calc = (salary:number,year:number) => {
       let v = salary * 120/100;
       if (year <= 2) {
@@ -631,11 +613,11 @@ export class EstimateComponent implements OnInit {
       totalRawMaterials: this.estimated.workingCapital.totalRawMaterials,
       salary: 0,
       WEGT: this.estimated.workingCapital.WEGT.sum,
-      get unforseen() {
+      get unforeseen() {
         return (this.maintenanceCost+this.totalRawMaterials+this.salary+this.WEGT) * 5/100;
       },
       get administrativeAndSellingExpenses() {
-        return (this.maintenanceCost+this.totalRawMaterials+this.salary+this.WEGT+this.unforseen) * 1/100;
+        return (this.maintenanceCost+this.totalRawMaterials+this.salary+this.WEGT+this.unforeseen) * 1/100;
       },
       bankFacilityCosts: 0,
       depreciationCosts: 0,
@@ -644,7 +626,7 @@ export class EstimateComponent implements OnInit {
       bime: 0,
       get sum() {
         return this.WEGT + this.maintenanceCost + this.totalRawMaterials + this.salary 
-        + this.unforseen + this.administrativeAndSellingExpenses + this.bime
+        + this.unforeseen + this.administrativeAndSellingExpenses + this.bime
         + this.depreciationCosts + this.preOperationDepreciationCosts + this.ghalebMasrafi
         + this.bankFacilityCosts
       }
@@ -759,6 +741,13 @@ export class EstimateComponent implements OnInit {
     return sum
   }
 
+  @ViewChild(MenusComponent,{static:true}) WC_Component:MenusComponent;
+  doAction(data:DoActon) {
+    if (data.action == 'workingCapital') {
+      // this.WC_Component.applyChanges(data.year);
+    }
+  }
+
   focus(e:Event){
     let elm = (<HTMLElement>e.target)
     if (elm.clientWidth < 50)
@@ -804,4 +793,11 @@ export interface WEGT{
   gasColdSeasons: number,
   electricity: number,
   phoneAndInternet: number,
+}
+export class actions {
+  workingCapital: number = 4
+}
+export class DoActon {
+  action:string;
+  year:number;
 }

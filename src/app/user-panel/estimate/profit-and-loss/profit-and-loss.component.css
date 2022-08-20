@@ -1,0 +1,3 @@
+.color-red {
+    @apply text-red-500;
+}

@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { take } from 'rxjs';
 import { EstimateComponent } from '../estimate.component';
 
 @Component({
@@ -6,14 +7,23 @@ import { EstimateComponent } from '../estimate.component';
   templateUrl: './working-capital.component.html',
   styleUrls: ['./working-capital.component.css']
 })
-export class WorkingCapitalComponent extends EstimateComponent implements AfterViewInit{
-  
-  ngAfterViewInit(): void {
-    this.bime(this.estimated.workingCapital,this.year.workingCapital);
-  }
+export class WorkingCapitalComponent extends EstimateComponent implements OnInit{
 
+  ngOnInit(): void {
+    this.projactService.getCahnges().pipe(
+      take(1)
+    ).subscribe(res => {
+      this.estimated = res;
+    });
+    this.projactService.getUnit().pipe(
+      take(2)
+    ).subscribe(res => {
+      this.unit = res;
+    });
+  }
   // هزینه های جاری
-  applyChanges(){
+  applyChanges(year?:number){
+    year? this.year.workingCapital = year: '';
     this.year.building = this.year.workingCapital;
     this.year.equipment = this.year.workingCapital;
     this.year.vehicles = this.year.workingCapital;
@@ -25,7 +35,7 @@ export class WorkingCapitalComponent extends EstimateComponent implements AfterV
     this.depreciationCalculate('vehicles', this.year.vehicles)
 
     this.maintenanceCost('any',true)
-    this.getWorkingCapital()
+    this.workingCapital()
     this.salesAndAdsRate()
     this.bime(this.estimated.workingCapital,this.year.workingCapital);
     

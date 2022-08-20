@@ -11,9 +11,23 @@ export class ProjactsService {
 
   constructor(private server:ServerService) { }
 
+  setUnit = new BehaviorSubject(new IProjact);
   setChanges = new BehaviorSubject(new IEstimate);
   projactsApi = Globals.projactsApi
   projact = new BehaviorSubject(new IProjact());
+  year = {
+    building: 1,
+    equipment: 1,
+    vehicles: 1,
+    officeEquipment: 1,
+    preOperation: 1,
+    unforeseen: 1,
+    workingCapital: 1,
+    salesAndAdsRate: 1,
+    bankFacilities: 1,
+    annualPC: 1,
+    profitLoss:1,
+  };
   net = {
     building: 1, // %
     equipment: 15, // %
@@ -40,7 +54,7 @@ export class ProjactsService {
   }
   percents = {
     salary: 0,
-    ghalebMasrafi: 1,
+    ghalebMasrafi: 0,
     fixedCapital: 30,
     workingCapital: 30,
     bankLoansFromTotalCapital: 50,
@@ -49,7 +63,22 @@ export class ProjactsService {
     rawMaterials: 0,
   }
   profitAndLossPercents = {
-    salary: 65,
+    deprication: 100,
+    salary_var: 35,
+    salary_fix: 65,
+    rawMaterials_var: 100,
+    maintenance_var: 80,
+    maintenance_fix: 20,
+    administrativeAndSelling_var: 100,
+    unforeseen_var: 85,
+    unforeseen_fix: 15,
+    WEGT_var: 80,
+    WEGT_fix: 20,
+    Ads_var: 0,
+    preOperation_fix: 100,
+    workingCapital_fix: 0,
+    BFInterest_fix: 100,
+    bime_fix: 100,
   }
   newProjact(data:{}){
     return this.server.create(this.projactsApi.create,data)
@@ -69,6 +98,10 @@ export class ProjactsService {
 
   getCahnges(){
     return this.setChanges.asObservable();
+  }
+
+  getUnit() {
+    return this.setUnit.asObservable();
   }
 
   estehlakHarSal(type: any, item: any, year: number): IEstehlak {

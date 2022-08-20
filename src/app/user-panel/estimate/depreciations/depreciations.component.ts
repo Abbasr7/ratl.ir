@@ -7,8 +7,20 @@ import { EstimateComponent } from '../estimate.component';
   templateUrl: './depreciations.component.html',
   styleUrls: ['./depreciations.component.css']
 })
-export class DepreciationsComponent extends EstimateComponent {
+export class DepreciationsComponent extends EstimateComponent implements OnInit {
+  
+  ngOnInit(): void {
 
+    this.unit = this.projactService.projact.value
+
+    if (this.unit_id && !this.unit._id) {
+      this.getCurrentUnit()
+    }
+
+    this.projactService.getCahnges().subscribe(res => {
+      this.estimated = res
+    })
+  }
 
   changeYear(event: Event, type: string) {
     this.depreciationCalculate(type, this.year[type as keyof IRate])

@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { take } from 'rxjs';
 import { EstimateComponent } from '../estimate.component';
 
 @Component({
@@ -6,9 +7,19 @@ import { EstimateComponent } from '../estimate.component';
   templateUrl: './annual-production-costs.component.html',
   styleUrls: ['./annual-production-costs.component.css']
 })
-export class AnnualProductionCostsComponent extends EstimateComponent implements AfterViewInit{
+export class AnnualProductionCostsComponent extends EstimateComponent implements OnInit{
   
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
+    this.projactService.getCahnges().pipe(
+      take(1)
+    ).subscribe(res => {
+      this.estimated = res;
+    });
+    this.projactService.getUnit().pipe(
+      take(2)
+    ).subscribe(res => {
+      this.unit = res;
+    });
     this.percents.ghalebMasrafi = 20;
   }
 
@@ -28,7 +39,7 @@ export class AnnualProductionCostsComponent extends EstimateComponent implements
     this.depreciationCalculate('officeEquipment', this.year.officeEquipment);
     
     this.maintenanceCost('any',true);
-    this.getWorkingCapital();
+    this.workingCapital();
     this.salesAndAdsRate();
     this.annualProductionCosts();    
   }
