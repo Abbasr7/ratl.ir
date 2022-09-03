@@ -15,10 +15,10 @@
         class="bg-white flex items-center flex-wrap gap-3 text-sm text-gray-700 p-1 transition-all duration-300">
         <h3 class="w-full"></h3>
         <div class="px-3">
-            <label class="text-gray-700"> دوره زمانی(ماه)
-                <!-- <input type="number" class="editable-field"
-                    [(ngModel)]="period"
-                    matTooltip="دوره زمانی سرمایه در گردش" placeholder="براساس ماه"> -->
+            <label class="text-gray-700"> نرخ بازده مورد انتظار سهامدار (%)
+                <input type="number" class="editable-field"
+                    [(ngModel)]="ExpectedRateOfReturn"
+                    matTooltip="دوره زمانی سرمایه در گردش" placeholder="براساس ماه">
             </label>
         </div>
         <div class="px-3">
@@ -30,8 +30,7 @@
         </div>
         <div class="relative px-3">
             <span class="ml-2"> سال:</span>
-            <!-- [(ngModel)]="year['workingCapital']" (change)="applyChanges()" -->
-            <select
+            <select [(ngModel)]="year['profitLoss']" (change)="changeYear()"
                 class="border border-gray-300 text-gray-600 h-8 px-4 bg-white hover:border-gray-400 focus:outline-none">
                 <option [value]="1">اول</option>
                 <option [value]="2">دوم</option>
@@ -61,14 +60,20 @@
         <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.var}"></ng-container>
     </div>
     <div class="lg:col-span-5 col-span-12 ">
-        <h3 class="mb-3 text-base">پيش بيني درآمدها</h3>
+        <h3 class="mb-3 text-base">پيش بيني سود/زیان</h3>
         <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.profitLoss, heads:['شرح','%','هزینه']}"></ng-container>
     </div>
     <div class="lg:col-span-7 col-span-12 ">
         <h3 class="mb-3 text-base">پيش بيني هزينه‌های ثابت</h3>
         <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.fix}"></ng-container>
     </div>
+    <div class="lg:col-span-5 col-span-12 ">
+        <h3 class="mb-3 text-base"> نرخ بازده داخلی (IRR)</h3>
+        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.efficiency, heads:['شرح','%','هزینه']}"></ng-container>
+    </div>
 </div>
+
+<app-irr-clac (IRR_Value)="IRRvalues($event)"></app-irr-clac>
 
 <ng-template #table let-list let-heads="heads">
     <table class="w-full table-auto">
@@ -85,8 +90,8 @@
         <tbody class="text-gray-700 text-sm font-light">
             <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]"
                 *ngFor="let item of list; let i=index" [ngClass]="{'bg-lime-100': i == list.length-1}">
-                <td class="py-3 px-4 font-normal">
-                    <span [matTooltip]="item.description">
+                <td class="py-3 px-4 font-normal" [matTooltip]="item.description">
+                    <span>
                         {{ item.title }}
                     </span>
                 </td>
@@ -100,7 +105,7 @@
                 </td>
                 <td class="py-3 px-4 font-normal" [ngClass]="{'color-red': item.finalCost()<0}">
                     <span>
-                        {{ item.finalCost() | numWithComma:money }}
+                        {{ item.finalCost() | numWithComma:(item.unit?item.unit:money):item.type}}
                     </span>
                 </td>
             </tr>

@@ -1,4 +1,4 @@
-<div id="plans-table">
+<div id="plans-table" x-data="{modal:false}">
     <div class="w-full lg:w-11/12 bg-white shadow-md rounded py-4">
       <div class="flex items-center gap-3 divide-x-reverse divide-x-2 mx-5">
         <h1 class="text-lg text-gray-700">لیست پروژه ها</h1>
@@ -34,17 +34,82 @@
                             </span>
                         </td>
                         <td class="hidden lg:table-cell py-3 px-6 text-center">
-                            <span class="bg-gray-200 flex items-center gap-2 w-fit text-gray-600 py-1 px-3 rounded-full text-xs">
-                                 حذف
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                  </svg>
-                            </span>
+                            <div class="flex item-center justify-center">
+                                <div [routerLink]="'/panel/estimate/'+item._id" class="w-4 ml-2 transform hover:text-purple-500 hover:scale-125 cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </div>
+                                <!-- ویرایش -->
+                                <div [routerLink]="'/panel/editunit/'+item._id"
+                                 class="w-4 ml-2 transform hover:text-purple-500 hover:scale-125 cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                </div>
+                                <!-- حذف -->
+                                <div class="w-4 ml-2 transform hover:text-purple-500 hover:scale-125 cursor-pointer"
+                                    x-on:click="modal = !modal" (click)="page_id.value = item._id">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <!-- Delete Modal -->
   
+    <div x-on:keydown.escape="modal = false" x-show="modal" x-transition.duration.500ms id="popup-modal" tabindex="-1"
+        class="bg-gray-500 bg-opacity-40 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 md:inset-0 h-modal md:h-full">
+        <div x-on:click.away="modal = false" x-show="modal" x-transition:enter="transition transform duration-300"
+            x-transition:enter-start="scale-0" x-transition:enter-end="scale-100"
+            x-transition:leave="transition transform duration-300" x-transition:leave-start="scale-100"
+            x-transition:leave-end="scale-0" class="relative p-4 w-full max-w-md h-full md:h-auto mx-auto">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <!-- Modal header -->
+                <div class="flex justify-end p-2">
+                    <button x-on:click="modal = false" type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="p-6 pt-0 text-center space-x-2">
+                    <svg class="mx-auto mb-4 w-14 h-14 text-gray-400 dark:text-gray-200" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">آیا برای حذف این صفحه مطمئن
+                        هستید؟</h3>
+                    <input #page_id type="text" hidden>
+                    <button (click)="removeItem(page_id)" id="modal_ok_btn" type="button"
+                        class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+                        آره حذفش کن
+                    </button>
+                    <button x-on:click="modal = false" type="button"
+                        class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">نه
+                        دستم خورد</button>
+                </div>
+            </div>
+        </div>
+    </div>
   </div>

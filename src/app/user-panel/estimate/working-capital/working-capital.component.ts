@@ -19,17 +19,11 @@ export class WorkingCapitalComponent extends EstimateComponent implements OnInit
       take(2)
     ).subscribe(res => {
       this.unit = res;
+      this.period = this.toNum(this.unit.fundAndExpensesForm.time);
     });
   }
   // هزینه های جاری
-  applyChanges(year?:number){
-    year? this.year.workingCapital = year: '';
-    this.year.building = this.year.workingCapital;
-    this.year.equipment = this.year.workingCapital;
-    this.year.vehicles = this.year.workingCapital;
-    this.year.salesAndAdsRate = this.year.workingCapital;
-
-
+  applyChanges(){
     this.depreciationCalculate('equipment', this.year.equipment)
     this.depreciationCalculate('building', this.year.building)
     this.depreciationCalculate('vehicles', this.year.vehicles)
@@ -38,12 +32,20 @@ export class WorkingCapitalComponent extends EstimateComponent implements OnInit
     this.workingCapital()
     this.salesAndAdsRate()
     this.bime(this.estimated.workingCapital,this.year.workingCapital);
-    
-    this.projactService.setChanges.next(this.estimated);
   }
-  
+
+  changeYear() {
+    this.year.building = this.year.workingCapital;
+    this.year.equipment = this.year.workingCapital;
+    this.year.vehicles = this.year.workingCapital;
+    this.year.salesAndAdsRate = this.year.workingCapital;
+    this.year.profitLoss = this.year.workingCapital;
+    this.applyChanges();
+  }
+
   setChanges(){
-    this.salesAndAdsRate();
+    this.applyChanges();
+    this.projactService.basePrice.next(this.basePrice)
     this.projactService.setChanges.next(this.estimated);
   }
 

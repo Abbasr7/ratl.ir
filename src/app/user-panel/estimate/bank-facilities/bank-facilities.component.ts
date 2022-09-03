@@ -19,6 +19,7 @@ export class BankFacilitiesComponent extends EstimateComponent implements OnInit
       take(2)
     ).subscribe(res => {
       this.unit = res;
+      this.period = this.toNum(this.unit.fundAndExpensesForm.time);
     });
   }
 

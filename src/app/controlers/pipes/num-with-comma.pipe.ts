@@ -5,8 +5,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class NumWithCommaPipe implements PipeTransform {
 
-  transform(value: any, scale: string = ''): string {
-    return value?this.numberWithCommas(value) + ` ${scale}`: '0';
+  type:string;
+  transform(value: any, unit: string = '',numType:string = 'int'): string {
+    this.type = numType;
+    return value?this.numberWithCommas(value) + ` ${unit}`: '0';
   }
 
   numberWithCommas (x:any) {
@@ -17,8 +19,11 @@ export class NumWithCommaPipe implements PipeTransform {
 
   justNum(x: any) {
     let xx;
-    if (typeof x == 'number') {
+    if (typeof x == 'number' && this.type == 'int') {
       xx = Math.round(x).toString()
+    } else if (typeof x == 'number' && this.type == 'float') {
+      let v = Math.round(x*100)/100;
+      return x<0? v*-1: v;
     } else {
       xx = x.toString()
     }

@@ -28,6 +28,20 @@
             *ngTemplateOutlet="estehlak; context:{$implicit: estimated.officeEquipment, type: 'officeEquipment'}">
         </ng-container>
     </div>
+    <!--  -->
+    <div class="mt-1 mb-3 col-span-6">
+        <span>جدول استهلاک هزینه‌های قبل از بهره‌برداری</span>
+        <ng-container
+            *ngTemplateOutlet="estehlak; context:{$implicit: estimated.preOperation, type: 'preOperation'}">
+        </ng-container>
+    </div>
+    <!--  -->
+    <div class="mt-1 mb-3 col-span-6">
+        <span>جدول استهلاک اقلام پیش‌بینی نشده</span>
+        <ng-container
+            *ngTemplateOutlet="estehlak; context:{$implicit: estimated.unforeseen, type: 'unforeseen'}">
+        </ng-container>
+    </div>
 </div>
 
 

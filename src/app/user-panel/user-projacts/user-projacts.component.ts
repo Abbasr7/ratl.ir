@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { map } from 'rxjs';
 import { IProjact, SuccessHandle } from 'src/app/controlers/interfaces/interfaces';
+import { MessagesService } from 'src/app/controlers/services/messages.service';
 import { ProjactsService } from 'src/app/controlers/services/projacts.service';
+import { Spinner } from 'src/app/controlers/utils';
 
 @Component({
   selector: 'app-user-projacts',
@@ -10,7 +12,9 @@ import { ProjactsService } from 'src/app/controlers/services/projacts.service';
 })
 export class UserProjactsComponent implements OnInit {
 
-  constructor(private projactService:ProjactsService) { }
+  constructor(private projactService:ProjactsService,
+    private renderer:Renderer2, private spinner:Spinner,
+    private msg: MessagesService) { }
 
   projactList: any;
 
@@ -22,6 +26,27 @@ export class UserProjactsComponent implements OnInit {
       next: (res) => {
         this.projactList = res.data
         console.log(res,this.projactList);
+      }
+    })
+  }
+
+  removeItem(id: HTMLInputElement) {
+
+    this.spinner.addSpinner('#modal_ok_btn')
+
+    this.projactService.delete(id.value).pipe(
+      map(res => res as SuccessHandle),
+      map(res => res.data as IProjact[]),
+    ).subscribe({
+      next: res => {
+        this.projactList = res
+        //send message
+        this.msg.sendMessage('کاربر مورد نظر با موفقیت حذف گردید', 'success')
+
+        this.spinner.removeSpinner('#modal_ok_btn')
+        // to close modal
+        let popUp = this.renderer.selectRootElement('#popup-modal', true)
+        this.renderer.setStyle(popUp, 'display', 'none')
       }
     })
   }

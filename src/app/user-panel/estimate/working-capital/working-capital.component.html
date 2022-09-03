@@ -30,7 +30,7 @@
         </div>
         <div class="relative px-3">
             <span class="ml-2"> سال:</span>
-            <select [(ngModel)]="year['workingCapital']" (change)="applyChanges()"
+            <select [(ngModel)]="year['workingCapital']" (change)="changeYear()"
                 class="border border-gray-300 text-gray-600 h-8 px-4 bg-white hover:border-gray-400 focus:outline-none">
                 <option [value]="1">اول</option>
                 <option [value]="2">دوم</option>
@@ -98,6 +98,16 @@
                     <td class="py-3 px-6 font-normal">
                         <span>
                             {{ estimated.workingCapital.maintenanceCost / (12/period) | numWithComma }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal" matTooltip="تن‌خواه (يک دوره توليدي  هزينه حقوق و آب و برق و تلفن و سوخت و... )">
+                        <span>تنخواه</span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <span>
+                            {{ this.year.workingCapital > 1? estimated.workingCapital.tankhah/2: estimated.workingCapital.tankhah | numWithComma }}
                         </span>
                     </td>
                 </tr>
@@ -427,15 +437,15 @@
                         <span *ngIf="i != 0">{{ estimated.salesAndAdsRate.basePrice }}</span>
                         <input type="text" *ngIf="i == 0"
                             class="editable-field" style="max-width:160px !important"
-                            (change)="applyChanges()"
+                            (change)="setChanges()"
                             (focus)="focus($event)" (focusout)="focusOut($event)"
-                            [(ngModel)]="estimated.salesAndAdsRate.basePrice"
+                            [(ngModel)]="basePrice"
                             appNumWithComma
                         >
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <input type="number" class="editable-field max-w-[100px]"
-                         (change)="applyChanges()"
+                         (change)="setChanges()"
                          [(ngModel)]="estimated.salesAndAdsRate.priceIncreaseRate[i]">
                     </td>
                     <td class="py-3 px-6 font-normal">
@@ -450,7 +460,7 @@
                     </td>
                     <td class="py-3 px-6 font-normal">
                         <input type="number" class="editable-field max-w-[100px]"
-                         (change)="applyChanges()"
+                         (change)="setChanges()"
                          [(ngModel)]="estimated.salesAndAdsRate.adsPercent[i]">
                     </td>
                     <td class="py-3 px-6 font-normal">

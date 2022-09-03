@@ -27,12 +27,25 @@ export class EstimateComponent {
   estimated = new IEstimate;
   doActions = new BehaviorSubject(new DoActon)
 
-  year:any = this.projactService.year;
+  basePrice:number ;
+  year:any = {
+    building: 1,
+    equipment: 1,
+    vehicles: 1,
+    officeEquipment: 1,
+    preOperation: 1,
+    unforeseen: 1,
+    workingCapital: 1,
+    salesAndAdsRate: 1,
+    bankFacilities: 1,
+    annualPC: 1,
+    profitLoss:1,
+  };
   percents = this.projactService.percents;
   profitAndLossPercents = this.projactService.profitAndLossPercents;
 
   activeTab: number = 0;
-  money:string;
+  money:string = 'ریال';
   period: number;
 
   getCurrentUnit() {
@@ -50,7 +63,14 @@ export class EstimateComponent {
     })()
   }
 
-  toEstimate() {
+  getBasePrice() {
+    this.projactService.basePrice.asObservable().subscribe(res => {
+      this.basePrice = res
+    })
+  }
+
+  toEstimate(FSummary = true) {
+    this.getBasePrice();
     this.depreciationCalculate('equipment', this.year.equipment);
     this.depreciationCalculate('building', this.year.building);
     this.depreciationCalculate('vehicles', this.year.vehicles);
@@ -61,7 +81,9 @@ export class EstimateComponent {
 
     this.workingCapital();
     this.salesAndAdsRate();
-    this.financialSummary();
+    if (FSummary) {
+      this.financialSummary();
+    }
     
     this.bime(this.estimated.workingCapital,this.year.workingCapital);
 
@@ -268,8 +290,8 @@ export class EstimateComponent {
     }
     // mavadAvalie
     const rawMat_Calc = (totalRawMat:number,year:number) => {
-      let v = (totalRawMat + (totalRawMat * this.percents.rawMaterials/100))
-              * this.estimated.salesAndAdsRate.count[11-year]/this.estimated.salesAndAdsRate.count[10-year]
+      let v = (totalRawMat + (totalRawMat * this.percents.rawMaterials/100)) * 1.3;
+              // * this.estimated.salesAndAdsRate.count[11-year]/this.estimated.salesAndAdsRate.count[10-year]
       if (year <= 2) {
         e.totalRawMaterials = v;
         return
@@ -284,9 +306,9 @@ export class EstimateComponent {
       })
     }
     // جمع کل (مجموع مواد اولیه با پیشبینی نشده های مواد اولیه)
-    this.totalRawMaterials = e.totalRawMaterials = (this.toNum(this.unit.fundAndExpensesForm.zarfiyateSalane)/12) * 
+    e.totalRawMaterials = this.totalRawMaterials = (this.toNum(this.unit.fundAndExpensesForm.zarfiyateSalane)/12) * 
      (this.netSumRawMaterials + e.unforeseen(this.netSumRawMaterials) ) * 12
-    if(this.year.workingCapital != 1) {
+    if(this.year.workingCapital > 1) {
       rawMat_Calc(this.totalRawMaterials,this.year.workingCapital)
     } else {
       e.totalRawMaterials = this.totalRawMaterials
@@ -387,10 +409,10 @@ export class EstimateComponent {
     }
 
     // Sum Costs in defined Period
-    e.sumInPeriod = this.totalRawMaterials / (12/this.period)
-                    + e.salary / (12/this.period) + e.WEGT.sum / (12/this.period)
-                    + e.maintenanceCost / (12/this.period) + e.mojodiKala
-                    + e.motalebat + e.ghalebMasrafi/4 + e.tankhah;
+    e.sumInPeriod = (e.totalRawMaterials / (12/this.period))
+                    + (e.salary / (12/this.period)) + (e.WEGT.sum / (12/this.period))
+                    + (e.maintenanceCost / (12/this.period)) + e.mojodiKala
+                    + e.motalebat + (e.ghalebMasrafi/4) + (this.year.workingCapital > 1? e.tankhah/2: e.tankhah);
     // compelete
     this.estimated.workingCapital = e;
   }
@@ -399,7 +421,6 @@ export class EstimateComponent {
   salesAndAdsRate(year=0){
     let e = {
       count: <Array<any>>[],
-      basePrice: 1,
       priceIncreaseRate: [0,20,20,20,20,20,20,20,20,20],
       yearlyPrice: <Array<any>>[],
       AnnualIncome(index:number){
@@ -426,12 +447,11 @@ export class EstimateComponent {
     // is initialized?
     if (this.estimated.hasOwnProperty('salesAndAdsRate')) {
       e.priceIncreaseRate = this.estimated.salesAndAdsRate.priceIncreaseRate
-      e.basePrice = this.estimated.salesAndAdsRate.basePrice
       e.adsPercent = this.estimated.salesAndAdsRate.adsPercent
     }
     
     let count = this.toNum(this.unit.fundAndExpensesForm.zarfiyateSalane)
-    let yearlyPrice = this.toNum(e.basePrice) * (1+e.priceIncreaseRate[0])
+    let yearlyPrice = this.basePrice * (1+e.priceIncreaseRate[0])
 
     // سال اول
     e.count.push(count);
@@ -739,13 +759,6 @@ export class EstimateComponent {
       }
     }
     return sum
-  }
-
-  @ViewChild(MenusComponent,{static:true}) WC_Component:MenusComponent;
-  doAction(data:DoActon) {
-    if (data.action == 'workingCapital') {
-      // this.WC_Component.applyChanges(data.year);
-    }
   }
 
   focus(e:Event){

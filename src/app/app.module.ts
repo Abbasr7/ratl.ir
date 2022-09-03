@@ -56,6 +56,7 @@ import { AnnualProductionCostsComponent } from './user-panel/estimate/annual-pro
 import { UserProjactsComponent } from './user-panel/user-projacts/user-projacts.component';
 import { ProfitAndLossComponent } from './user-panel/estimate/profit-and-loss/profit-and-loss.component';
 import { FinancialSummaryComponent } from './user-panel/estimate/financial-summary/financial-summary.component';
+import { IRRClacComponent } from './user-panel/estimate/profit-and-loss/irr-clac/irr-clac.component';
 
 @NgModule({
   declarations: [
@@ -100,7 +101,8 @@ import { FinancialSummaryComponent } from './user-panel/estimate/financial-summa
     AnnualProductionCostsComponent,
     UserProjactsComponent,
     ProfitAndLossComponent,
-    FinancialSummaryComponent
+    FinancialSummaryComponent,
+    IRRClacComponent
   ],
   imports: [
     BrowserModule,

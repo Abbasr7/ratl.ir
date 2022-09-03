@@ -15,19 +15,7 @@ export class ProjactsService {
   setChanges = new BehaviorSubject(new IEstimate);
   projactsApi = Globals.projactsApi
   projact = new BehaviorSubject(new IProjact());
-  year = {
-    building: 1,
-    equipment: 1,
-    vehicles: 1,
-    officeEquipment: 1,
-    preOperation: 1,
-    unforeseen: 1,
-    workingCapital: 1,
-    salesAndAdsRate: 1,
-    bankFacilities: 1,
-    annualPC: 1,
-    profitLoss:1,
-  };
+
   net = {
     building: 1, // %
     equipment: 15, // %
@@ -80,12 +68,17 @@ export class ProjactsService {
     BFInterest_fix: 100,
     bime_fix: 100,
   }
+  basePrice = new BehaviorSubject(1);
   newProjact(data:{}){
     return this.server.create(this.projactsApi.create,data)
   }
 
   update(id:string,data:{}){
     return this.server.update(this.projactsApi.edit+id,data)
+  }
+
+  delete(id:string){
+    return this.server.delete(this.projactsApi.delete+id);
   }
 
   getById(id:String){

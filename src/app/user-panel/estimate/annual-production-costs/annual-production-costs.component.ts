@@ -19,6 +19,7 @@ export class AnnualProductionCostsComponent extends EstimateComponent implements
       take(2)
     ).subscribe(res => {
       this.unit = res;
+      this.period = this.toNum(this.unit.fundAndExpensesForm.time);
     });
     this.percents.ghalebMasrafi = 20;
   }

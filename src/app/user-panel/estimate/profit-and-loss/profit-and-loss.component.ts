@@ -1,6 +1,7 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { IEstimate } from 'src/app/controlers/interfaces/interfaces';
-import { ProjactsService } from 'src/app/controlers/services/projacts.service';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { BehaviorSubject, Subscription, take } from 'rxjs';
+import { EstimateComponent } from '../estimate.component';
+import { IRRClacComponent } from './irr-clac/irr-clac.component';
 
 export class Iforecast {
   id: number;
@@ -8,6 +9,8 @@ export class Iforecast {
   percent: number;
   cost: number;
   description: string;
+  type: string;
+  unit: string;
   finalCost(){
     return this.cost*this.percent/100
   }
@@ -18,37 +21,41 @@ export class Iforecast {
   templateUrl: './profit-and-loss.component.html',
   styleUrls: ['./profit-and-loss.component.css']
 })
-export class ProfitAndLossComponent implements OnInit {
-
-  constructor(private projactService:ProjactsService) { }
+export class ProfitAndLossComponent extends EstimateComponent implements OnInit,OnDestroy {
 
   @Output('doAction') doAction = new EventEmitter();
-  percents = this.projactService.profitAndLossPercents;
+  percent = this.projactService.profitAndLossPercents;
   GlobalPercents = this.projactService.percents;
-  estimated = new IEstimate();
-  year = this.projactService.year;
   stringYear = ["اول","دوم","سوم","چهارم","پنجم","ششم","هفتم","هشتم","نهم","دهم"];
-
-  money = 'تومان';
   profitAndLoss:any = {
     incomes:[],
     var:[],
     fix:[],
-    profitLoss:[]
+    profitLoss:[],
+    efficiency:[]
   }
   doAllCompute = true;
+  subs1$: Subscription;
+  ExpectedRateOfReturn: number = 0;
 
   ngOnInit(): void {
-
-    this.projactService.getCahnges().subscribe(res => {
+    this.subs1$ = this.projactService.getCahnges().subscribe(res => {
       this.estimated = res;
-      
       if (this.doAllCompute) {
         this.allComputes();
       }
-      console.log(this.profitAndLoss);
-      
-    })
+      console.log(this.profitAndLoss,res);
+    });
+    this.projactService.getUnit().pipe(
+      take(2)
+    ).subscribe(res => {
+      this.unit = res;
+      this.period = this.toNum(this.unit.fundAndExpensesForm.time);
+    });
+  }
+
+  ngOnDestroy() {
+    this.subs1$.unsubscribe();
   }
 
   allComputes() {
@@ -56,9 +63,36 @@ export class ProfitAndLossComponent implements OnInit {
     this.forecastingFixCosts();
     this.incomesCompute();
     this.profitLossCompute();
+    this.efficiencyCompute();
   }
 
-  applyChanges(){}
+  applyChanges() {}
+
+  changeYear() {
+    Object.keys(this.year).forEach(key => {
+      this.year[key] = this.year.profitLoss;
+    });
+    this.toEstimate(false);
+    // this.allComputes();
+  }
+
+  getWorkingCapitalValue(year?:number){
+    this.year.workingCapital = year;
+    this.year.building = year;
+    this.year.equipment = year;
+    this.year.vehicles = year;
+    // this.year.salesAndAdsRate = this.year.workingCapital;
+
+
+    this.depreciationCalculate('equipment', this.year.equipment)
+    this.depreciationCalculate('building', this.year.building)
+    this.depreciationCalculate('vehicles', this.year.vehicles)
+
+    this.maintenanceCost('any',true)
+    this.workingCapital()
+    // this.salesAndAdsRate()
+    this.bime(this.estimated.workingCapital,this.year.workingCapital);
+  }
 
   forecastingVarCosts() {
     let costs:Iforecast[] = [];
@@ -66,7 +100,7 @@ export class ProfitAndLossComponent implements OnInit {
     // rawMaterials
     e.id = 101;
     e.title = 'مواد اولیه (۱۰۰٪)';
-    e.percent = this.percents.rawMaterials_var;
+    e.percent = this.percent.rawMaterials_var;
     e.cost = this.estimated.workingCapital.totalRawMaterials ;
     costs.push(e);
 
@@ -74,10 +108,14 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 102;
     e.title = 'هزينه حقوق و دستمزد (۳۵٪)';
-    e.percent = this.percents.salary_var;
+    e.percent = this.percent.salary_var;
     e.cost = this.estimated.sumSalaryCosts.sum ;
     if (this.year.profitLoss > 1) {
-      e.cost = this.recursiveCalc(e.cost,120,this.year.profitLoss)!;
+      let salary = this.estimated.sumSalaryCosts.sum * e.percent/100;
+      e.finalCost = () => {
+        let val = this.recursiveCalc(salary,120,this.year.profitLoss);
+        return val;
+      }
     }
     costs.push(e);
 
@@ -85,7 +123,7 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 103;
     e.title = 'هزینه تعمیرات و نگهداری';
-    e.percent = this.percents.maintenance_var;
+    e.percent = this.percent.maintenance_var;
     e.cost = this.estimated.workingCapital.maintenanceCost ;
     costs.push(e);
 
@@ -93,7 +131,7 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 104;
     e.title = 'هزینه‌های اداری و فروش';
-    e.percent = this.percents.administrativeAndSelling_var;
+    e.percent = this.percent.administrativeAndSelling_var;
     e.cost = this.estimated.annualProductionCosts.administrativeAndSellingExpenses ;
     costs.push(e);
 
@@ -101,7 +139,7 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 105;
     e.title = 'هزینه‌های پیش‌بینی نشده';
-    e.percent = this.percents.unforeseen_var;
+    e.percent = this.percent.unforeseen_var;
     e.cost = this.estimated.annualProductionCosts.unforeseen ;
     costs.push(e);
 
@@ -118,7 +156,7 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 107;
     e.title = 'آب برق گاز تلفن (۸۰٪)';
-    e.percent = this.percents.WEGT_var;
+    e.percent = this.percent.WEGT_var;
     e.cost = this.estimated.workingCapital.WEGT.sum ;
     costs.push(e);
 
@@ -126,7 +164,7 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 108;
     e.title = 'هزینه تبلیغات';
-    e.percent = this.percents.Ads_var;
+    e.percent = this.percent.Ads_var;
     e.cost = this.estimated.salesAndAdsRate.adsPercent[this.year.profitLoss-1]
              * this.estimated.salesAndAdsRate.yearlyPrice[this.year.profitLoss-1]/100;
     costs.push(e);
@@ -154,7 +192,7 @@ export class ProfitAndLossComponent implements OnInit {
     // Deprication Costs
     e.id = 201;
     e.title = 'هزینه استهلاک';
-    e.percent = this.percents.deprication;
+    e.percent = this.percent.deprication;
     e.cost = this.estimated.annualProductionCosts.depreciationCosts ;
     costs.push(e);
 
@@ -162,7 +200,7 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 202;
     e.title = 'استهلاک قبل از بهره‌برداری';
-    e.percent = this.percents.preOperation_fix;
+    e.percent = this.percent.preOperation_fix;
     e.cost = this.estimated.annualProductionCosts.preOperationDepreciationCosts ;
     costs.push(e);
 
@@ -170,11 +208,13 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 203;
     e.title = 'هزينه حقوق و دستمزد (۶۵٪)';
-    e.percent = this.percents.salary_fix;
+    e.percent = this.percent.salary_fix;
     e.cost = this.estimated.sumSalaryCosts.sum ;
     if (this.year.profitLoss > 1) {
+      let salary = this.estimated.sumSalaryCosts.sum * e.percent/100;
       e.finalCost = () => {
-        return this.recursiveCalc(e.cost,120,this.year.profitLoss)!;
+        let val = this.recursiveCalc(salary,120,this.year.profitLoss);
+        return val;
       }
     }
     costs.push(e);
@@ -183,7 +223,7 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 204;
     e.title = 'هزینه تعمیرات و نگهداری';
-    e.percent = this.percents.maintenance_fix;
+    e.percent = this.percent.maintenance_fix;
     e.cost = this.estimated.workingCapital.maintenanceCost ;
     costs.push(e);
 
@@ -191,7 +231,7 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 205;
     e.title = 'هزينه هاي جاري (مواد+نت+قالب+انرژی+...)';
-    e.percent = this.percents.workingCapital_fix;
+    e.percent = this.percent.workingCapital_fix;
     e.cost = this.estimated.workingCapital.sum ;
     costs.push(e);
 
@@ -199,7 +239,7 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 206;
     e.title = 'هزینه‌های پیش‌بینی نشده';
-    e.percent = this.percents.unforeseen_fix;
+    e.percent = this.percent.unforeseen_fix;
     e.cost = this.estimated.annualProductionCosts.unforeseen ;
     costs.push(e);
 
@@ -207,7 +247,7 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 207;
     e.title = 'آب برق گاز تلفن (۸۰٪)';
-    e.percent = this.percents.WEGT_fix;
+    e.percent = this.percent.WEGT_fix;
     e.cost = this.estimated.workingCapital.WEGT.sum ;
     costs.push(e);
 
@@ -215,7 +255,7 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 208;
     e.title = 'بهره تسهيلات بانكي';
-    e.percent = this.percents.BFInterest_fix;
+    e.percent = this.percent.BFInterest_fix;
     e.cost = this.estimated.annualProductionCosts.bankFacilityCosts ;
     e.cost? '': e.cost = 0;
     costs.push(e);
@@ -224,7 +264,7 @@ export class ProfitAndLossComponent implements OnInit {
     e = new Iforecast;
     e.id = 209;
     e.title = 'بیمه کارخانه';
-    e.percent = this.percents.bime_fix;
+    e.percent = this.percent.bime_fix;
     e.cost = this.estimated.workingCapital.bime ;
     costs.push(e);
 
@@ -376,6 +416,8 @@ export class ProfitAndLossComponent implements OnInit {
     let h = new Iforecast;
     h.id = 409;
     h.title = 'نسبت ارزش افزوده‌ی ناخالص به فروش';
+    h.type = 'float';
+    h.unit = ' ';
     h.finalCost = () => {
       let v = d.finalCost() / this.profitAndLoss.incomes[year-1].finalCost();
       return v;
@@ -387,42 +429,139 @@ export class ProfitAndLossComponent implements OnInit {
     i.id = 410;
     i.title = 'سرمایه مورد نیاز سال بعد';
     i.description = `تامین مالی سرمایه درگردش موردنیاز جهت تولید در سال بعد. -- مقدار سرمایه درگردش هر سال افزایش می یابد. جهت تداوم تولید، این سرمایه درگردش مازاد می بایست هر ساله تامین مالی گردد، در اینجا فرض شده است که مازاد سرمایه در گردش مورد نیاز در هر سال از محل سود خالص تامین مالی می گردد (نه تسهیلات بانکی)`;
-    let val1 = this.estimated.workingCapital.sumInPeriod;
+    let val2:number,val1:number = this.estimated.workingCapital.sumInPeriod;
+    setTimeout(() => {
       // برای دریافت مجموع سرمایه درگردش یک سال جلوتر 
-    this.doAllCompute = false;
-    this.doAction.emit({action: 'workingCapital', year: year+1});
-    let val2 = this.estimated.workingCapital.sumInPeriod;
-      // برگشت دیتا به حالت عادی
-    // this.doAction.emit({action: 'workingCapital', year: year});
+      this.period = this.toNum(this.unit.fundAndExpensesForm.time);
+      let nextYear = this.toNum(year) + 1;
+      this.getWorkingCapitalValue(nextYear);
+      val2 = this.estimated.workingCapital.sumInPeriod;
+      i.finalCost = () => {
+        return val2-val1;
+      }
 
-    console.log(val1,val2);
-    
-    i.finalCost = () => {
-      let m1 = this.estimated.workingCapital.sumInPeriod;
-      
-      let m2 = this.estimated.workingCapital.sumInPeriod;
- 
-      return m2-m1;
-    }
-    // this.doAction.emit();
+    }, 100);
     data.push(i);
+
+    // نسبت ارزش افزوده‌ی خالص به فروش
+    let j = new Iforecast;
+    j.id = 411;
+    j.title = `نسبت ارزش افزوده‌ی خالص به فروش`;
+    j.type = 'float';
+    j.unit = ' ';
+    j.finalCost = () => {
+      return f.finalCost() / this.profitAndLoss.incomes[year-1].finalCost();
+    }
+    data.push(j);
+
+    // سود قابل تقسیم حسابداری
+    let k = new Iforecast;
+    k.id = 412;
+    k.title = 'سود قابل تقسیم حسابداری';
+    k.finalCost = () => {
+      let v = e.finalCost() <= g.finalCost()+i.finalCost()? 0: e.finalCost()-g.finalCost()-i.finalCost();
+      return v;
+    }
+    data.push(k);
+
+    // نسبت ارزش افزوده خالص سالیانه به کل سرمایه
+    let l = new Iforecast;
+    l.id = 413;
+    l.title = 'نسبت ارزش افزوده خالص سالیانه به کل سرمایه';
+    l.type = 'float';
+    l.unit = ' ';
+    l.finalCost = () => {
+      let val = f.finalCost() / this.estimated.financialSummary.totalCapitalRequired;
+      return val;
+    }
+    data.push(l);
+
+    // وجه نقد باقی مانده برای سهامدار در پایان سال
+    let m = new Iforecast;
+    m.id = 414;
+    m.title = 'وجه نقد باقی مانده برای سهامدار در پایان سال';
+    m.description = `سود خالص بعلاوه استهلاک منهای اصل وام`;
+    m.finalCost = () => {
+      let val = e.finalCost() + this.getSumOfForecasts(202) - g.finalCost() - i.finalCost();
+      return val;
+    }
+    data.push(m);
+
+    // وجه نقد باقی مانده سهامدار به آورده سهامدار  (%)
+    let n = new Iforecast;
+    n.id = 415
+    n.title = 'درصد وجه نقد باقی مانده سهامدار به آورده سهامدار';
+    n.type = 'float';
+    n.unit = '%';
+    n.finalCost = () => {
+      let val = m.finalCost() / (this.estimated.financialSummary.totalCapitalRequired - this.estimated.bankFacilities.bankLoan)*100;
+      return val;
+    }
+    data.push(n);
 
     this.profitAndLoss.profitLoss = data;
   }
 
-  // for public coputes
-  recursiveCalc(cost:number,percent:number,year:number) {
-    let val = cost * percent/100;
+  //  نرخ بازده داخلی (IRR)
+  callGetIRRFunc = new BehaviorSubject(false);
+  shareholdeIRR: number;
+  planIRR: number;
+  efficiencyCompute() {
+    let year = this.year.profitLoss
+    let data:Iforecast[] = [];
 
-    if (year < 2) {
+    // جریان نقد ورودی کل طرح
+    let a = new Iforecast;
+    a.id = 501;
+    a.title = 'جریان نقد ورودی کل طرح';
+    a.finalCost = () => {
+      let val = this.getSumOfForecasts(202,208,402);
       return val;
+    }
+    data.push(a);
+
+    // بدون عنوان
+    let b = new Iforecast;
+    b.id = 502;
+    b.title = 'بدون عنوان';
+    b.finalCost = () => {
+      let val = this.getSumOfForecasts(414)/(1+this.ExpectedRateOfReturn/100);
+      return val;
+    }
+    data.push(b);
+
+    //
+    let c = new Iforecast;
+    c.id = 503;
+    c.title = 'نرخ بازده داخلی طرح در افق ده ساله (%)';
+    this.callGetIRRFunc.next(true);
+    c.finalCost = () => {
+      return this.shareholdeIRR;
+    }
+    data.push(c);
+
+    //
+
+    this.profitAndLoss.efficiency = data;
+  }
+
+  // for public coputes
+  recursiveCalc(cost:number,percent:number,year:number):any {
+    let v = cost * percent/100;
+    if (year <= 2) {
+      return v;
     } else {
-      this.recursiveCalc(val,percent,year-1);
+      return this.recursiveCalc(v,percent,year-1);
     }
   }
 
+  IRRvalues(event:any) {
+    this.shareholdeIRR = event.shareholdeIRR;
+    this.planIRR = event.planIRR;
+  }
+
   getSumOfForecasts(...ids:number[]) {
-    let array:Iforecast[] = [this.profitAndLoss.var,this.profitAndLoss.fix,this.profitAndLoss.incomes];
+    let array:Iforecast[] = [this.profitAndLoss.var,this.profitAndLoss.fix,this.profitAndLoss.incomes,this.profitAndLoss.profitLoss];
     array = array.flat().filter((item:Iforecast) => ids.includes(item.id));
     let sum = array.reduce((prev:Iforecast,next:Iforecast) => {
       let v = new Iforecast;
@@ -433,16 +572,5 @@ export class ProfitAndLossComponent implements OnInit {
     });
 
     return sum.finalCost();
-  }
-
-  getSumOfArrays(array:number[],toAndis:number){
-    let sum = 0;
-    let from = toAndis - 12;
-    if (from >= 0) {
-      for (let i = from; i < toAndis; i++) {
-        sum += array[i];
-      }
-    }
-    return sum
   }
 }
