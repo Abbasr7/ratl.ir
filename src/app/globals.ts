@@ -6,6 +6,7 @@ export class Globals {
     public static plans = "/plan";
     public static projacts = "/projact";
     public static payments = "/pay";
+    public static params = "/param";
 
     public static adminApi = {
         getdata: `${this.admin}/getdata`, // ?type=${type}
@@ -62,5 +63,10 @@ export class Globals {
         create: `${this.projacts}/new`,
         edit: `${this.projacts}/edit/`,   // +/:id
         delete: `${this.projacts}/delete/`    // +/:id
+    };
+    public static paramsApi = {
+        details: `${this.params}/details/`, // +/:id
+        // create: `${this.projacts}/new`,
+        edit: `${this.params}/edit/`,   // +/:id
     };
 }

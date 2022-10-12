@@ -14,16 +14,26 @@ export class DepreciationsComponent extends EstimateComponent implements OnInit 
     this.unit = this.projactService.projact.value
 
     if (this.unit_id && !this.unit._id) {
-      this.getCurrentUnit()
+      this.getCurrentUnit();
     }
-
+    
     this.projactService.getCahnges().subscribe(res => {
       this.estimated = res
     })
   }
 
   changeYear(event: Event, type: string) {
-    this.depreciationCalculate(type, this.year[type as keyof IRate])
+    if (type == 'preOperation') {
+      this.depreciationOfPreOperation(this.year[type as keyof IRate]);
+      return;
+    }
+
+    if (type == 'unforeseen') {
+      this.depreciationOfUnforeseen(this.year[type as keyof IRate]);
+      return
+    }
+  
+    this.depreciationCalculate(type, this.year[type as keyof IRate]);
   }
 
   rateChanged(event: Event, type: any) {

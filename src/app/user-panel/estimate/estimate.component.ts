@@ -1,12 +1,11 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, lastValueFrom, map, take } from 'rxjs';
-import { MenusComponent } from 'src/app/admin/menus/menus.component';
+import { lastValueFrom, map, take } from 'rxjs';
 import { IEstehlak, IEstimate, IProjact, IRate, SuccessHandle } from 'src/app/controlers/interfaces/interfaces';
+import { MessagesService } from 'src/app/controlers/services/messages.service';
 import { ProjactsService } from 'src/app/controlers/services/projacts.service';
 import { ServerService } from 'src/app/controlers/services/server.service';
-import { WorkingCapitalComponent } from './working-capital/working-capital.component';
 
 @Component({
   selector: 'app-estimate',
@@ -18,14 +17,14 @@ export class EstimateComponent {
   constructor(
     public route: ActivatedRoute,
     public projactService: ProjactsService,
-    public server: ServerService
+    public server: ServerService,
+    private msgService: MessagesService
   ) { }
 
   unit: IProjact = new IProjact
   unit_id = this.route.snapshot.paramMap.get('id')
   rate = this.projactService.rate
   estimated = new IEstimate;
-  doActions = new BehaviorSubject(new DoActon)
 
   basePrice:number ;
   year:any = {
@@ -46,7 +45,8 @@ export class EstimateComponent {
 
   activeTab: number = 0;
   money:string = 'ریال';
-  period: number;
+  period:number = this.projactService.period;
+  productionCapacity:number = this.projactService.productionCapacity;
 
   getCurrentUnit() {
     (async () => {
@@ -56,20 +56,40 @@ export class EstimateComponent {
       ))
       this.projactService.setUnit.next(this.unit);
 
-      this.period = this.toNum(this.unit.fundAndExpensesForm.time)
+      this.projactService.getParams(this.unit._id).pipe(
+        take(2)
+      ).subscribe(res => {
+        if (res.data) {
+          this.projactService.setParams(res.data)
+        }
+        console.log(res);
+      });
+
+      this.period = this.projactService.period = 
+        this.projactService.period? this.projactService.period:
+          this.toNum(this.unit.fundAndExpensesForm.time);
+
+      this.productionCapacity = this.projactService.productionCapacity =
+        this.projactService.productionCapacity? this.projactService.productionCapacity:
+          this.toNum(this.unit.fundAndExpensesForm.zarfiyateSalane);
+  
       this.toEstimate();
-      
-      console.log(this.unit,this.estimated);
     })()
   }
 
   getBasePrice() {
-    this.projactService.basePrice.asObservable().subscribe(res => {
+    this.projactService.basePrice.asObservable().pipe(
+      take(1)
+    ).subscribe(res => {
       this.basePrice = res
     })
   }
 
-  toEstimate(FSummary = true) {
+  setBasePrice(bp:number) {
+    this.projactService.basePrice.next(bp);
+  }
+
+  toEstimate(year: number = 1) {
     this.getBasePrice();
     this.depreciationCalculate('equipment', this.year.equipment);
     this.depreciationCalculate('building', this.year.building);
@@ -81,7 +101,7 @@ export class EstimateComponent {
 
     this.workingCapital();
     this.salesAndAdsRate();
-    if (FSummary) {
+    if (year == 1) {
       this.financialSummary();
     }
     
@@ -90,8 +110,17 @@ export class EstimateComponent {
     this.bankFacilities();
 
     this.annualProductionCosts();
-  
+
     this.projactService.setChanges.next(this.estimated);
+  }
+
+  saveParamsChanges() {
+    this.parametersChanged();
+    lastValueFrom(
+      this.projactService.saveParams(<string>this.unit_id)
+    ).then(res => {
+      this.msgService.sendMessage('تغییرات با موفقیت ذخیره گردید.','success')
+    })
   }
 
   depreciationCalculate(type: string, year: number, customItem:any = null) {
@@ -125,6 +154,29 @@ export class EstimateComponent {
     vals.push(sum);
     this.estimated[type as keyof IEstimate] = vals;
 
+  }
+
+  depreciationOfPreOperation(year:number) {
+    let PO = {
+      count: 1,
+      cost: this.estimated.financialSummary.preOperation,
+      title: 'هزینه‌های قبل از بهره‌برداری'
+    };
+    this.depreciationCalculate('preOperation',year,[PO]);
+  }
+
+  depreciationOfUnforeseen(year:number) {
+    let unforeseen = {
+      count: 1,
+      cost: (this.estimated.financialSummary.building
+            + this.estimated.financialSummary.equipment
+            + this.estimated.financialSummary.vehicles
+            + this.estimated.financialSummary.officeEquipment
+            + this.estimated.financialSummary.landscaping
+            + this.estimated.financialSummary.ground) * 10/100,
+      title: 'پیش‌بینی نشده'
+    }
+    this.depreciationCalculate('unforeseen',year,[unforeseen]);
   }
 
   maintenanceCost(type: string,calculate = false) {
@@ -220,6 +272,7 @@ export class EstimateComponent {
         bime: 0,
         rewards: 0,
         eidi: 0,
+        count: 0,
         get oneMonthLiquidityOutput() {
           return (this.bime / 12) + this.costs
         },
@@ -231,7 +284,8 @@ export class EstimateComponent {
         sumCosts.costs += item.cost;
         sumCosts.bime += item.bime;
         sumCosts.rewards += item.reward;
-        sumCosts.eidi += item.eidi
+        sumCosts.eidi += item.eidi;
+        sumCosts.count += item.count;
       })
       this.estimated.sumSalaryCosts = sumCosts
     }
@@ -306,7 +360,7 @@ export class EstimateComponent {
       })
     }
     // جمع کل (مجموع مواد اولیه با پیشبینی نشده های مواد اولیه)
-    e.totalRawMaterials = this.totalRawMaterials = (this.toNum(this.unit.fundAndExpensesForm.zarfiyateSalane)/12) * 
+    e.totalRawMaterials = this.totalRawMaterials = (this.productionCapacity/12) * 
      (this.netSumRawMaterials + e.unforeseen(this.netSumRawMaterials) ) * 12
     if(this.year.workingCapital > 1) {
       rawMat_Calc(this.totalRawMaterials,this.year.workingCapital)
@@ -450,7 +504,7 @@ export class EstimateComponent {
       e.adsPercent = this.estimated.salesAndAdsRate.adsPercent
     }
     
-    let count = this.toNum(this.unit.fundAndExpensesForm.zarfiyateSalane)
+    let count = this.toNum(this.productionCapacity)
     let yearlyPrice = this.basePrice * (1+e.priceIncreaseRate[0])
 
     // سال اول
@@ -673,23 +727,25 @@ export class EstimateComponent {
 
     // depreciationCosts
     // بدلیل اینکه این محاسبات وابسته به محاسبات کلی دیگر بودند  در داخل این تابع محاسبه نمودم
-    let PO = {
-      count: 1,
-      cost: this.estimated.financialSummary.preOperation,
-      title: 'هزینه‌های قبل از بهره‌برداری'
-    };
-    this.depreciationCalculate('preOperation',this.year.annualPC,[PO]);
-    let unforeseen = {
-      count: 1,
-      cost: (this.estimated.financialSummary.building
-            + this.estimated.financialSummary.equipment
-            + this.estimated.financialSummary.vehicles
-            + this.estimated.financialSummary.officeEquipment
-            + this.estimated.financialSummary.landscaping
-            + this.estimated.financialSummary.ground) * 10/100,
-      title: 'پیش‌بینی نشده'
-    }
-    this.depreciationCalculate('unforeseen',this.year.annualPC,[unforeseen]);
+    // let PO = {
+    //   count: 1,
+    //   cost: this.estimated.financialSummary.preOperation,
+    //   title: 'هزینه‌های قبل از بهره‌برداری'
+    // };
+    // this.depreciationCalculate('preOperation',this.year.annualPC,[PO]);
+    // let unforeseen = {
+    //   count: 1,
+    //   cost: (this.estimated.financialSummary.building
+    //         + this.estimated.financialSummary.equipment
+    //         + this.estimated.financialSummary.vehicles
+    //         + this.estimated.financialSummary.officeEquipment
+    //         + this.estimated.financialSummary.landscaping
+    //         + this.estimated.financialSummary.ground) * 10/100,
+    //   title: 'پیش‌بینی نشده'
+    // }
+    // this.depreciationCalculate('unforeseen',this.year.annualPC,[unforeseen]);
+    this.depreciationOfPreOperation(this.year.annualPC);
+    this.depreciationOfUnforeseen(this.year.annualPC);
 
     e.depreciationCosts = this.estimated.building[this.estimated.building.length-1].estehlak
                           + this.estimated.equipment[this.estimated.equipment.length-1].estehlak
@@ -765,6 +821,16 @@ export class EstimateComponent {
     let elm = (<HTMLElement>e.target)
     if (elm.clientWidth < 50)
       elm.parentElement?.setAttribute('colspan','3') 
+  }
+
+  parametersChanged() {
+    this.projactService.percents = this.percents;
+    this.projactService.profitAndLossPercents = this.profitAndLossPercents;
+    this.projactService.rate = this.rate;
+    // this.projactService.net = this.net;
+    // this.projactService.maintenance = this.maintenance
+    this.projactService.productionCapacity = this.productionCapacity;
+    this.projactService.period = this.period;
   }
 
   focusOut(e:Event){

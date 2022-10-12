@@ -22,7 +22,7 @@ export class NumWithCommaPipe implements PipeTransform {
     if (typeof x == 'number' && this.type == 'int') {
       xx = Math.round(x).toString()
     } else if (typeof x == 'number' && this.type == 'float') {
-      let v = Math.round(x*100)/100;
+      let v = Math.round(x*1000)/1000;
       return x<0? v*-1: v;
     } else {
       xx = x.toString()

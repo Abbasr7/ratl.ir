@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { take } from 'rxjs';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription, take } from 'rxjs';
 import { EstimateComponent } from '../estimate.component';
 
 @Component({
@@ -7,12 +7,13 @@ import { EstimateComponent } from '../estimate.component';
   templateUrl: './annual-production-costs.component.html',
   styleUrls: ['./annual-production-costs.component.css']
 })
-export class AnnualProductionCostsComponent extends EstimateComponent implements OnInit{
+export class AnnualProductionCostsComponent extends EstimateComponent implements OnInit,OnDestroy{
   
+  sub$1:Subscription;
   ngOnInit(): void {
-    this.projactService.getCahnges().pipe(
-      take(1)
-    ).subscribe(res => {
+    // this.percents.ghalebMasrafi = 20;
+
+    this.sub$1 = this.projactService.getCahnges().subscribe(res => {
       this.estimated = res;
     });
     this.projactService.getUnit().pipe(
@@ -21,19 +22,10 @@ export class AnnualProductionCostsComponent extends EstimateComponent implements
       this.unit = res;
       this.period = this.toNum(this.unit.fundAndExpensesForm.time);
     });
-    this.percents.ghalebMasrafi = 20;
   }
 
   applyChanges() {
-    
-    this.year.building = this.year.annualPC;
-    this.year.equipment = this.year.annualPC;
-    this.year.vehicles = this.year.annualPC;
-    this.year.officeEquipment = this.year.annualPC
-    this.year.salesAndAdsRate = this.year.annualPC;
-    this.year.workingCapital = this.year.annualPC;
-    
-    
+  
     this.depreciationCalculate('equipment', this.year.equipment);
     this.depreciationCalculate('building', this.year.building);
     this.depreciationCalculate('vehicles', this.year.vehicles);
@@ -42,7 +34,25 @@ export class AnnualProductionCostsComponent extends EstimateComponent implements
     this.maintenanceCost('any',true);
     this.workingCapital();
     this.salesAndAdsRate();
-    this.annualProductionCosts();    
+    this.annualProductionCosts();
+
+    this.projactService.setChanges.next(this.estimated);
+  }
+
+  changeYear() {
+    let year = this.toNum(this.year.annualPC)
+    this.year.building = year;
+    this.year.equipment = year;
+    this.year.vehicles = year;
+    this.year.officeEquipment = year
+    this.year.salesAndAdsRate = year;
+    this.year.workingCapital = year;
+    
+    this.applyChanges();
+  }
+
+  ngOnDestroy() {
+    this.sub$1.unsubscribe();
   }
 
 }

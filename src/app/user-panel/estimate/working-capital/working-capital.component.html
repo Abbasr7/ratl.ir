@@ -17,15 +17,17 @@
         <div class="px-3">
             <label class="text-gray-700"> دوره زمانی(ماه)
                 <input type="number" class="editable-field"
+                    (change)="parametersChanged()"
                     [(ngModel)]="period"
                     matTooltip="دوره زمانی سرمایه در گردش" placeholder="براساس ماه">
             </label>
         </div>
         <div class="px-3">
-            <label class="text-gray-700" *ngIf="unit.fundAndExpensesForm"> ظرفیت واقعی سالانه
+            <label class="text-gray-700"> ظرفیت واقعی سالانه
                 <input type="number" class="editable-field"
                     style="max-width: 150px !important;"
-                    [(ngModel)]="unit.fundAndExpensesForm.zarfiyateSalane">
+                    (change)="parametersChanged()"
+                    [(ngModel)]="productionCapacity">
             </label>
         </div>
         <div class="relative px-3">
@@ -45,7 +47,7 @@
             </select>
         </div>
         <div class="">
-            <button class="btn btn-purple" style="margin-top: 0 !important;" (click)="applyChanges()">اعمال</button>
+            <button class="btn btn-purple" style="margin-top: 0 !important;" (click)="applyChanges()">اعمال و ذخیره</button>
         </div>
     </div>
 </div>

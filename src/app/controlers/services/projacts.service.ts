@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { AsyncSubject, BehaviorSubject, map, Subject } from 'rxjs';
 import { Globals } from 'src/app/globals';
-import { IEstehlak, IEstimate, IProjact, IRate } from '../interfaces/interfaces';
+import { IEstehlak, IEstimate, IProjact, IRate, SuccessHandle } from '../interfaces/interfaces';
+import { Parameters } from '../interfaces/params';
 import { ServerService } from './server.service';
 
 @Injectable({
@@ -15,6 +16,7 @@ export class ProjactsService {
   setChanges = new BehaviorSubject(new IEstimate);
   projactsApi = Globals.projactsApi
   projact = new BehaviorSubject(new IProjact());
+  parametersId = new BehaviorSubject('');
 
   net = {
     building: 1, // %
@@ -68,7 +70,13 @@ export class ProjactsService {
     BFInterest_fix: 100,
     bime_fix: 100,
   }
+  period: number;
+  productionCapacity: number;
   basePrice = new BehaviorSubject(1);
+  callGetIRR = new BehaviorSubject(false);
+  callGetNPV:BehaviorSubject<any> = new BehaviorSubject(false);
+
+
   newProjact(data:{}){
     return this.server.create(this.projactsApi.create,data)
   }
@@ -95,6 +103,40 @@ export class ProjactsService {
 
   getUnit() {
     return this.setUnit.asObservable();
+  }
+
+  getParams(projectId:string) {
+    return this.server.get(Globals.paramsApi.details+projectId).pipe(
+      map(res => res as SuccessHandle)
+    );
+  }
+
+  setParams(params:Parameters) {
+    this.percents = params.percents;
+    this.profitAndLossPercents = params.profitAndLossPercents;
+    this.rate = params.rate;
+    this.net = params.net;
+    this.maintenance = params.maintenance;
+    this.period = params.period;
+    this.productionCapacity = params.productionCapacity;
+    this.basePrice.next(params.basePrice);
+  }
+
+  saveParams(id:string,params?:any) {
+    let parameters:any = {
+      rate: this.rate,
+      net: this.net,
+      percents: this.percents,
+      profitAndLossPercents: this.profitAndLossPercents,
+      maintenance: this.maintenance,
+      basePrice: this.basePrice.value,
+      period: this.period,
+      productionCapacity: this.productionCapacity
+    }
+    console.log(parameters);
+
+    this.setParams(parameters);
+    return this.server.update(Globals.paramsApi.edit+id,parameters);
   }
 
   estehlakHarSal(type: any, item: any, year: number): IEstehlak {

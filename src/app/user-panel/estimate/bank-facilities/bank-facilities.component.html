@@ -13,27 +13,16 @@
     <!-- تنظیمات -->
     <div x-bind:class="setting == false? 'h-0 opacity-0':'h-auto opacity-100'"
         class="bg-white flex flex-wrap gap-3 text-sm text-gray-700 p-3 transition-all duration-300">
-        <h3 class="w-full"></h3>
-        <div class="w-full md:w-1/4">
-            <label class="text-gray-700"> دوره زمانی(ماه)
-                <input type="number" class="text-input" [(ngModel)]="period"
-                    matTooltip="دوره زمانی سرمایه در گردش" placeholder="براساس ماه">
-            </label>
-        </div>
-        <div class="w-full md:w-1/4">
-            <label class="text-gray-700" *ngIf="unit.fundAndExpensesForm"> ظرفیت واقعی سالانه
-                <input type="number" class="text-input" [(ngModel)]="unit.fundAndExpensesForm.zarfiyateSalane">
-            </label>
-        </div>
         <div class="w-1/4 flex items-end">
-            <button class="btn btn-purple" (click)="workingCapital()">اعمال</button>
+            <button class="btn btn-purple" (click)="saveParamsChanges()">ذخیره تغییرات</button>
         </div>
     </div>
 </div>
 <hr class="bg-gray-400">
-<div class="mb-3 grid grid-cols-12 items-center gap-2">
+<div class="mb-3 grid grid-cols-12 gap-2">
     <h3 class="w-full col-span-12 flex-shrink-0 text-gray-800 p-4">تسهیلات بانکی</h3>
     <div class="md:col-span-5 col-span-12">
+        <h3 class="mb-3 text-base">جزئیات تسهیلات</h3>
         <table class="w-full table-auto">
             <thead>
                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -147,8 +136,8 @@
     </div>
     <!-- اقساط -->
     <div class="md:col-span-7 col-span-12">
-        <h3 class="mb-3 text-base">جزئیات اقساط</h3>
-        <div class="text-gray-700 mb-3 text-sm flex items-center gap-2 z-0">
+        <div class="text-gray-700 mb-3 text-sm flex justify-between items-center gap-2 z-0">
+            <h3 class="mb-3 text-base">جزئیات اقساط</h3>
             <div class="relative flex items-center px-3">
                 <span class="ml-2"> سال:</span>
                 <select [(ngModel)]="year['bankFacilities']" (change)="bankFacilities()"
@@ -169,37 +158,37 @@
         <table class="w-full table-auto">
             <thead>
                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                    <th class="py-3 px-6 text-right cursor-pointer">شماره قسط</th>
-                    <th class="py-3 px-6 text-right cursor-pointer">مبلغ قسط</th>
-                    <th class="py-3 px-6 text-right cursor-pointer">اصل مبلغ</th>
-                    <th class="py-3 px-6 text-right cursor-pointer">بهره</th>
-                    <th class="py-3 px-6 text-right cursor-pointer">باقی‌مانده تسهیلات</th>
+                    <th class="py-3 px-2 text-right cursor-pointer text-xs">شماره قسط</th>
+                    <th class="py-3 px-4 text-right cursor-pointer">مبلغ قسط</th>
+                    <th class="py-3 px-4 text-right cursor-pointer">اصل مبلغ</th>
+                    <th class="py-3 px-4 text-right cursor-pointer">بهره</th>
+                    <th class="py-3 px-4 text-right cursor-pointer">باقی‌مانده تسهیلات</th>
                 </tr>
             </thead>
             <tbody class="text-gray-700 text-sm font-light">
                 <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]"
                     *ngFor="let m of [].constructor(12); let i = index">
-                    <td class="py-3 px-6 font-normal">
+                    <td class="py-3 px-4 font-normal">
                         <span>
                             {{ '# '+(i+((year.bankFacilities-1)*12)+1) }}
                         </span>
                     </td>
-                    <td class="py-3 px-6 font-normal">
+                    <td class="py-3 px-4 font-normal">
                         <span>
                             {{ estimated.bankFacilities.PMT | numWithComma:money }}
                         </span>
                     </td>
-                    <td class="py-3 px-6 font-normal">
+                    <td class="py-3 px-4 font-normal">
                         <span>
                             {{ estimated.bankFacilities.installments.principal[i+((year.bankFacilities-1)*12)] | numWithComma:money }}
                         </span>
                     </td>
-                    <td class="py-3 px-6 font-normal">
+                    <td class="py-3 px-4 font-normal">
                         <span>
                             {{ estimated.bankFacilities.installments.interest[i+((year.bankFacilities-1)*12)] | numWithComma:money }}
                         </span>
                     </td>
-                    <td class="py-3 px-6 font-normal">
+                    <td class="py-3 px-4 font-normal">
                         <span>
                             {{ estimated.bankFacilities.installments.remaining[i+((year.bankFacilities-1)*12)] | numWithComma:money }}
                         </span>

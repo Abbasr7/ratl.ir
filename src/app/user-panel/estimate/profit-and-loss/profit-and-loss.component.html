@@ -14,20 +14,6 @@
     <div x-bind:class="setting == false? 'h-0 opacity-0':'h-auto opacity-100'"
         class="bg-white flex items-center flex-wrap gap-3 text-sm text-gray-700 p-1 transition-all duration-300">
         <h3 class="w-full"></h3>
-        <div class="px-3">
-            <label class="text-gray-700"> نرخ بازده مورد انتظار سهامدار (%)
-                <input type="number" class="editable-field"
-                    [(ngModel)]="ExpectedRateOfReturn"
-                    matTooltip="دوره زمانی سرمایه در گردش" placeholder="براساس ماه">
-            </label>
-        </div>
-        <div class="px-3">
-            <label class="text-gray-700"> ظرفیت واقعی سالانه
-                <!-- <input type="number" class="editable-field"
-                    style="max-width: 150px !important;"
-                    [(ngModel)]="unit.fundAndExpensesForm.zarfiyateSalane"> -->
-            </label>
-        </div>
         <div class="relative px-3">
             <span class="ml-2"> سال:</span>
             <select [(ngModel)]="year['profitLoss']" (change)="changeYear()"
@@ -44,16 +30,16 @@
                 <option [value]="10">دهم</option>
             </select>
         </div>
-        <div class="">
+        <!-- <div class="">
             <button class="btn btn-purple" style="margin-top: 0 !important;" >اعمال</button>
-        </div>
+        </div> -->
     </div>
 </div>
 
 <div class="my-3 grid grid-cols-12 gap-3">
     <div class="lg:col-span-5 col-span-12 ">
         <h3 class="mb-3 text-base">پيش بيني درآمدها</h3>
-        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.incomes, heads:['سال','%','فروش سالانه']}"></ng-container>
+        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.incomes, heads:['سال','فروش سالانه']}"></ng-container>
     </div>
     <div class="lg:col-span-7 col-span-12 ">
         <h3 class="mb-3 text-base">پيش بيني هزينه‌های متغیر</h3>
@@ -61,19 +47,37 @@
     </div>
     <div class="lg:col-span-5 col-span-12 ">
         <h3 class="mb-3 text-base">پيش بيني سود/زیان</h3>
-        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.profitLoss, heads:['شرح','%','هزینه']}"></ng-container>
+        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.profitLoss, heads:['شرح','هزینه']}"></ng-container>
     </div>
-    <div class="lg:col-span-7 col-span-12 ">
-        <h3 class="mb-3 text-base">پيش بيني هزينه‌های ثابت</h3>
-        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.fix}"></ng-container>
+    <div class="lg:col-span-7 col-span-12 grid grid-cols-12">
+        <div class="col-span-12 ">
+            <h3 class="mb-3 text-base">پيش بيني هزينه‌های ثابت</h3>
+            <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.fix}"></ng-container>
+        </div>
     </div>
-    <div class="lg:col-span-5 col-span-12 ">
+    <hr class="col-span-12 my-3">
+    <div class="lg:col-span-5 col-span-12">
         <h3 class="mb-3 text-base"> نرخ بازده داخلی (IRR)</h3>
-        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.efficiency, heads:['شرح','%','هزینه']}"></ng-container>
+        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.efficiency, heads:['شرح','هزینه']}"></ng-container>
+    </div>
+    <div class="lg:col-span-7 col-span-12">
+        <h3 class="mb-3 text-base"> ارزش فعلی خالص (NPV) در افق ده ساله و دوره بازگشت آورده سهامدار
+        </h3>
+        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.NPVPureValue, heads:['شرح','%','هزینه']}"></ng-container>
+    </div>
+    <div class="lg:col-span-6 col-span-12">
+        <h3 class="mb-3 text-base"> دیگر موارد
+        </h3>
+        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.finallyItems, heads:['شرح','هزینه']}"></ng-container>
+    </div>
+    <div class="lg:col-span-6 col-span-12">
+        <h3 class="mb-3 text-base"> تراز تخمینی
+        </h3>
+        <ng-container *ngTemplateOutlet="table; context: {$implicit: profitAndLoss.balanceSheet, heads:['شرح','هزینه']}"></ng-container>
     </div>
 </div>
 
-<app-irr-clac (IRR_Value)="IRRvalues($event)"></app-irr-clac>
+<app-irr-clac [profitAndLoss]="profitAndLoss" (IRR_Value)="IRRvalues($event)" (getNPV_Value)="setNPV($event)"></app-irr-clac>
 
 <ng-template #table let-list let-heads="heads">
     <table class="w-full table-auto">
@@ -89,23 +93,27 @@
         </thead>
         <tbody class="text-gray-700 text-sm font-light">
             <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]"
-                *ngFor="let item of list; let i=index" [ngClass]="{'bg-lime-100': i == list.length-1}">
+                *ngFor="let item of list; let i=index" [ngClass]="{'bg-lime-100': item.highLight == true}">
                 <td class="py-3 px-4 font-normal" [matTooltip]="item.description">
                     <span>
                         {{ item.title }}
                     </span>
                 </td>
-                <td class="py-3 px-4 font-normal">
-                    <span *ngIf="!item.percent && item.percent != 0">
+                <td class="py-3 px-4 font-normal" *ngIf="item.percent != '#null'">
+                    <span *ngIf="item.percent == '--'">
                         --
                     </span>
-                    <input *ngIf="item.percent || item.percent == 0" type="number" class="editable-field max-w-[100px]"
-                            (change)="applyChanges()"
+                    <input *ngIf="item.percent >= 0 || item.percent <= 0" type="number"
+                            [id]="'percent-'+item.id" class="editable-field max-w-[100px]"
+                            (change)="applyChanges($event)"
                             [(ngModel)]="item.percent">
                 </td>
-                <td class="py-3 px-4 font-normal" [ngClass]="{'color-red': item.finalCost()<0}">
+                <td class="py-3 px-4 font-normal" [attr.colspan]="item.colspan" [ngClass]="{'color-red': item.finalCost()<0}">
                     <span>
-                        {{ item.finalCost() | numWithComma:(item.unit?item.unit:money):item.type}}
+                        {{ item.type != 'string'?
+                             (item.finalCost() | numWithComma:(item.getUnit()?item.getUnit():money):item.type) :
+                             item.finalCost()
+                        }}
                     </span>
                 </td>
             </tr>

@@ -1,9 +1,13 @@
 <div class="bg-white w-full -mt-3 p-3 shadow">
     <h2 class="mb-4 text-gray-400 text-center">براورد هزینه ها</h2>
     <nav class="sticky top-0 bg-white z-20">
-        <ul class="flex justify-start items-center my-4 ">
+        <ul class="flex flex-wrap justify-start items-center my-4 ">
             <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
                 [ngClass]="[activeTab===0 ? 'text-sky-500 border-sky-500' : '']" (click)="activeTab = 0"> فهرست ها
+            </li>
+            <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
+                [ngClass]="[activeTab===6 ? 'text-green-600 border-green-600' : '']" (click)="activeTab = 6">
+                 حقوق و دستمزد
             </li>
             <li class="cursor-pointer py-2 px-4 text-gray-500 border-b-8"
                 [ngClass]="[activeTab===1 ? 'text-pink-500 border-pink-500' : '']" (click)="activeTab = 1">
@@ -31,11 +35,12 @@
         <div>
             <app-depreciations></app-depreciations>
         </div>
-        <!-- Hoghog -->
+    </div>
+    <!-- حقوق و دستمزد -->
+    <div *ngIf="activeTab===6">
         <div>
             <app-salary-form></app-salary-form>
         </div>
-
     </div>
     <!-- تهسیلات بانکی -->
     <div *ngIf="activeTab===1">
