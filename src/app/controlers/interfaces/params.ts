@@ -57,4 +57,5 @@ export class Parameters {
     basePrice: number;
     period: number;
     productionCapacity: number;
+    tanafos: number;
 }

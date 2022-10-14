@@ -72,6 +72,7 @@ export class ProjactsService {
   }
   period: number;
   productionCapacity: number;
+  tanafos: number;
   basePrice = new BehaviorSubject(1);
   callGetIRR = new BehaviorSubject(false);
   callGetNPV:BehaviorSubject<any> = new BehaviorSubject(false);
@@ -120,6 +121,7 @@ export class ProjactsService {
     this.period = params.period;
     this.productionCapacity = params.productionCapacity;
     this.basePrice.next(params.basePrice);
+    this.tanafos = params.tanafos;
   }
 
   saveParams(id:string,params?:any) {
@@ -131,9 +133,9 @@ export class ProjactsService {
       maintenance: this.maintenance,
       basePrice: this.basePrice.value,
       period: this.period,
-      productionCapacity: this.productionCapacity
+      productionCapacity: this.productionCapacity,
+      tanafos: this.tanafos
     }
-    console.log(parameters);
 
     this.setParams(parameters);
     return this.server.update(Globals.paramsApi.edit+id,parameters);

@@ -93,7 +93,6 @@ export class ProfitAndLossComponent extends EstimateComponent implements OnInit,
     ).subscribe(res => {
       this.estimated = res;
       this.allComputes();
-      console.log(this.profitAndLoss,res);
     });
   }
 

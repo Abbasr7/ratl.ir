@@ -68,7 +68,6 @@ export class RolesComponent implements OnInit {
       this.loading = false
       this.accessVal = []
       this.roles.push(res.data);
-      console.log(this.roles);
     })
   }
 
@@ -112,7 +111,6 @@ export class RolesComponent implements OnInit {
       case 'delete':
         let selected:any = this.roles.find((i:any) => i.role == nameid);
         this.server.delete(this.rolesApi.deleteRole+'?nameid='+nameid).pipe().subscribe((res) => {
-            console.log(res);
             this.roles.splice(this.roles.indexOf(selected),1)
             this.editMode = '';
           })

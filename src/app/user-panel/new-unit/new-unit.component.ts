@@ -160,8 +160,6 @@ export class NewUnitComponent implements OnInit {
           this.investForm.patchValue(res.investForm);
           this.fundAndExpensesForm.patchValue(res.fundAndExpensesForm);
           this.salaryForm.patchValue(res.salaryForm);
-
-          console.log(res,this.investForm.value);
           
         }
       })

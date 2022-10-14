@@ -62,6 +62,17 @@
                 </tr>
                 <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
                     <td class="py-3 px-6 font-normal">
+                        <span>
+                            تنفس اقساط
+                        </span>
+                    </td>
+                    <td class="py-3 px-6 font-normal">
+                        <input type="number" [(ngModel)]="tanafos"
+                            (change)="applyChanges()" class="editable-field">
+                    </td>
+                </tr>
+                <tr class="border border-gray-200 hover:bg-gray-100 first:w-[50%]">
+                    <td class="py-3 px-6 font-normal">
                         <span>کل سرمایه مورد نیاز اجرای طرح</span>
                     </td>
                     <td class="py-3 px-6 font-normal">

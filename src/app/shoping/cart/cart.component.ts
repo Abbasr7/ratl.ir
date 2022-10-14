@@ -62,7 +62,6 @@ export class CartComponent implements OnInit {
       map(i => i as SuccessHandle),
       take(1)
     ).subscribe(res => {
-      console.log(res);
       this.spinner.removeSpinner('#price')
       window.location.href = res.data
     })

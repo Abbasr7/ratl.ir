@@ -98,8 +98,6 @@ export class NewPlanComponent implements OnInit {
 
   save() {
     if (this.form.invalid) {
-      console.log(this.form.invalid);
-
       return
     }
     this.loading = true

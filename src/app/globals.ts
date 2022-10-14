@@ -1,5 +1,7 @@
+import { environment } from "src/environments/environment";
+
 export class Globals {
-    public static apiUrl = "http://localhost:3000";
+    public static apiUrl = environment.apiUrl;
     public static admin = "/admin";
     public static users = "/user";
     public static pages = "/page";

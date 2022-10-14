@@ -16,10 +16,7 @@ export class AclGuard implements CanActivate,Resolve<IAccessControlLevel> {
     return true;
   }
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IAccessControlLevel> | Promise<IAccessControlLevel> | IAccessControlLevel {
-    console.log(route.url);
-    let url = state.url as string
-    console.log(url);
-    
+    let url = state.url as string    
 
     let test:IAccessControlLevel = {id:'asd',access:'asdas'}
     return test

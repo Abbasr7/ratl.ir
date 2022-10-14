@@ -22,7 +22,7 @@ export class EstimateComponent {
   ) { }
 
   unit: IProjact = new IProjact
-  unit_id = this.route.snapshot.paramMap.get('id')
+  unit_id = this.route.snapshot.paramMap.get('id');
   rate = this.projactService.rate
   estimated = new IEstimate;
 
@@ -47,6 +47,7 @@ export class EstimateComponent {
   money:string = 'ریال';
   period:number = this.projactService.period;
   productionCapacity:number = this.projactService.productionCapacity;
+  tanafos:number = this.projactService.tanafos = 0;
 
   getCurrentUnit() {
     (async () => {
@@ -62,7 +63,6 @@ export class EstimateComponent {
         if (res.data) {
           this.projactService.setParams(res.data)
         }
-        console.log(res);
       });
 
       this.period = this.projactService.period = 
@@ -596,7 +596,7 @@ export class EstimateComponent {
         return this.fullRefund - this.bankLoan
       }
     }
-    e.PMT = -this.projactService.PMT((this.percents.bankInterestRate/100)/12,this.percents.installmentCount,e.bankLoan);
+    e.PMT = -this.projactService.PMT((this.percents.bankInterestRate/100)/12,this.percents.installmentCount-this.tanafos,e.bankLoan);
     e.fullRefund = this.percents.installmentCount * e.PMT;
 
     this.estimated.bankFacilities = e
@@ -657,8 +657,8 @@ export class EstimateComponent {
   principalAndInterest(interest:number,principal:number,INCount:number,Obj:any):any{
     let interestList:any[] = []
     let principalList:any[] = []
-    interestList.push(interest);
     principalList.push(principal);
+    interestList.push(interest);
 
     const calculate = (principal:number,IN:number) => {
       let newPrincipal = principal * (1 + (this.percents.bankInterestRate/100)/12);
@@ -831,6 +831,7 @@ export class EstimateComponent {
     // this.projactService.maintenance = this.maintenance
     this.projactService.productionCapacity = this.productionCapacity;
     this.projactService.period = this.period;
+    this.projactService.tanafos = this.tanafos;
   }
 
   focusOut(e:Event){

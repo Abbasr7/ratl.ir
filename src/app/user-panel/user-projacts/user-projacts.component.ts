@@ -25,7 +25,6 @@ export class UserProjactsComponent implements OnInit {
     ).subscribe({
       next: (res) => {
         this.projactList = res.data
-        console.log(res,this.projactList);
       }
     })
   }

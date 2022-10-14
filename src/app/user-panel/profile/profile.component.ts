@@ -174,10 +174,7 @@ export class ProfileComponent implements OnInit, OnDestroy, DoCheck {
     }
     this.changePasswordForm.value.userid = this.userId;
 
-    this.userService.changePassword(this.changePasswordForm.value).subscribe(res => {
-      console.log(res);
-      
-    })
+    this.userService.changePassword(this.changePasswordForm.value).subscribe(res => {})
     
   }
 
