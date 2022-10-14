@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  // apiUrl: 'https://api.ratl.ir',
   apiUrl: "http://localhost:3000",
   Version: "1"
 };

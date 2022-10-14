@@ -35,7 +35,6 @@ export class RegisterFormComponent implements OnInit {
 
   ngOnInit() {
     this.registerUrl = this.currentUrl
-    
   }
   get f() {
     return this.form.controls

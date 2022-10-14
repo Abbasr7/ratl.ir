@@ -27,7 +27,8 @@ export class HttpInterceptorInterceptor implements HttpInterceptor,ErrorHandler 
     const token = localStorage.getItem('auth-token');
     const reqWhithHeaders = request.clone({
       setHeaders: {
-        'x-auth': `${token}`
+        'x-auth': `${token}`,
+        'Access-Control-Allow-Origin': '*'
       }
     })
 

@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: "http://api.ratl.ir",
+  apiUrl: "https://api.ratl.ir",
   Version: "1",
 };
