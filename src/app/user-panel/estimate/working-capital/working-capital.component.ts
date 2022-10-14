@@ -22,13 +22,13 @@ export class WorkingCapitalComponent extends EstimateComponent implements OnInit
     ).subscribe(res => {
       this.unit = res;
     });
-    this.getBasePrice();
+    // this.getBasePrice();
     
   }
   // هزینه های جاری
   applyChanges(){
     this.basePrice = this.toNum(this.basePrice)
-    this.setBasePrice(this.basePrice);
+    // this.setBasePrice(this.basePrice);
     
     this.depreciationCalculate('equipment', this.year.equipment)
     this.depreciationCalculate('building', this.year.building)
@@ -52,7 +52,8 @@ export class WorkingCapitalComponent extends EstimateComponent implements OnInit
   }
 
   setChanges(){
-    this.projactService.basePrice.next(this.basePrice)
+    // this.projactService.basePrice.next(this.basePrice)
+    this.parametersChanged();
     this.projactService.setChanges.next(this.estimated);
     this.applyChanges();
   }

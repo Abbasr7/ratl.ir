@@ -73,7 +73,7 @@ export class ProjactsService {
   period: number;
   productionCapacity: number;
   tanafos: number;
-  basePrice = new BehaviorSubject(1);
+  basePrice = 1;
   callGetIRR = new BehaviorSubject(false);
   callGetNPV:BehaviorSubject<any> = new BehaviorSubject(false);
 
@@ -120,7 +120,7 @@ export class ProjactsService {
     this.maintenance = params.maintenance;
     this.period = params.period;
     this.productionCapacity = params.productionCapacity;
-    this.basePrice.next(params.basePrice);
+    this.basePrice = params.basePrice;
     this.tanafos = params.tanafos;
   }
 
@@ -131,7 +131,7 @@ export class ProjactsService {
       percents: this.percents,
       profitAndLossPercents: this.profitAndLossPercents,
       maintenance: this.maintenance,
-      basePrice: this.basePrice.value,
+      basePrice: this.basePrice,
       period: this.period,
       productionCapacity: this.productionCapacity,
       tanafos: this.tanafos

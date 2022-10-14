@@ -27,7 +27,7 @@ export class IRRClacComponent extends ProfitAndLossComponent implements OnDestro
               private msgService2: MessagesService) 
   {
     super(route2,projactService2,server2,msgService2);
-    this.getBasePrice();
+    // this.getBasePrice();
   }
 
   ngAfterViewInit(): void {

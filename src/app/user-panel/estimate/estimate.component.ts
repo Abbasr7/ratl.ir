@@ -26,7 +26,7 @@ export class EstimateComponent {
   rate = this.projactService.rate
   estimated = new IEstimate;
 
-  basePrice:number ;
+  basePrice:number = this.projactService.basePrice;
   year:any = {
     building: 1,
     equipment: 1,
@@ -77,20 +77,20 @@ export class EstimateComponent {
     })()
   }
 
-  getBasePrice() {
-    this.projactService.basePrice.asObservable().pipe(
-      take(1)
-    ).subscribe(res => {
-      this.basePrice = res
-    })
-  }
+  // getBasePrice() {
+  //   this.projactService.basePrice.asObservable().pipe(
+  //     take(1)
+  //   ).subscribe(res => {
+  //     this.basePrice = res
+  //   })
+  // }
 
-  setBasePrice(bp:number) {
-    this.projactService.basePrice.next(bp);
-  }
+  // setBasePrice(bp:number) {
+  //   this.projactService.basePrice.next(bp);
+  // }
 
   toEstimate(year: number = 1) {
-    this.getBasePrice();
+    this.projactService.setChanges.next(new IEstimate);
     this.depreciationCalculate('equipment', this.year.equipment);
     this.depreciationCalculate('building', this.year.building);
     this.depreciationCalculate('vehicles', this.year.vehicles);
@@ -236,7 +236,6 @@ export class EstimateComponent {
       })
       this.estimated.salaryBase = levels
     }
-    
 
     // get all employees order by jobTitle
     this.unit.salaryForm.jobTitles.forEach((job: any) => {
@@ -832,6 +831,7 @@ export class EstimateComponent {
     this.projactService.productionCapacity = this.productionCapacity;
     this.projactService.period = this.period;
     this.projactService.tanafos = this.tanafos;
+    this.projactService.basePrice = this.basePrice;
   }
 
   focusOut(e:Event){
