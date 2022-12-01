@@ -1,5 +1,11 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "4e00c7ab-a9e1-4c1d-802d-940d3e215ae9",
+    "cache": {
+      "enabled": false
+    }
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -39,7 +45,10 @@
               "node_modules/jquery/dist/jquery.js",
               "node_modules/nestable2/jquery.nestable.js",
               "src/assets/js/script.js"
-            ]
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": []
+            }
           },
           "configurations": {
             "production": {
