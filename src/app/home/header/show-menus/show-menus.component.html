@@ -14,8 +14,14 @@
         <ng-template #showMenu let-list let-sub="sub">
             <ng-container *ngFor="let item of list">
                 <li [ngClass]="{'has-child relative': item.children}">
-                    <a class="text-sm text-gray-400 hover:text-gray-500"
-                       href="item.url">
+                    <a *ngIf="isExternalLink(item.url)"
+                       class="text-sm text-gray-600 hover:text-gray-800"
+                       [href]="item.url">
+                       {{item.content}}
+                    </a>
+                    <a *ngIf="!isExternalLink(item.url)"
+                       class="text-sm text-gray-600 hover:text-gray-800"
+                       [routerLink]="[item.url]">
                        {{item.content}}
                     </a>
                     <ng-container *ngIf="item.children">
@@ -40,8 +46,8 @@
     <!-- displaying in mobile mode -->
     <div class="navbar-menu relative z-50 hidden">
         <div (click)="closeMobileNav()" class="navbar-backdrop w-full fixed inset-0 bg-gray-800 opacity-25"></div>
-        <nav class="fixed top-0 -right-4 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto">
-            <div class="flex items-center justify-between mb-8">
+        <nav class="fixed top-0 -right-4 bottom-0 flex flex-col w-5/6 max-w-sm pt-6 px-6 bg-white border-r overflow-y-auto">
+            <div class="flex items-center justify-between mb-5">
                 <div class="max-w-full"> 
                     <a [routerLink]="['/']" class="w-full flex items-center justify-center">
                     <img [src]="logo?logo:'assets/img/qk.svg'" alt="logo" class="max-w-[150px] max-h-[80px] w-full" crossorigin/>
@@ -53,6 +59,38 @@
                     </svg>
                 </button>
             </div>
+            <div *ngIf="loggedIn" class="border-b">
+                <ul class="w-full flex items-center justify-between">
+                    <li *ngIf="userInfo.user.role.nameid == 'root-admin'" routerLink="/admin" class="cursor-pointer text-blue-800 pt-5 pb-3">
+                        <button aria-label="show notifications" class="sidebar-fixed-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
+                            </svg>                              
+                        </button>
+                    </li>
+                    <li routerLink="/panel" class="cursor-pointer text-gray-800 pt-5 pb-3">
+                        <button aria-label="open chats" class="sidebar-fixed-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                            </svg>                                                          
+                        </button>
+                    </li>
+                    <li routerLink="/panel/profile" class="cursor-pointer text-gray-800 pt-5 pb-3">
+                        <button aria-label="open settings" class="sidebar-fixed-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                            </svg>                              
+                        </button>
+                    </li>
+                    <li routerLink="/logout" class="cursor-pointer text-red-700 pt-5 pb-3">
+                        <button aria-label="open logs" class="sidebar-fixed-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                            </svg>                              
+                        </button>
+                    </li>
+                </ul>
+            </div>
             <div>
                 <ul>
                     <ng-template #showSidebarMenu let-list>
@@ -62,12 +100,12 @@
                         >
                             <div [attr.data-id]="item.id" class="w-full hover:bg-blue-50 rounded" (click)="openSubMenu($event)">
                                 <a [href]="item.url"
-                                   class="block p-4 w-fit text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600" href="#">
+                                   class="block p-4 w-fit text-sm font-semibold text-gray-500 hover:bg-blue-50 hover:text-blue-600" href="#">
                                     {{ item.content }}
                                 </a>
                                 <svg *ngIf="item.children"
                                  fill="currentColor" viewBox="0 0 20 20"
-                                 x-bind:class="{'rotate-180': open, 'rotate-0': !open}"
+                                 [ngClass]="{'rotate-180': showSubMenu, 'rotate-0': !showSubMenu}"
                                  class="absolute top-5 left-5 inline w-4 h-4 mt-1 ml-1 transition-transform duration-200 transform md:-mt-1">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                 </svg>
@@ -91,13 +129,19 @@
                             <li *ngFor="let item of list"
                                 class="px-2 py-1 dark-mode:bg-gray-800 relative">
                                 <div [attr.data-id]="item.id" class="w-full p-2 hover:bg-blue-50 rounded" (click)="openSubMenu($event)">
-                                    <a class="text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600"
+                                    <a *ngIf="isExternalLink(item.url)"
+                                       class="text-sm font-semibold text-gray-600 hover:bg-blue-50 hover:text-blue-800"
                                        [href]="item.url">
+                                        {{ item.content }}
+                                    </a>
+                                    <a *ngIf="!isExternalLink(item.url)"
+                                       class="text-sm font-semibold text-gray-600 hover:bg-blue-50 hover:text-blue-800"
+                                       [routerLink]="[item.url]">
                                         {{ item.content }}
                                     </a>
                                     <svg *ngIf="item.children"
                                         fill="currentColor" viewBox="0 0 20 20"
-                                        x-bind:class="{'rotate-180': open, 'rotate-0': !open}"
+                                        [ngClass]="{'rotate-180': showSubMenu, 'rotate-0': !showSubMenu}"
                                         class="absolute top-5 left-5 inline w-4 h-4 mt-1 ml-1 transition-transform duration-200 transform md:-mt-1">
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                     </svg>
@@ -114,7 +158,7 @@
             </div>
             <div class="mt-auto" *ngIf="!loggedIn">
                 <div class="pt-6">
-                    <a class="block px-4 py-3 mb-3 leading-loose text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl" href="#">
+                    <a class="block px-4 py-3 mb-3 leading-loose text-xs text-center font-semibold bg-gray-50 hover:bg-gray-100 rounded-xl" href="#">
                         ورود به سایت
                     </a>
                     <a class="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-blue-600 hover:bg-blue-700  rounded-xl" href="#">

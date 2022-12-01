@@ -11,7 +11,7 @@
     @apply inline-flex lg:block px-3 py-4 cursor-pointer text-base lg:text-white lg:group-hover:text-white lg:py-6 
 }
 .has-child{
-    @apply relative pl-6 after:absolute after:w-2 after:h-2 after:border-b-2 after:border-r-2 after:border-current after:rotate-45 after:left-0 after:top-1/2 after:-translate-y-1/2 after:mt-[-2px]
+    @apply relative pl-6 after:absolute after:w-[6px] after:h-[6px] after:border-b after:border-r after:border-current after:rotate-45 after:left-0 after:top-[60%] after:-translate-y-1/2 after:mt-[-2px]
 }
 .submenu-1 .has-child{
     @apply after:left-2  lg:after:rotate-[135deg]

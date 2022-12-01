@@ -49,7 +49,7 @@
 
                     <div x-data="{ dropdownOpen: false }" class="relative">
                         <button x-on:click="dropdownOpen = ! dropdownOpen"
-                            class="flex items-center space-x-2 relative focus:outline-none">
+                            class="flex items-center gap-2 relative focus:outline-none">
                             <h2 class="text-gray-700 dark:text-gray-300 text-sm hidden sm:block">{{userInfo.user.fullname}}</h2>
                             <img class="h-9 w-9 rounded-full border-2 border-purple-500 object-cover"
                             [src]="userInfo.user.imgurl?apiUrl+userInfo.user.imgurl:'/assets/img/profile-pic.png'" crossorigin [alt]="userInfo.user.fullname">
@@ -61,10 +61,10 @@
                             x-transition:leave="transition ease-in duration-75 transform"
                             x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
                             x-on:click.away="dropdownOpen = false">
+                            <a [routerLink]="['/']"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-600 hover:text-white">مشاهده سایت</a>
                             <a [routerLink]="['/user/'+userInfo.user._id]"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-600 hover:text-white">پروفایل</a>
-                            <a [routerLink]="['/']"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-600 hover:text-white">پیامها</a>
                             <a [routerLink]="['/logout']"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-600 hover:text-white">خروج</a>
                         </div>
