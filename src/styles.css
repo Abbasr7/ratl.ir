@@ -210,3 +210,14 @@ h3 {
 }
 
 html, body { height: 100%; }
+
+.ngx-spinner .ngx-spinner-icon,
+.ngx-spinner .ngx-spinner-icon::after,
+.ngx-spinner .ngx-spinner-icon::before {
+    border-top-color: red !important;
+    border-left-color: red !important;
+}
+
+ /* *, *::after, *::before {
+    border-color: red !important;
+} */
