@@ -1,6 +1,6 @@
 /* Admin Sidebar */
 .sidebar-li {
-    @apply transition-all duration-200 flex w-full rounded-full justify-between min-h-[48px] text-gray-700 hover:text-blue-900 hover:bg-gray-300 cursor-pointer p-3
+    @apply transition-all duration-200 flex w-full rounded-lg justify-between min-h-[48px] text-gray-700 hover:text-blue-900 hover:bg-gray-300 cursor-pointer p-3
 }
 .sidebar-li-a {
     @apply flex items-center focus:outline-none hover:text-sky-700
