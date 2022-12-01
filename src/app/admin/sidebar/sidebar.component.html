@@ -135,9 +135,9 @@
             </li>
             <!-- menus -->
             <li *ngIf="promise.includes('menus') || promise.includes('all')"
-             class="sidebar-li" routerLinkActive="active">
-                <a href="/admin/menus" class="sidebar-li-a">
-                    <svg [routerLink]="['/admin/menus']" xmlns="http://www.w3.org/2000/svg"
+             class="sidebar-li" [routerLink]="['/admin/menus']" routerLinkActive="active">
+                <a class="sidebar-li-a">
+                    <svg xmlns="http://www.w3.org/2000/svg"
                         class="icon icon-tabler icon-tabler-puzzle h-6 w-6" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z"></path>
