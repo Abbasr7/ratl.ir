@@ -1,7 +1,7 @@
 <!-- component -->
 <div id="plans-table" x-data="{modal:false}">
     <div class="w-full lg:w-11/12 bg-white shadow-md rounded py-4">
-        <div class="flex items-center gap-3 divide-x-reverse divide-x-2 mx-5">
+        <div class="md:flex flex-col items-center gap-3 divide-x-reverse divide-x-2 mx-5">
             <div class="relative text-gray-600">
                 <input class="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
                     type="search" name="search" [(ngModel)]="planTitle" (ngModelChange)="search()"
@@ -16,8 +16,8 @@
                     </svg>
                 </button>
             </div>
-            <div class="relative flex items-center px-3">
-                <span class="ml-2">تعداد در هر صفحه:</span>
+            <div class="relative md:flex grid grid-cols-2 items-center px-3">
+                <span class="ml-2 col-span-1">تعداد در هر صفحه:</span>
                 <svg class="w-2 h-2 absolute top-0 left-2 m-4 pointer-events-none" xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 412 232">
                     <path
@@ -25,7 +25,7 @@
                         fill="#648299" fill-rule="nonzero" />
                 </svg>
                 <select [(ngModel)]="prePage"
-                    class="border border-gray-300 rounded-full text-gray-600 h-10 pr-5 pl-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
+                    class="border col-span-1 border-gray-300 rounded-full text-gray-600 h-10 pr-5 pl-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
                     <option [value]="5">5</option>
                     <option [value]="10">10</option>
                     <option [value]="15">15</option>

@@ -1,6 +1,10 @@
 <div x-bind:class="sidebar?'right-0' : '-right-64 md:right-0'" style="min-height: 716px"
     class="sm:w-64 w-64 z-40 absolute lg:sticky lg:top-0 md:relative bg-gray-200 shadow lg:h-auto flex-col justify-between transition-all duration-300 sm:flex">
-    <button aria-label="toggle sidebar" id="openSideBar" class="sidebar-rbtn" x-on:click="sidebar = !sidebar">
+    <button aria-label="toggle sidebar"
+     id="openSideBar"
+     class="sidebar-rbtnn hidden"
+     x-on:click="sidebar = !sidebar"
+     >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>

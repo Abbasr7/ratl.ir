@@ -57,6 +57,9 @@ import { UserProjactsComponent } from './user-panel/user-projacts/user-projacts.
 import { ProfitAndLossComponent } from './user-panel/estimate/profit-and-loss/profit-and-loss.component';
 import { FinancialSummaryComponent } from './user-panel/estimate/financial-summary/financial-summary.component';
 import { IRRClacComponent } from './user-panel/estimate/profit-and-loss/irr-clac/irr-clac.component';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 
 @NgModule({
   declarations: [
@@ -115,7 +118,10 @@ import { IRRClacComponent } from './user-panel/estimate/profit-and-loss/irr-clac
     MatProgressBarModule,
     UserProjactsModule,
     AngularEditorModule,
-    SharedModule
+    SharedModule,
+    LoadingBarModule,
+    LoadingBarHttpClientModule,
+    LoadingBarRouterModule
   ],
   providers: [
     {provide:HTTP_INTERCEPTORS, useClass:HttpInterceptorInterceptor, multi:true},

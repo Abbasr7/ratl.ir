@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, Inject, OnInit, Renderer2} from '@angular/core';
 import { ServerService } from 'src/app/controlers/services/server.service';
 import * as $ from 'jquery'
 import { lastValueFrom } from 'rxjs';
@@ -8,7 +8,11 @@ import { MessagesService } from 'src/app/controlers/services/messages.service';
 import { Spinner } from 'src/app/controlers/utils';
 import { SettingsService } from 'src/app/controlers/services/settings.service';
 import { Globals } from 'src/app/globals';
+import { DOCUMENT } from '@angular/common';
 const event = new Event('updateOutput');// برای اپدیت کردن ترتیب آیتم های فهرست
+
+const SCRIPT_PATH = 'https://apis.google.com/js/api.js';
+declare let gapi: any;
 
 @Component({
   selector: 'app-menus',
@@ -20,7 +24,10 @@ export class MenusComponent implements OnInit {
   constructor(private server: ServerService,
     private msg: MessagesService,
     private spinner: Spinner,
-    private settingsService: SettingsService) { }
+    private settingsService: SettingsService,
+    @Inject(DOCUMENT) private document: Document,
+    private renderer: Renderer2) {
+    }
 
   list: any[] = [];
   settings:any
@@ -28,8 +35,7 @@ export class MenusComponent implements OnInit {
   menusApi = Globals.publicApi.getMenus
 
   ngOnInit(): void {
-    this.getListsAndItems()
-    this.toNestable()
+    this.getListsAndItems();
   }
 
   getListsAndItems() {
@@ -37,27 +43,34 @@ export class MenusComponent implements OnInit {
       map(i => i as SuccessHandle),
     ).subscribe(res => {
       res.data.map((x: any) => x.order ? x.order = JSON.parse(x.order) : '')
-      this.list = res.data
+      this.list = res.data;
+      this.toNestable().onload = () => {
+        console.log('nastable loaded');
+      }
     })
   }
 
   toNestable() {
     // برای کارکردن اسکریپت nestable
     let dd_empty = document.querySelector('.dd-empty');
-    let nestable = document.createElement("script");
+    let nestable = this.renderer.createElement("script");
     let exist = document.querySelector('#myScript')
+
     if (exist != null) {
       document.body.removeChild(exist)
-      nestable.setAttribute("id", "myScript");
-      nestable.setAttribute("src", "assets/js/nestable.js");
-      document.body.appendChild(nestable);
-    } else {
-      nestable.setAttribute("id", "myScript");
-      nestable.setAttribute("src", "assets/js/nestable.js");
-      document.body.appendChild(nestable);
     }
+    // else {
+    //   nestable.setAttribute("id", "myScript");
+    //   nestable.setAttribute('defer','');
+    //   nestable.setAttribute("src", "assets/js/nestable.js");
+    //   document.body.appendChild(nestable);
+    // }
+    nestable.id = "myScript";
+    nestable.src = "assets/js/nestable.js";
+    nestable.defer = '';
+    this.renderer.appendChild(this.document.body,nestable);
     dd_empty? document.body.removeChild(dd_empty):''
-
+    return nestable;
   }
 
   getCurrentListSelected(loc: string,id:string) {
