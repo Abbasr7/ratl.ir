@@ -10,17 +10,14 @@
 
 <!-- header menu template -->
 <ng-template #headerMenu>
-    <button id="navbarToggler"
-        class=" block absolute right-4 top-1/2 -translate-y-1/2 lg:hidden focus:ring-2 ring-primary px-3 py-[6px] rounded-lg ">
-        <span class="relative w-[30px] h-[2px] my-[6px] block"></span> <span
-            class="relative w-[30px] h-[2px] my-[6px] block"></span> <span
-            class="relative w-[30px] h-[2px] my-[6px] block"></span>
-    </button>
-    <div id="navbarCollapse" class="hidden">
-        <ul class="blcok menu-1">
-            <ng-template #showMenu let-list>
-                <li class="link" [ngClass]="{'has-child': item.children}" *ngFor="let item of list">
-                    <a [href]="item.url">{{item.content}}</a>
+    <ul class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 z-50 lg:mx-auto lg:flex lg:items-center lg:w-auto lg:space-x-2 text-right">
+        <ng-template #showMenu let-list let-sub="sub">
+            <ng-container *ngFor="let item of list">
+                <li [ngClass]="{'has-child relative': item.children}">
+                    <a class="text-sm text-gray-400 hover:text-gray-500"
+                       href="item.url">
+                       {{item.content}}
+                    </a>
                     <ng-container *ngIf="item.children">
                         <div class="submenu-1">
                             <ng-container *ngTemplateOutlet="showMenu; context: { $implicit: item.children }">
@@ -28,9 +25,107 @@
                         </div>
                     </ng-container>
                 </li>
-            </ng-template>
-            <ng-container *ngTemplateOutlet="showMenu; context: { $implicit: headerMenuList.order }"></ng-container>
-        </ul>
+                <li class="text-gray-300" *ngIf="sub">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                    </svg>
+                </li>
+            </ng-container>
+        </ng-template>
+        <ng-container *ngIf="headerMenuList">
+            <ng-container *ngTemplateOutlet="showMenu; context: { $implicit: headerMenuList.order, sub: true }"></ng-container>
+        </ng-container>
+    </ul>
+
+    <!-- displaying in mobile mode -->
+    <div class="navbar-menu relative z-50 hidden">
+        <div (click)="closeMobileNav()" class="navbar-backdrop w-full fixed inset-0 bg-gray-800 opacity-25"></div>
+        <nav class="fixed top-0 -right-4 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto">
+            <div class="flex items-center justify-between mb-8">
+                <div class="max-w-full"> 
+                    <a [routerLink]="['/']" class="w-full flex items-center justify-center">
+                    <img [src]="logo?logo:'assets/img/qk.svg'" alt="logo" class="max-w-[150px] max-h-[80px] w-full" crossorigin/>
+                    </a>
+                </div>
+                <button (click)="closeMobileNav()" class="navbar-close">
+                    <svg class="h-6 w-6 text-gray-400 cursor-pointer hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div>
+                <ul>
+                    <ng-template #showSidebarMenu let-list>
+                        <li *ngFor="let item of list"
+                            [ngClass]="{'block relative': item.children}"
+                            class="mb-1"
+                        >
+                            <div [attr.data-id]="item.id" class="w-full hover:bg-blue-50 rounded" (click)="openSubMenu($event)">
+                                <a [href]="item.url"
+                                   class="block p-4 w-fit text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600" href="#">
+                                    {{ item.content }}
+                                </a>
+                                <svg *ngIf="item.children"
+                                 fill="currentColor" viewBox="0 0 20 20"
+                                 x-bind:class="{'rotate-180': open, 'rotate-0': !open}"
+                                 class="absolute top-5 left-5 inline w-4 h-4 mt-1 ml-1 transition-transform duration-200 transform md:-mt-1">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <ng-container *ngIf="item.children">
+                                <ng-container *ngTemplateOutlet="subMenu; context: { $implicit: item.children, id: item.id }">
+                                </ng-container>
+                            </ng-container>
+                        </li>
+                    </ng-template>
+                    <ng-template #subMenu let-list let-id="id">
+                        <ul [id]="'sub-'+id"
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="transform opacity-0 scale-95"
+                         x-transition:enter-end="transform opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="transform opacity-100 scale-100"
+                         x-transition:leave-end="transform opacity-0 scale-95"
+                         class="relative hidden subMenu pr-4 w-full mt-2 origin-top-right bg-gray-50 overflow-hidden text-right"
+                        >
+                            <li *ngFor="let item of list"
+                                class="px-2 py-1 dark-mode:bg-gray-800 relative">
+                                <div [attr.data-id]="item.id" class="w-full p-2 hover:bg-blue-50 rounded" (click)="openSubMenu($event)">
+                                    <a class="text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600"
+                                       [href]="item.url">
+                                        {{ item.content }}
+                                    </a>
+                                    <svg *ngIf="item.children"
+                                        fill="currentColor" viewBox="0 0 20 20"
+                                        x-bind:class="{'rotate-180': open, 'rotate-0': !open}"
+                                        class="absolute top-5 left-5 inline w-4 h-4 mt-1 ml-1 transition-transform duration-200 transform md:-mt-1">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <ng-container *ngTemplateOutlet="subMenu; context: { $implicit: item.children, id: item.id }">
+                                </ng-container>
+                            </li>
+                        </ul>
+                    </ng-template>
+                    <ng-container *ngIf="headerMenuList">
+                        <ng-container *ngTemplateOutlet="showSidebarMenu; context: { $implicit: headerMenuList.order, sub: true }"></ng-container>
+                    </ng-container>
+                </ul>
+            </div>
+            <div class="mt-auto" *ngIf="!loggedIn">
+                <div class="pt-6">
+                    <a class="block px-4 py-3 mb-3 leading-loose text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl" href="#">
+                        ورود به سایت
+                    </a>
+                    <a class="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-blue-600 hover:bg-blue-700  rounded-xl" href="#">
+                        ثبت نام
+                    </a>
+                </div>
+                <p class="my-4 text-xs text-center text-gray-400">
+                    <span>Copyright © 2021</span>
+                </p>
+            </div>
+        </nav>
     </div>
 </ng-template>
 <!-- footer menu template -->

@@ -1,17 +1,30 @@
-<div class="mx-auto gap-2 pt-24 flex flex-col lg:flex-row justify-center items-center bg-cover bg-bottom"
-    style="background-image: url(assets/img/banner-bg.svg);">
-    <div class="text-center px-2 lg:w-1/2 lg:text-right header-hero-content">
-        <h3 class="text-4xl font-light leading-tight text-white header-sub-title wow fadeInUp" data-wow-duration="1.3s"
-            data-wow-delay="0.2s">براورد هزینه های ایجاد کسب و کار خود را به ما بسپارید</h3>
-        <h2 class="mb-3 text-4xl font-bold text-white header-title wow fadeInUp" data-wow-duration="1.3s"
-            data-wow-delay="0.5s">Kickstart Your SaaS or App Site</h2>
-        <p class="mb-8 text-white text wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.8s">Lorem ipsum
-            dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor</p>
-        <a href="#" class="py-3 px-6 rounded-full bg-gradient-to-tr from-pink-500 to-rose-600 b wow fadeInUp"
-            data-wow-duration="1.3s" data-wow-delay="1.1s">همین الان شروع کنید</a>
-    </div> <!-- header hero content -->
-    <div class="justify-center lg:w-1/2">
-        <div class="text-center header-hero-image wow fadeIn" data-wow-duration="1s" data-wow-delay="0.8s">
-            <img src="assets/img/hero-img.png" alt="hero">
-        </div> <!-- header hero image -->
-    </div> <!-- row -->
+<div class="carousel mt-2">
+    <div class="carousel__nav">
+        <span id="moveRight" class="carousel__arrow" (click)="prev()">
+            <svg class="carousel__icon"  width="24" height="24" viewBox="0 0 24 24">
+                <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"></path>
+            </svg>
+        </span>
+        <span id="moveLeft" class="carousel__arrow" (click)="next()">
+            <svg class="carousel__icon" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"></path>
+            </svg>
+        </span>
+    </div>
+
+    <ng-container *ngIf="slides.length">
+        <div class="carousel-item" *ngFor="let slide of slides">
+          <div class="carousel-item__image"
+           [ngStyle]="{'backgroundImage': 'url('+slide+')'}"></div>
+          <div class="carousel-item__info">
+            <div class="carousel-item__container">
+            <h2 class="carousel-item__subtitle">The grand moment </h2>
+            <h1 class="carousel-item__title">Le tour</h1>
+            <p class="carousel-item__description">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+            <a href="#" class="carousel-item__btn">Explore the tour</a>
+              </div>
+          </div>
+        </div>
+    </ng-container>
+    
+</div>

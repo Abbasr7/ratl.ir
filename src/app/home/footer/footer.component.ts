@@ -31,13 +31,15 @@ export class FooterComponent implements OnInit {
   }
 
   async setSettings(){
-    let data = await this.settings.getSettings()
-    this.title = data.title
-    this.socials = data.footer.social?data.footer.social:this.socials;
-    data.footer.extraHtml?
-      this.extraHtml = this.sanitizer.bypassSecurityTrustHtml(data.footer.extraHtml):'';
-    data.footer.description?
-      this.footnote = data.footer.description:'';
+    let data = await this.settings.getSettings();
+    if (data) {
+      this.title = data.title
+      this.socials = data.footer.social?data.footer.social:this.socials;
+      data.footer.extraHtml?
+        this.extraHtml = this.sanitizer.bypassSecurityTrustHtml(data.footer.extraHtml):'';
+      data.footer.description?
+        this.footnote = data.footer.description:'';
+    }
   }
 
 }

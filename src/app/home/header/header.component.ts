@@ -23,6 +23,7 @@ export class HeaderComponent implements OnInit,DoCheck {
   loggedIn:boolean = false
   cartCount:number = this.cart.getItems().length
   userInfo: any;
+  showSidebar = false;
   
   ngOnInit() {
     this.setSettings();
@@ -45,7 +46,8 @@ export class HeaderComponent implements OnInit,DoCheck {
 
   async setSettings(){
     let res = await this.settings.getSettings()
-    this.logo = res.logo && res.logo != 'null'?this.apiUrl + res.logo:'';
+    if (res)
+      this.logo = res.logo && res.logo != 'null'?this.apiUrl + res.logo:'';
   }
 
   getUserInfo(){
@@ -55,4 +57,13 @@ export class HeaderComponent implements OnInit,DoCheck {
       this.userInfo = res
     })
   }
+
+  openMobileNav() {
+    this.showSidebar = true;
+    const menu = document.querySelectorAll('.navbar-menu');
+    if (menu.length) {
+      menu[0].classList.toggle('hidden');
+    }
+  }
+
 }
